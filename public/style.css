@@ -1,0 +1,532 @@
+/* --- Variables & Reset --- */
+:root {
+    --primary: #4361ee; /* Biru Modern */
+    --primary-hover: #3a56d4;
+    --text-dark: #1e293b;
+    --text-light: #64748b;
+    --bg-light: #f8fafc;
+    --border: #e2e8f0;
+    --white: #ffffff;
+    --danger: #ef4444;
+    --success: #22c55e;
+    --radius: 8px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+/* --- Container Utama --- */
+.livewire-table {
+    background: var(--white);
+    padding: 24px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    max-width: 1200px;
+    margin: 20px auto; /* Center di halaman */
+}
+
+/* --- Header Tabel --- */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.table-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+}
+
+/* Tombol Tambah (menggunakan class status-badge sesuai request) */
+button.status-badge {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.status-paid {
+    background-color: var(--primary);
+    color: white;
+}
+
+.status-paid:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* --- Tabel Responsive --- */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto; /* Scroll horizontal jika layar kecil */
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Mencegah tabel terlalu gepeng di HP */
+}
+
+.table th, .table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.table th {
+    background-color: #f1f5f9;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table tr:hover {
+    background-color: #f8fafc;
+}
+
+/* --- Modal Overlay & Container --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Latar belakang gelap transparan */
+    z-index: 1000;
+    display: none; /* Sembunyikan default */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+}
+
+/* Class untuk menampilkan modal via JS */
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-container {
+    background: var(--white);
+    width: 100%;
+    max-width: 700px; /* Lebar maksimal modal */
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-height: 90vh; /* Agar tidak melebihi tinggi layar */
+    overflow-y: auto; /* Scroll vertikal jika form panjang */
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Form Styles --- */
+.form-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+form {
+    padding: 24px;
+}
+
+/* Grid System untuk Form */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 Kolom */
+    gap: 20px;
+}
+
+/* Responsive Grid: Jadi 1 kolom di layar < 768px */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.full-width {
+    grid-column: 1 / -1; /* Mengisi lebar penuh */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.form-input, .form-select, .form-textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.text-error {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+/* --- Actions --- */
+.form-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+
+/* Livewire Modal */
+        .livewire-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: #f1f5f9;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Livewire Loading */
+        .livewire-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        /* State awal: Sembunyi */
+.modal-overlay {
+    display: none;
+    /* Style lainnya tetap sama seperti sebelumnya... */
+}
+
+/* State aktif: Muncul */
+.modal-overlay.show {
+    display: flex;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Animasi halus (Opsional) */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.btn-submit{
+    margin-right: 10px;
+    background:var(--primary);
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f0f0f0;
+}
+
+select:not([readonly]) {
+    background: white;
+}
+
+.photo-box {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.photo-box img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Tabel */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    overflow-x: auto;
+    display: block;
+}
+
+table th,
+table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background: #eee;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+
+/* HP ukuran kecil */
+@media (max-width: 500px) {
+    .container {
+        padding: 15px;
+    }
+
+    input,
+    select {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .photo-box img {
+        width: 90px;
+        height: 90px;
+    }
+
+    table th,
+    table td {
+        padding: 8px;
+        font-size: 13px;
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    .container {
+        padding: 18px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}

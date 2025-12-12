@@ -1,14 +1,15 @@
-
-
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kos Melati Indah - Hunian Premium Dekat IAIN Curup</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary: #00a859;
@@ -68,7 +69,12 @@
             font-size: 16px;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
             line-height: 1.2;
@@ -201,6 +207,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1710,12 +1717,12 @@
             transition: all var(--transition-fast);
         }
 
-        .checkbox-container input:checked + .checkmark {
+        .checkbox-container input:checked+.checkmark {
             background: var(--primary);
             border-color: var(--primary);
         }
 
-        .checkbox-container input:checked + .checkmark::after {
+        .checkbox-container input:checked+.checkmark::after {
             content: '✓';
             color: white;
             font-size: 0.8rem;
@@ -1723,8 +1730,15 @@
 
         /* Animations */
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
         }
 
         .floating {
@@ -1741,67 +1755,89 @@
                 transform: none;
             }
 
-            .btn:hover, .filter-btn:hover, .floating-btn:hover {
+            .btn:hover,
+            .filter-btn:hover,
+            .floating-btn:hover {
                 transform: none;
             }
 
             /* Increase touch target sizes */
-            .btn, .filter-btn, .btn-action {
+            .btn,
+            .filter-btn,
+            .btn-action {
                 min-height: 44px;
             }
 
-            .form-control, select, input, textarea {
-                font-size: 16px; /* Prevents iOS zoom on focus */
+            .form-control,
+            select,
+            input,
+            textarea {
+                font-size: 16px;
+                /* Prevents iOS zoom on focus */
             }
         }
-        .btn-after-verify{
+
+        .btn-after-verify {
             display: flex;
         }
-        .btn-after-verify button{
+
+        .btn-after-verify button {
             margin: 0px 20px;
             width: 200px;
         }
-        @media (width:320px){
-            .pricing-tabs{
+
+        @media (width:320px) {
+            .pricing-tabs {
                 display: block;
             }
-            .price-option{
+
+            .price-option {
                 width: 150px;
                 margin-bottom: 10px;
                 width: 100%;
             }
-            .kamar-actions{
+
+            .kamar-actions {
                 display: block;
             }
+
             .btn-action {
                 width: 100px;
                 margin-bottom: 10px;
                 width: 100%;
             }
-            .kamar-card{
+
+            .kamar-card {
                 width: 290px;
             }
-            .hero-text h1{
+
+            .hero-text h1 {
                 font-size: 21px
             }
-            .logo-text h1{
+
+            .logo-text h1 {
                 display: none;
             }
-            .features-grid{
+
+            .features-grid {
                 display: block;
             }
-            .feature-card{
+
+            .feature-card {
                 margin-bottom: 20px;
             }
 
         }
     </style>
 </head>
+
 <body>
     <!-- Loading Overlay -->
     <div id="loadingOverlay">
         <div style="text-align: center;">
-            <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #00a859; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <div
+                style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #00a859; border-radius: 50%; animation: spin 1s linear infinite;">
+            </div>
             <p style="margin-top: 20px; color: #666; font-weight: 500;">Memuat Kos Melati Indah...</p>
         </div>
     </div>
@@ -1832,19 +1868,18 @@
                 <li><a href="#testimoni"><i class="fas fa-comment"></i> Testimoni</a></li>
                 <li><a href="#kontak"><i class="fas fa-phone"></i> Kontak</a></li>
                 @if (auth()->check())
-                <li><a href="{{ route('customer.profile') }}"><i class="fas fa-user"></i> Profil</a></li>
-
+                    <li><a href="{{ route('customer.profile') }}"><i class="fas fa-user"></i> Profil</a></li>
                 @endif
             </ul>
-            @if(!auth()->check())
-            <div class="nav-actions">
-                <a href="{{route('login')}}" class="btn btn-primary" >
-                    <i class="fas fa-user"></i> Login
-                </a>
-                <a href="{{route('register')}}" class="btn btn-primary" >
-                    <i class="fas fa-user"></i> Register
-                </a>
-            </div>
+            @if (!auth()->check())
+                <div class="nav-actions">
+                    <a href="{{ route('login') }}" class="btn btn-primary">
+                        <i class="fas fa-user"></i> Login
+                    </a>
+                    <a href="{{ route('register') }}" class="btn btn-primary">
+                        <i class="fas fa-user"></i> Register
+                    </a>
+                </div>
             @endif
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
                 <i class="fas fa-bars"></i>
@@ -1895,7 +1930,8 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Kos Melati Indah">
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                    alt="Kos Melati Indah">
             </div>
         </div>
     </section>
@@ -1931,151 +1967,146 @@
             </div>
 
             <div class="kamar-grid" id="kamarGrid">
-            @forelse($rooms as $item)
-                <div class="kamar-card"
-                    data-type="{{ strtolower($item->name) }}"
-                    data-status="{{ $item->status }}"
-                    data-id="{{ $item->id }}">
+                @forelse($rooms as $item)
+                    <div class="kamar-card" data-type="{{ strtolower($item->name) }}"
+                        data-status="{{ $item->status }}" data-id="{{ $item->id }}">
 
-                    <div class="kamar-badge {{ $item->status }}">
-                        {{-- {{ $item->status_label }} --}}
-                    </div>
-
-                    <div class="kamar-img-container">
-                        <img src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}"
-                            alt="Kamar {{ $item->room_number}}"
-                            class="kamar-img">
-                    </div>
-
-                    <div class="kamar-info">
-                        <div class="kamar-header">
-                            <div>
-                                <h3 class="kamar-name">Kamar {{ $item->room_number }}</h3>
-                                <span class="kamar-type">{{ $item->name }}</span>
-                            </div>
-                            <div class="kamar-price">
-                                <span class="price-from">Mulai dari</span>
-                                <div class="price-amount">10000</div>
-                                <span class="price-period">/bulan</span>
-
-                            </div>
+                        <div class="kamar-badge {{ $item->status }}">
+                            {{-- {{ $item->status_label }} --}}
                         </div>
 
-                        <p class="kamar-description">{{ $item->description }}</p>
-
-                        <div class="pricing-tabs">
-                            <div class="price-option">
-                                <div class="price-duration">3 Bulan</div>
-                                <div class="price-value">Rp 1.500.000</div>
-                                <input type="checkbox" name="choose_month" id="" value="3">
-                            </div>
-                            <div class="price-option">
-                                <div class="price-duration">6 Bulan</div>
-                                <div class="price-value">Rp. 3.000.000</div>
-                                <input type="checkbox" name="choose_month" id="" value="6">
-                            </div>
-                            <div class="price-option">
-                                <div class="price-duration">1 Tahun</div>
-                                <div class="price-value">Rp 6.000.000</div>
-                                <input type="checkbox" name="choose_month" id="" value="12">
-                            </div>
+                        <div class="kamar-img-container">
+                            <img src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}"
+                                alt="Kamar {{ $item->room_number }}" class="kamar-img">
                         </div>
 
-                        <div class="kamar-facilities">
+                        <div class="kamar-info">
+                            <div class="kamar-header">
+                                <div>
+                                    <h3 class="kamar-name">Kamar {{ $item->room_number }}</h3>
+                                    <span class="kamar-type">{{ $item->name }}</span>
+                                </div>
+                                <div class="kamar-price">
+                                    <span class="price-from">Mulai dari</span>
+                                    <div class="price-amount">10000</div>
+                                    <span class="price-period">/bulan</span>
 
-                            <span class="facility-tag">{{ $item->facility }}</span>
+                                </div>
+                            </div>
 
+                            <p class="kamar-description">{{ $item->description }}</p>
+
+                            <div class="pricing-tabs">
+                                <div class="price-option">
+                                    <div class="price-duration">3 Bulan</div>
+                                    <div class="price-value">Rp 1.500.000</div>
+                                    <input type="checkbox" name="choose_month" id="" value="3">
+                                </div>
+                                <div class="price-option">
+                                    <div class="price-duration">6 Bulan</div>
+                                    <div class="price-value">Rp. 3.000.000</div>
+                                    <input type="checkbox" name="choose_month" id="" value="6">
+                                </div>
+                                <div class="price-option">
+                                    <div class="price-duration">1 Tahun</div>
+                                    <div class="price-value">Rp 6.000.000</div>
+                                    <input type="checkbox" name="choose_month" id="" value="12">
+                                </div>
+                            </div>
+
+                            <div class="kamar-facilities">
+
+                                <span class="facility-tag">{{ $item->facility }}</span>
+
+                            </div>
+
+
+                            {{-- Cek dulu apakah user sudah login --}}
+                            @if (auth()->check())
+                                {{-- Jika user login dan statusnya pending --}}
+                                @if (auth()->user()->status == 'pending')
+                                    <button class="btn-action btn-disabled" disabled>
+                                        Menunggu Verifikasi
+                                    </button>
+
+                                    {{-- Jika user login dan statusnya TIDAK pending (sudah verified) --}}
+                                @else
+                                    <div class="btn-after-verify">
+                                        <button class="btn-action btn-wa">
+                                            Checkout
+                                        </button>
+
+                                        @if ($item->status === 'tersedia')
+                                            <button class="btn-action btn-wa">
+                                                <i class="fab fa-whatsapp"></i> Tanya
+                                            </button>
+                                        @else
+                                            <button class="btn-action btn-disabled" disabled>
+                                                <i class="fas fa-lock"></i> Tidak Tersedia
+                                            </button>
+                                        @endif
+                                    </div>
+                                @endif
+                            @endif
                         </div>
-
-
-                        {{-- Cek dulu apakah user sudah login --}}
-@if (auth()->check())
-
-    {{-- Jika user login dan statusnya pending --}}
-    @if (auth()->user()->status == 'pending')
-        <button class="btn-action btn-disabled" disabled>
-            Menunggu Verifikasi
-        </button>
-
-    {{-- Jika user login dan statusnya TIDAK pending (sudah verified) --}}
-    @else
-        <div class="btn-after-verify">
-            <button class="btn-action btn-wa">
-                Checkout
-            </button>
-
-            @if ($item->status === 'tersedia')
-                <button class="btn-action btn-wa">
-                    <i class="fab fa-whatsapp"></i> Tanya
-                </button>
-            @else
-                <button class="btn-action btn-disabled" disabled>
-                    <i class="fas fa-lock"></i> Tidak Tersedia
-                </button>
-            @endif
-        </div>
-    @endif
-
-@endif
                     </div>
-                </div>
-            @empty
-            <div class="text-center">
-                <i class="fas fa-bed text-4xl text-gray-300 mb-4"></i>
-                <h3 class="text-lg font-semibold text-gray-600">Tidak ada kamar tersedia</h3>
-                <p class="text-gray-500">Semua kamar sedang terisi atau dalam perawatan</p>
+                @empty
+                    <div class="text-center">
+                        <i class="fas fa-bed text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-600">Tidak ada kamar tersedia</h3>
+                        <p class="text-gray-500">Semua kamar sedang terisi atau dalam perawatan</p>
+                    </div>
+                @endforelse
             </div>
-            @endforelse
-        </div>
 
-@push('scripts')
-<script>
-// Fungsi untuk memilih harga
-function selectPriceOption(element, kamarId) {
-    // Hapus active class dari semua option di card yang sama
-    const card = element.closest('.kamar-card');
-    card.querySelectorAll('.price-option').forEach(option => {
-        option.classList.remove('active');
-    });
+            @push('scripts')
+                <script>
+                    // Fungsi untuk memilih harga
+                    function selectPriceOption(element, kamarId) {
+                        // Hapus active class dari semua option di card yang sama
+                        const card = element.closest('.kamar-card');
+                        card.querySelectorAll('.price-option').forEach(option => {
+                            option.classList.remove('active');
+                        });
 
-    // Tambah active class ke option yang dipilih
-    element.classList.add('active');
+                        // Tambah active class ke option yang dipilih
+                        element.classList.add('active');
 
-    // Update harga yang dipilih (bisa digunakan untuk booking)
-    const harga = element.getAttribute('data-harga');
-    console.log(`Kamar ${kamarId} dipilih dengan harga: ${harga}`);
-}
+                        // Update harga yang dipilih (bisa digunakan untuk booking)
+                        const harga = element.getAttribute('data-harga');
+                        console.log(`Kamar ${kamarId} dipilih dengan harga: ${harga}`);
+                    }
 
-// Fungsi untuk melihat detail kamar
-function viewKamarDetail(kamarId) {
-    // Bisa diimplementasikan dengan modal atau halaman detail
-    Livewire.emit('showKamarDetail', kamarId);
-}
+                    // Fungsi untuk melihat detail kamar
+                    function viewKamarDetail(kamarId) {
+                        // Bisa diimplementasikan dengan modal atau halaman detail
+                        Livewire.emit('showKamarDetail', kamarId);
+                    }
 
-// Fungsi untuk kontak WhatsApp
-function contactWhatsApp(kamarInfo) {
-    const phone = '6281234567890'; // Ganti dengan nomor admin
-    const message = `Halo, saya tertarik dengan ${kamarInfo}. Bisa info lebih lanjut?`;
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-}
+                    // Fungsi untuk kontak WhatsApp
+                    function contactWhatsApp(kamarInfo) {
+                        const phone = '6281234567890'; // Ganti dengan nomor admin
+                        const message = `Halo, saya tertarik dengan ${kamarInfo}. Bisa info lebih lanjut?`;
+                        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                        window.open(url, '_blank');
+                    }
 
-// Filter kamar berdasarkan tipe/status
-function filterKamar(type, status) {
-    const cards = document.querySelectorAll('.kamar-card');
-    cards.forEach(card => {
-        const showByType = type === 'all' || card.dataset.type === type;
-        const showByStatus = status === 'all' || card.dataset.status === status;
+                    // Filter kamar berdasarkan tipe/status
+                    function filterKamar(type, status) {
+                        const cards = document.querySelectorAll('.kamar-card');
+                        cards.forEach(card => {
+                            const showByType = type === 'all' || card.dataset.type === type;
+                            const showByStatus = status === 'all' || card.dataset.status === status;
 
-        if (showByType && showByStatus) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-</script>
-@endpush
+                            if (showByType && showByStatus) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    }
+                </script>
+            @endpush
         </section>
 
         <!-- Features Section -->
@@ -2227,7 +2258,8 @@ function filterKamar(type, status) {
             <div class="gallery-grid" id="galleryGrid">
                 <!-- Gallery 1 -->
                 <div class="gallery-item" onclick="openGalleryModal(0)">
-                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Tampak Depan Kos">
+                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                        alt="Tampak Depan Kos">
                     <div class="gallery-overlay">
                         <h4>Tampak Depan Kos</h4>
                         <p>Bangunan modern dengan desain minimalis</p>
@@ -2236,7 +2268,8 @@ function filterKamar(type, status) {
 
                 <!-- Gallery 2 -->
                 <div class="gallery-item" onclick="openGalleryModal(1)">
-                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Kamar Standard">
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Kamar Standard">
                     <div class="gallery-overlay">
                         <h4>Kamar Standard</h4>
                         <p>Kamar nyaman dengan pencahayaan alami</p>
@@ -2245,7 +2278,8 @@ function filterKamar(type, status) {
 
                 <!-- Gallery 3 -->
                 <div class="gallery-item" onclick="openGalleryModal(2)">
-                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Kamar Deluxe">
+                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Kamar Deluxe">
                     <div class="gallery-overlay">
                         <h4>Kamar Deluxe</h4>
                         <p>Kamar premium dengan fasilitas lengkap</p>
@@ -2254,7 +2288,8 @@ function filterKamar(type, status) {
 
                 <!-- Gallery 4 -->
                 <div class="gallery-item" onclick="openGalleryModal(3)">
-                    <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ruang Bersama">
+                    <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Ruang Bersama">
                     <div class="gallery-overlay">
                         <h4>Ruang Bersama</h4>
                         <p>Area santai untuk berkumpul dan bersosialisasi</p>
@@ -2263,7 +2298,8 @@ function filterKamar(type, status) {
 
                 <!-- Gallery 5 -->
                 <div class="gallery-item" onclick="openGalleryModal(4)">
-                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Dapur Bersama">
+                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Dapur Bersama">
                     <div class="gallery-overlay">
                         <h4>Dapur Bersama</h4>
                         <p>Dapur modern dengan peralatan lengkap</p>
@@ -2272,7 +2308,8 @@ function filterKamar(type, status) {
 
                 <!-- Gallery 6 -->
                 <div class="gallery-item" onclick="openGalleryModal(5)">
-                    <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Taman Depan">
+                    <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Taman Depan">
                     <div class="gallery-overlay">
                         <h4>Taman Depan</h4>
                         <p>Area hijau untuk bersantai di depan kos</p>
@@ -2281,7 +2318,8 @@ function filterKamar(type, status) {
 
                 <!-- Gallery 7 -->
                 <div class="gallery-item" onclick="openGalleryModal(6)">
-                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Area Parkir">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Area Parkir">
                     <div class="gallery-overlay">
                         <h4>Area Parkir</h4>
                         <p>Parkir luas dan aman untuk kendaraan</p>
@@ -2290,7 +2328,8 @@ function filterKamar(type, status) {
 
                 <!-- Gallery 8 -->
                 <div class="gallery-item" onclick="openGalleryModal(7)">
-                    <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Lobi Utama">
+                    <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Lobi Utama">
                     <div class="gallery-overlay">
                         <h4>Lobi Utama</h4>
                         <p>Area penerimaan tamu yang nyaman</p>
@@ -2327,7 +2366,9 @@ function filterKamar(type, status) {
                         <div class="testimonial-rating">
                             ★★★★★
                         </div>
-                        <p class="testimonial-text">Tinggal di Kos Melati Indah sangat nyaman. Lokasinya strategis, fasilitas lengkap, dan lingkungannya aman. WiFi-nya cepat banget untuk kuliah online! Pengelola juga ramah dan responsif.</p>
+                        <p class="testimonial-text">Tinggal di Kos Melati Indah sangat nyaman. Lokasinya strategis,
+                            fasilitas lengkap, dan lingkungannya aman. WiFi-nya cepat banget untuk kuliah online!
+                            Pengelola juga ramah dan responsif.</p>
                     </div>
 
                     <!-- Testimonial 2 -->
@@ -2347,7 +2388,8 @@ function filterKamar(type, status) {
                         <div class="testimonial-rating">
                             ★★★★★
                         </div>
-                        <p class="testimonial-text">Pengalaman terbaik selama jadi mahasiswa. Kamar bersih, parkir aman, dan pengelola sangat responsif. Recommended untuk mahasiswa yang serius kuliah!</p>
+                        <p class="testimonial-text">Pengalaman terbaik selama jadi mahasiswa. Kamar bersih, parkir
+                            aman, dan pengelola sangat responsif. Recommended untuk mahasiswa yang serius kuliah!</p>
                     </div>
 
                     <!-- Testimonial 3 -->
@@ -2367,7 +2409,9 @@ function filterKamar(type, status) {
                         <div class="testimonial-rating">
                             ★★★★☆
                         </div>
-                        <p class="testimonial-text">Air panas 24 jam sangat membantu di cuaca dingin Curup. Dapur bersama juga lengkap peralatannya. Tinggal bawa bahan masak saja. Lingkungannya juga tenang untuk belajar.</p>
+                        <p class="testimonial-text">Air panas 24 jam sangat membantu di cuaca dingin Curup. Dapur
+                            bersama juga lengkap peralatannya. Tinggal bawa bahan masak saja. Lingkungannya juga tenang
+                            untuk belajar.</p>
                     </div>
 
                     <!-- Testimonial 4 -->
@@ -2387,7 +2431,8 @@ function filterKamar(type, status) {
                         <div class="testimonial-rating">
                             ★★★★★
                         </div>
-                        <p class="testimonial-text">Sudah 2 tahun tinggal di sini dan sangat puas. Keamanan terjamin 24 jam, parkir luas, dan fasilitas selalu terawat. Cocok untuk mahasiswa yang fokus studi.</p>
+                        <p class="testimonial-text">Sudah 2 tahun tinggal di sini dan sangat puas. Keamanan terjamin 24
+                            jam, parkir luas, dan fasilitas selalu terawat. Cocok untuk mahasiswa yang fokus studi.</p>
                     </div>
 
                     <!-- Testimonial 5 -->
@@ -2407,7 +2452,8 @@ function filterKamar(type, status) {
                         <div class="testimonial-rating">
                             ★★★★☆
                         </div>
-                        <p class="testimonial-text">Kamar bersih dan rapi setiap hari. Laundry service sangat membantu saat sibuk ujian. Lokasi dekat kampus menghemat waktu dan biaya transportasi.</p>
+                        <p class="testimonial-text">Kamar bersih dan rapi setiap hari. Laundry service sangat membantu
+                            saat sibuk ujian. Lokasi dekat kampus menghemat waktu dan biaya transportasi.</p>
                     </div>
 
                     <!-- Testimonial 6 -->
@@ -2427,7 +2473,9 @@ function filterKamar(type, status) {
                         <div class="testimonial-rating">
                             ★★★★★
                         </div>
-                        <p class="testimonial-text">Sebagai mahasiswa tingkat akhir, butuh tempat yang kondusif untuk skripsi. Kos ini sempurna! Tenang, WiFi stabil, dan ada ruang belajar bersama yang nyaman.</p>
+                        <p class="testimonial-text">Sebagai mahasiswa tingkat akhir, butuh tempat yang kondusif untuk
+                            skripsi. Kos ini sempurna! Tenang, WiFi stabil, dan ada ruang belajar bersama yang nyaman.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -2506,17 +2554,20 @@ function filterKamar(type, status) {
                         <form id="contactForm">
                             <div class="form-group">
                                 <label for="name">Nama Lengkap *</label>
-                                <input type="text" id="name" class="form-control" placeholder="Masukkan nama Anda" required>
+                                <input type="text" id="name" class="form-control"
+                                    placeholder="Masukkan nama Anda" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="phone">Nomor WhatsApp *</label>
-                                <input type="tel" id="phone" class="form-control" placeholder="08xxxxxxxxxx" required>
+                                <input type="tel" id="phone" class="form-control" placeholder="08xxxxxxxxxx"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" id="email" class="form-control" placeholder="nama@email.com">
+                                <input type="email" id="email" class="form-control"
+                                    placeholder="nama@email.com">
                             </div>
 
                             <div class="form-group">
@@ -2623,7 +2674,8 @@ function filterKamar(type, status) {
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2024 Kos Melati Indah Curup. All rights reserved. | Developed with <i class="fas fa-heart" style="color: #ff4757;"></i> for IAIN Curup Students</p>
+            <p>&copy; 2024 Kos Melati Indah Curup. All rights reserved. | Developed with <i class="fas fa-heart"
+                    style="color: #ff4757;"></i> for IAIN Curup Students</p>
         </div>
     </footer>
 
@@ -2642,8 +2694,7 @@ function filterKamar(type, status) {
 
     <script>
         // Gallery data array
-        const galleryData = [
-            {
+        const galleryData = [{
                 img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
                 title: "Tampak Depan Kos",
                 desc: "Bangunan modern dengan desain minimalis"
@@ -2686,8 +2737,7 @@ function filterKamar(type, status) {
         ];
 
         // Kamar data array
-        const kamarData = [
-            {
+        const kamarData = [{
                 id: 1,
                 nomor_kamar: "101",
                 nama_kamar: "Kamar 101 - Standard",
@@ -2707,7 +2757,9 @@ function filterKamar(type, status) {
                 tipe: "deluxe",
                 status: "available",
                 deskripsi: "Kamar deluxe dengan AC, lemari lebih besar, dan view yang lebih bagus. Dilengkapi dengan meja belajar khusus dan kamar mandi dalam yang luas.",
-                fasilitas: ["WiFi", "Kamar Mandi Dalam", "Lemari Besar", "Meja Belajar", "Kursi", "AC", "TV 32\"", "Kulkas Mini", "Air Panas"],
+                fasilitas: ["WiFi", "Kamar Mandi Dalam", "Lemari Besar", "Meja Belajar", "Kursi", "AC", "TV 32\"",
+                    "Kulkas Mini", "Air Panas"
+                ],
                 harga_3bulan: 1800000,
                 harga_6bulan: 3300000,
                 harga_1tahun: 6200000,
@@ -2720,7 +2772,9 @@ function filterKamar(type, status) {
                 tipe: "vip",
                 status: "available",
                 deskripsi: "Kamar VIP dengan fasilitas terbaik. Ruang lebih luas, balkon pribadi, dan perlengkapan lengkap. Cocok untuk mahasiswa yang mengutamakan kenyamanan maksimal.",
-                fasilitas: ["WiFi", "Kamar Mandi Dalam", "Lemari Besar", "Meja Belajar", "Kursi", "AC Inverter", "Smart TV 43\"", "Kulkas Mini", "Air Panas", "Balkon Pribadi"],
+                fasilitas: ["WiFi", "Kamar Mandi Dalam", "Lemari Besar", "Meja Belajar", "Kursi", "AC Inverter",
+                    "Smart TV 43\"", "Kulkas Mini", "Air Panas", "Balkon Pribadi"
+                ],
                 harga_3bulan: 2550000,
                 harga_6bulan: 4800000,
                 harga_1tahun: 9200000,
@@ -2773,7 +2827,9 @@ function filterKamar(type, status) {
                 iconAnchor: [20, 40]
             });
 
-            const kosMarker = L.marker(kosLocation, { icon: customIcon }).addTo(map);
+            const kosMarker = L.marker(kosLocation, {
+                icon: customIcon
+            }).addTo(map);
             kosMarker.bindPopup(`
                 <div style="padding: 10px;">
                     <h3 style="margin: 0 0 5px 0; color: var(--primary);">Kos Melati Indah</h3>
@@ -2882,7 +2938,9 @@ Mohon konfirmasi ketersediaan kamar dan informasi pembayaran. Terima kasih!
 
                 this.reset();
                 closeModal('bookingModal');
-                showSuccessMessage(`Booking berhasil! Kode booking: ${bookingCode}. Silakan lanjutkan ke WhatsApp untuk konfirmasi.`);
+                showSuccessMessage(
+                    `Booking berhasil! Kode booking: ${bookingCode}. Silakan lanjutkan ke WhatsApp untuk konfirmasi.`
+                    );
             });
         }
 
@@ -2900,7 +2958,7 @@ Mohon konfirmasi ketersediaan kamar dan informasi pembayaran. Terima kasih!
                 const status = card.getAttribute('data-status');
                 let show = false;
 
-                switch(filter) {
+                switch (filter) {
                     case 'all':
                         show = true;
                         break;
@@ -2934,9 +2992,11 @@ Mohon konfirmasi ketersediaan kamar dan informasi pembayaran. Terima kasih!
         // View Kamar Detail
         function viewKamarDetail(kamarId) {
             const kamar = kamarData.find(k => k.id === kamarId);
-            if(!kamar) {
+            if (!kamar) {
                 showSuccessMessage(`Melihat detail Kamar ${kamarId}`);
-                document.getElementById('kamar').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('kamar').scrollIntoView({
+                    behavior: 'smooth'
+                });
                 return;
             }
 
@@ -2960,7 +3020,9 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
             showSuccessMessage(`Melihat detail ${kamar.nama_kamar}`);
 
             // Scroll to kamar section
-            document.getElementById('kamar').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('kamar').scrollIntoView({
+                behavior: 'smooth'
+            });
         }
 
         // Contact via WhatsApp
@@ -3005,7 +3067,7 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
             const header = document.getElementById('mainHeader');
 
             window.addEventListener('scroll', function() {
-                if(window.scrollY > 100) {
+                if (window.scrollY > 100) {
                     header.classList.add('header-scrolled');
                 } else {
                     header.classList.remove('header-scrolled');
@@ -3020,7 +3082,7 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
 
             // Update button icon
             const menuBtn = document.querySelector('.mobile-menu-btn i');
-            if(navLinks.classList.contains('active')) {
+            if (navLinks.classList.contains('active')) {
                 menuBtn.className = 'fas fa-times';
             } else {
                 menuBtn.className = 'fas fa-bars';
@@ -3034,9 +3096,9 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
                 const navLinks = document.querySelector('.nav-links');
                 const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
 
-                if(navLinks.classList.contains('active') &&
-                   !navLinks.contains(e.target) &&
-                   !mobileMenuBtn.contains(e.target)) {
+                if (navLinks.classList.contains('active') &&
+                    !navLinks.contains(e.target) &&
+                    !mobileMenuBtn.contains(e.target)) {
                     toggleMobileMenu();
                 }
             });
@@ -3044,7 +3106,7 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
             // Close menu when clicking on a link
             document.querySelectorAll('.nav-links a').forEach(link => {
                 link.addEventListener('click', () => {
-                    if(window.innerWidth < 768) {
+                    if (window.innerWidth < 768) {
                         toggleMobileMenu();
                     }
                 });
@@ -3053,20 +3115,20 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
 
         // Close modals when clicking outside
         window.addEventListener('click', function(e) {
-            if(e.target.classList.contains('modal')) {
+            if (e.target.classList.contains('modal')) {
                 e.target.style.display = 'none';
             }
         });
 
         // Handle keyboard events
         document.addEventListener('keydown', function(e) {
-            if(e.key === 'Escape') {
+            if (e.key === 'Escape') {
                 closeModal('galleryModal');
                 closeModal('bookingModal');
 
                 // Close mobile menu if open
                 const navLinks = document.querySelector('.nav-links');
-                if(navLinks.classList.contains('active')) {
+                if (navLinks.classList.contains('active')) {
                     toggleMobileMenu();
                 }
             }
@@ -3074,7 +3136,7 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
 
         // Prevent zoom on mobile for inputs
         document.addEventListener('touchstart', function(e) {
-            if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
                 document.body.style.fontSize = '16px';
             }
         });
@@ -3094,6 +3156,23 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
             }
         `;
         document.head.appendChild(style);
+
+        // Gunakan querySelectorAll untuk mengambil SEMUA elemen
+        const priceOptions = document.querySelectorAll('.price-option');
+
+        priceOptions.forEach((price) => {
+            // Cari checkbox di dalam elemen parent tersebut
+            price.addEventListener("click", () => {
+                const checkboxPrice = price.querySelector("input[type='checkbox']");
+
+                // Cek dulu apakah checkbox-nya ketemu untuk menghindari error null
+                if (checkboxPrice) {
+                    checkboxPrice.checked = !checkboxPrice.checked;
+                }
+
+            })
+        });
     </script>
 </body>
+
 </html>

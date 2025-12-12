@@ -1754,6 +1754,13 @@
                 font-size: 16px; /* Prevents iOS zoom on focus */
             }
         }
+        .btn-after-verify{
+            display: flex;
+        }
+        .btn-after-verify button{
+            margin: 0px 20px;
+            width: 200px;
+        }
         @media (width:320px){
             .pricing-tabs{
                 display: block;
@@ -1980,45 +1987,36 @@
 
                         </div>
 
-                        {{-- <div class="kamar-actions">
-                            <button class="btn-action btn-wa">
-                                Checkout
-                            </button>
 
-                            @if($item->status === 'tersedia')
-                            <button class="btn-action btn-wa">
-                                <i class="fab fa-whatsapp"></i> Tanya
-                            </button>
-                            @else
-                            <button class="btn-action btn-disabled" disabled>
-                                <i class="fas fa-lock"></i> Tidak Tersedia
-                            </button>
-                            @endif
-                        </div> --}}
-                         {{-- Kalau status user pending, tombol disembunyikan / disable --}}
-                        @if (auth()->check() && auth()->user()->status == 'pending')
+                        {{-- Cek dulu apakah user sudah login --}}
+@if (auth()->check())
 
-                            <button class="btn-action btn-disabled" disabled>
-                                Menunggu Verifikasi
-                            </button>
+    {{-- Jika user login dan statusnya pending --}}
+    @if (auth()->user()->status == 'pending')
+        <button class="btn-action btn-disabled" disabled>
+            Menunggu Verifikasi
+        </button>
 
-                        @else
-                            {{-- Tombol normal jika bukan pending --}}
-                            <button class="btn-action btn-wa">
-                                Checkout
-                            </button>
+    {{-- Jika user login dan statusnya TIDAK pending (sudah verified) --}}
+    @else
+        <div class="btn-after-verify">
+            <button class="btn-action btn-wa">
+                Checkout
+            </button>
 
-                            @if ($item->status === 'tersedia')
-                                <button class="btn-action btn-wa">
-                                    <i class="fab fa-whatsapp"></i> Tanya
-                                </button>
-                            @else
-                                <button class="btn-action btn-disabled" disabled>
-                                    <i class="fas fa-lock"></i> Tidak Tersedia
-                                </button>
-                            @endif
+            @if ($item->status === 'tersedia')
+                <button class="btn-action btn-wa">
+                    <i class="fab fa-whatsapp"></i> Tanya
+                </button>
+            @else
+                <button class="btn-action btn-disabled" disabled>
+                    <i class="fas fa-lock"></i> Tidak Tersedia
+                </button>
+            @endif
+        </div>
+    @endif
 
-                        @endif
+@endif
                     </div>
                 </div>
             @empty

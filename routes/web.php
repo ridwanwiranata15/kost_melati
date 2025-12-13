@@ -48,6 +48,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Volt::route('room/{id}', 'roomindex')->name('admin.room.edit');
     Volt::route('users', 'user')->name('admin.user');
     Volt::route('user/{id}', 'detailuser')->name('admin.user.detail');
+    Volt::route('booking', 'booking')->name('admin.booking');
 });
 
 // Customer Profile

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('room_number');
             $table->string('name');
-            $table->string('status');
+            $table->enum('status', ['available', 'unavailable', 'repair']);
             $table->string('facility');
             $table->string('image');
             $table->string('description');

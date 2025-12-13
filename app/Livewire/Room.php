@@ -22,7 +22,7 @@ class Room extends Component
     protected $rules = [
         'number' => 'required|unique:rooms,room_number',
         'name' => 'required|string|max:255',
-        'status' => 'required|in:tersedia,terisi,perbaikan',
+        'status' => 'required|in:available,unavailable,repair',
         'facility' => 'required|string',
         'image' => 'nullable|image|max:2048', // 2MB Max
         'description' => 'nullable|string',

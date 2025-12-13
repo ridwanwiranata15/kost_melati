@@ -1828,6 +1828,42 @@
             }
 
         }
+        .alert {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Success Alert */
+.alert-success {
+    background-color: #e6f9f0;
+    color: #0f5132;
+    border: 1px solid #a3e4c1;
+}
+
+/* Optional icon */
+.alert-success::before {
+    content: "✔";
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Animasi */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
     </style>
 </head>
 
@@ -1887,6 +1923,14 @@
         </div>
     </header>
 
+   @if (session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Panggil fungsi JS showSuccessMessage dengan pesan dari Laravel
+            showSuccessMessage("{{ session('success') }}");
+        });
+    </script>
+@endif
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-bg"></div>
@@ -1952,17 +1996,14 @@
                 <button class="filter-btn active" onclick="filterKamar('all')">
                     <i class="fas fa-border-all"></i> Semua
                 </button>
-                <button class="filter-btn" onclick="filterKamar('standard')">
-                    <i class="fas fa-bed"></i> Standard
-                </button>
-                <button class="filter-btn" onclick="filterKamar('deluxe')">
-                    <i class="fas fa-crown"></i> Deluxe
-                </button>
-                <button class="filter-btn" onclick="filterKamar('vip')">
-                    <i class="fas fa-star"></i> VIP
-                </button>
                 <button class="filter-btn" onclick="filterKamar('available')">
                     <i class="fas fa-check-circle"></i> Tersedia
+                </button>
+                <button class="filter-btn" onclick="filterKamar('unavailable')">
+                    <i class="fas fa-check-circle"></i> Tidak tersedia
+                </button>
+                <button class="filter-btn" onclick="filterKamar('unavailable')">
+                    <i class="fas fa-check-circle"></i> Tidak tersedia
                 </button>
             </div>
 
@@ -1995,59 +2036,65 @@
                             </div>
 
                             <p class="kamar-description">{{ $item->description }}</p>
+                            <form action="{{ route('checkout') }}" method="post">
+                                <input type="hidden" name="room_id" value="{{ $item->id }}">
+                                @csrf
+                                <div class="pricing-tabs">
+                                    <div class="price-option">
+                                        <div class="price-duration">3 Bulan</div>
+                                        <div class="price-value">Rp 1.500.000</div>
+                                        <input type="radio" name="choose_month" value="3" required>
+                                    </div>
 
-                            <div class="pricing-tabs">
-                                <div class="price-option">
-                                    <div class="price-duration">3 Bulan</div>
-                                    <div class="price-value">Rp 1.500.000</div>
-                                    <input type="checkbox" name="choose_month" id="" value="3">
+                                    <div class="price-option">
+                                        <div class="price-duration">6 Bulan</div>
+                                        <div class="price-value">Rp 3.000.000</div>
+                                        <input type="radio" name="choose_month" value="6">
+                                    </div>
+
+                                    <div class="price-option">
+                                        <div class="price-duration">1 Tahun</div>
+                                        <div class="price-value">Rp 6.000.000</div>
+                                        <input type="radio" name="choose_month" value="12">
+                                    </div>
                                 </div>
-                                <div class="price-option">
-                                    <div class="price-duration">6 Bulan</div>
-                                    <div class="price-value">Rp. 3.000.000</div>
-                                    <input type="checkbox" name="choose_month" id="" value="6">
+
+
+                                <div class="kamar-facilities">
+
+                                    <span class="facility-tag">{{ $item->facility }}</span>
+
                                 </div>
-                                <div class="price-option">
-                                    <div class="price-duration">1 Tahun</div>
-                                    <div class="price-value">Rp 6.000.000</div>
-                                    <input type="checkbox" name="choose_month" id="" value="12">
-                                </div>
-                            </div>
-
-                            <div class="kamar-facilities">
-
-                                <span class="facility-tag">{{ $item->facility }}</span>
-
-                            </div>
 
 
-                            {{-- Cek dulu apakah user sudah login --}}
-                            @if (auth()->check())
-                                {{-- Jika user login dan statusnya pending --}}
-                                @if (auth()->user()->status == 'pending')
-                                    <button class="btn-action btn-disabled" disabled>
-                                        Menunggu Verifikasi
-                                    </button>
-
-                                    {{-- Jika user login dan statusnya TIDAK pending (sudah verified) --}}
-                                @else
-                                    <div class="btn-after-verify">
-                                        <button class="btn-action btn-wa">
-                                            Checkout
+                                {{-- Cek dulu apakah user sudah login --}}
+                                @if (auth()->check())
+                                    {{-- Jika user login dan statusnya pending --}}
+                                    @if (auth()->user()->status == 'pending')
+                                        <button class="btn-action btn-disabled" disabled>
+                                            Menunggu Verifikasi
                                         </button>
 
-                                        @if ($item->status === 'tersedia')
-                                            <button class="btn-action btn-wa">
-                                                <i class="fab fa-whatsapp"></i> Tanya
-                                            </button>
-                                        @else
-                                            <button class="btn-action btn-disabled" disabled>
-                                                <i class="fas fa-lock"></i> Tidak Tersedia
-                                            </button>
-                                        @endif
-                                    </div>
+                                        {{-- Jika user login dan statusnya TIDAK pending (sudah verified) --}}
+                                    @else
+                                        <div class="btn-after-verify">
+
+                                            @if ($item->status === 'available')
+                                                <button type="submit" class="btn-action btn-wa">
+                                                    Checkout
+                                                </button>
+                                                <button type="button" class="btn-action btn-wa">
+                                                    <i class="fab fa-whatsapp"></i> Tanya
+                                                </button>
+                                            @else
+                                                <button class="btn-action btn-disabled" disabled>
+                                                    <i class="fas fa-lock"></i> Tidak Tersedia
+                                                </button>
+                                            @endif
+                                        </div>
+                                    @endif
                                 @endif
-                            @endif
+                            </form>
                         </div>
                     </div>
                 @empty
@@ -2940,7 +2987,7 @@ Mohon konfirmasi ketersediaan kamar dan informasi pembayaran. Terima kasih!
                 closeModal('bookingModal');
                 showSuccessMessage(
                     `Booking berhasil! Kode booking: ${bookingCode}. Silakan lanjutkan ke WhatsApp untuk konfirmasi.`
-                    );
+                );
             });
         }
 

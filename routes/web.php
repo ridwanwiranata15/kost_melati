@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use App\Models\Room;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -53,3 +54,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::get('profile', function () {
     return view('customer.profile');
 })->name('customer.profile');
+
+
+Route::post('/checkout', [BookingController::class, 'checkout'])->name('checkout');
+Route::post('/booking', [BookingController::class, 'booking'])->name('booking');

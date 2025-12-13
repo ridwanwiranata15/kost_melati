@@ -25,9 +25,9 @@
                             <label class="form-label">Status</label>
                             <select wire:model="status" class="form-select">
                                 <option value="">Pilih Status</option>
-                                <option value="tersedia">Tersedia</option>
-                                <option value="terisi">Tidak tersedia</option>
-                                <option value="perbaikan">Dalam Perbaikan</option>
+                                <option value="available">Tersedia</option>
+                                <option value="unavailable">Tidak tersedia</option>
+                                <option value="repair">Dalam Perbaikan</option>
                             </select>
                             @error('status') <span class="text-error" style="color:red; font-size: 0.8em;">{{ $message }}</span> @enderror
                         </div>

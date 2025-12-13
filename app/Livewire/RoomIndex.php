@@ -40,7 +40,7 @@ class RoomIndex extends Component
         return [
             'number' => 'required|unique:rooms,room_number,' . $this->roomId,
             'name' => 'required|string|max:255',
-            'status' => 'required|in:tersedia,terisi,perbaikan',
+            'status' => 'required|in:available,unavailable,repair',
             'facility' => 'required|string',
             'image' => 'nullable|image|max:2048',
             'description' => 'nullable|string',

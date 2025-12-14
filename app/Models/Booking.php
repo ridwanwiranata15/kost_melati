@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
 
         "booking_code",
@@ -31,6 +33,6 @@ public function transactions()
     // Penting buat nampilin data "Anggana Parahyangan Golf" dsb di view
     public function room()
     {
-        return $this->belongsTo(Room::class, 'room_id'); // Sesuaikan nama model Room/Kamar
+        return $this->belongsTo(Room::class); // Sesuaikan nama model Room/Kamar
     }
 }

@@ -12,10 +12,12 @@ class Transaction extends Model
         "amount",
         "payment_receipt",
         "status",
-        "date_pay"
+        "date_pay",
+        "nominal",
+
     ];
 
     public function bookings(){
-        return $this->belongsTo(Booking::class);
+        return $this->belongsTo(Booking::class, 'id');
     }
 }

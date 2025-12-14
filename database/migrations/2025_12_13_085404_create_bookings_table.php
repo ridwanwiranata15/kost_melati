@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string("total_amount");
             $table->enum('status', ['pending', 'confirmed', 'checkin', 'checkout', 'cancelled']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

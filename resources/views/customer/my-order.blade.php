@@ -99,6 +99,126 @@
                 </div>
             </section>
 
+            {{-- SUMMARY CARDS SECTION --}}
+            @php
+                // Logika kalkulasi sederhana
+                $totalTagihan = $booking->total_amount;
+                // Asumsi: kolom harga di tabel transaksi bernama 'amount'.
+                // Jika berbeda, ganti 'amount' dengan nama kolom yang sesuai (misal: 'price' atau 'total').
+                $sudahBayar = $transactions->where('status', 'confirmed')->sum('nominal');
+                $sisaBayar = $totalTagihan - $sudahBayar;
+
+                // Menghitung persentase untuk progress bar visual
+                $persenBayar = $totalTagihan > 0 ? ($sudahBayar / $totalTagihan) * 100 : 0;
+            @endphp
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+                {{-- CARD 1: TOTAL TAGIHAN --}}
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <i class="fa-solid fa-file-invoice-dollar text-8xl text-blue-600 transform -rotate-12 translate-x-2 -translate-y-2"></i>
+                    </div>
+
+                    <div class="relative z-10 flex flex-col h-full justify-between">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm border border-blue-100">
+                                <i class="fa-solid fa-receipt text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Tagihan</p>
+                                <p class="text-xs text-blue-500 font-medium">Keseluruhan Sewa</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-black text-gray-800">
+                                Rp {{ number_format($totalTagihan, 0, ',', '.') }}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- CARD 2: SUDAH BAYAR --}}
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <i class="fa-solid fa-wallet text-8xl text-emerald-600 transform -rotate-12 translate-x-2 -translate-y-2"></i>
+                    </div>
+
+                    <div class="relative z-10 flex flex-col h-full justify-between">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
+                                <i class="fa-solid fa-circle-check text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Sudah Dibayar</p>
+                                <p class="text-xs text-emerald-500 font-medium">Terverifikasi</p>
+                            </div>
+                        </div>
+
+                        {{-- LOGIKA TAMPILAN JIKA BELUM BAYAR --}}
+                        <div>
+                            @if($sudahBayar > 0)
+                                <h3 class="text-2xl font-black text-emerald-600">
+                                    Rp {{ number_format($sudahBayar, 0, ',', '.') }}
+                                </h3>
+                                {{-- Progress Bar --}}
+                                <div class="w-full bg-gray-100 rounded-full h-1.5 mt-3 overflow-hidden">
+                                    <div class="bg-emerald-500 h-1.5 rounded-full transition-all duration-1000" style="width: {{ $persenBayar }}%"></div>
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-1 text-right">{{ round($persenBayar) }}% Lunas</p>
+                            @else
+                                {{-- Tampilan Jika 0 / Null --}}
+                                <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 mt-1">
+                                    <div class="flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-info text-gray-400 mt-0.5 text-xs"></i>
+                                        <p class="text-xs text-gray-500 leading-snug">
+                                            Belum melakukan pembayaran apapun.
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- CARD 3: SISA TAGIHAN --}}
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <i class="fa-solid fa-hand-holding-dollar text-8xl text-rose-600 transform -rotate-12 translate-x-2 -translate-y-2"></i>
+                    </div>
+
+                    <div class="relative z-10 flex flex-col h-full justify-between">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 shadow-sm border border-rose-100">
+                                <i class="fa-solid fa-hourglass-half text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Sisa Kewajiban</p>
+                                <p class="text-xs text-rose-500 font-medium">Perlu Dibayar</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-black text-rose-600">
+                                Rp {{ number_format($sisaBayar, 0, ',', '.') }}
+                            </h3>
+                            @if($sisaBayar > 0)
+                                <div class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-50 border border-rose-100">
+                                    <i class="fa-solid fa-triangle-exclamation text-[10px] text-rose-500"></i>
+                                    <span class="text-[10px] font-bold text-rose-600">Belum Lunas</span>
+                                </div>
+                            @else
+                                <div class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-100">
+                                    <i class="fa-solid fa-thumbs-up text-[10px] text-emerald-500"></i>
+                                    <span class="text-[10px] font-bold text-emerald-600">Lunas Semua</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
             {{-- RIWAYAT PEMBAYARAN --}}
             <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-6 py-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50/50 gap-4">
@@ -188,9 +308,11 @@
                                             </a>
                                         @else
                                             {{-- Tombol Invoice --}}
+                                            <a href="{{ route('invoice.show', $item->id) }}">
                                             <button class="text-emerald-600 hover:text-emerald-800 border border-emerald-200 hover:border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 mx-auto">
                                                 <i class="fa-solid fa-file-invoice"></i> Invoice
                                             </button>
+                                            </a>
                                         @endif
                                     </td>
                                 </tr>

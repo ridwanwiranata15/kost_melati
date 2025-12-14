@@ -9,7 +9,7 @@ use App\Models\Testimonial;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
-
+use App\Http\Controllers\TransactionController;
 // Halaman utama
 Route::get('/', function () {
     $rooms = Room::all();
@@ -71,3 +71,4 @@ Route::get('/booking/{id}', [MyOrderCustomerController::class, 'payment'])->name
 Route::put('/booking/{id}/update', [MyOrderCustomerController::class, 'paynow'])->name('booking.pay');
 Route::get('testimonial', [TestimonialController::class, 'index'])->name('customer.testimonial');
 Route::post('testimonial', [TestimonialController::class, 'store'])->name('customer.testimonial.store');
+Route::get('/invoice/{id}', [TransactionController::class, 'invoice'])->name('invoice.show');

@@ -38,14 +38,10 @@ class Booking extends Component
 
                     \App\Models\Transaction::create([
                         'booking_id'      => $booking->id,
-                        'payment_method'  => 'transafer', // Nullable sesuai request
+                        'payment_method'  => 'transfer', // Nullable sesuai request
                         'payment_receipt' => null, // Nullable sesuai request
                         'date_pay' => null,
-
-                        // WARNING: Pastikan logika ini benar.
-                        // Jika total_amount adalah total 3 bulan, dan kamu meloop 3x,
-                        // maka user akan tertagih 3x lipat.
-                        // Jika ingin tagihan per bulan, harusnya: $booking->total_amount / $duration
+                        'nominal' => null,
                         'amount'          => $booking->total_amount,
 
                         'status'          => 'pending', // Default status transaksi

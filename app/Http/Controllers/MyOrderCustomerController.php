@@ -38,32 +38,48 @@ class MyOrderCustomerController extends Controller
 
 public function paynow(Request $request, $id)
 {
-    // 1. VALIDASI
-    $request->validate([
-        'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
-    ]);
-
-    // 2. CARI TRANSAKSI
+    // 1. CARI TRANSAKSI
     $transaction = Transaction::findOrFail($id);
 
-    // 3. SIMPAN FILE
-    $folder = 'payment-receipts';
-    $imagePath = $request->file('image')->store($folder, 'public');
+    // 2. INISIALISASI VARIABEL IMAGE (PENTING!)
+    // Kita set defaultnya pakai gambar yang sudah ada di database.
+    // Jadi kalau pilih 'cash' (gak upload gambar), dia pakai data lama atau null, gak error.
+    $imagePath = $transaction->payment_receipt;
 
-    // 4. HAPUS FILE LAMA
-    if ($transaction->payment_receipt && Storage::disk('public')->exists($transaction->payment_receipt)) {
-        Storage::disk('public')->delete($transaction->payment_receipt);
+    // 3. LOGIKA KHUSUS TRANSFER (HANDLE GAMBAR)
+    if ($request->payment_method == 'transfer') {
+        // Cek apakah user benar-benar upload file
+        if ($request->hasFile('image')) {
+            $folder = 'payment-receipts';
+
+            // Simpan gambar baru
+            $newImage = $request->file('image')->store($folder, 'public');
+
+            // Hapus gambar lama jika ada (biar server gak penuh sampah file)
+            if ($transaction->payment_receipt && Storage::disk('public')->exists($transaction->payment_receipt)) {
+                Storage::disk('public')->delete($transaction->payment_receipt);
+            }
+
+            // Update variabel imagePath dengan yang baru
+            $imagePath = $newImage;
+        }
     }
+    // Opsi: Jika logic bisnis mengharuskan kalau Cash gambarnya dihapus/dikosongkan,
+    // uncomment baris di bawah ini:
+    // else if ($request->payment_method == 'cash') {
+    //      $imagePath = null;
+    // }
 
-    // 5. UPDATE DATA (STATUS HARUS SESUAI ENUM)
+    // 4. UPDATE DATA
     $transaction->update([
-        'payment_receipt' => $imagePath,
-        'status' => 'pending',
-        'date_pay' => now()
+        'payment_receipt' => $imagePath, // Aman sekarang, terisi file baru (transfer) atau file lama/null (cash)
+        'status'          => 'pending',
+        'date_pay'        => now(),
+        'payment_method'  => $request->payment_method,
+        'nominal'         => $request->note // Nominal masuk baik itu cash maupun transfer
     ]);
 
     return redirect()->route('customer.testimonial');
-
 }
 
 }

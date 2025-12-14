@@ -1,6 +1,5 @@
 <x-layouts.profile>
     <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
-
         <form action="{{ route('booking.pay', $transaction->id) }}" method="post" enctype="multipart/form-data"
             class="w-full max-w-6xl bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             @csrf

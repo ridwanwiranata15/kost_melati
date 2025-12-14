@@ -17,6 +17,8 @@ class Room extends Component
     public $facility;
     public $image;
     public $description;
+    public $room_id;
+
 
     // Define validation rules
     protected $rules = [
@@ -59,18 +61,92 @@ class Room extends Component
         session()->flash('message', 'Kamar berhasil ditambahkan!');
     }
     public function delete($id)
-{
-    $room = ModelsRoom::findOrFail($id);
+    {
+        $room = ModelsRoom::findOrFail($id);
 
-    // hapus image jika ada
-    if ($room->image && Storage::disk('public')->exists($room->image)) {
-        Storage::disk('public')->delete($room->image);
+        // hapus image jika ada
+        if ($room->image && Storage::disk('public')->exists($room->image)) {
+            Storage::disk('public')->delete($room->image);
+        }
+
+        $room->delete();
+
+        session()->flash('success', 'Kamar berhasil dihapus ✅');
     }
+    public $oldImage; // Properti baru untuk nyimpan path foto lama
 
-    $room->delete();
+    public function edit($id)
+    {
+        $room = ModelsRoom::find($id);
 
-    session()->flash('success', 'Kamar berhasil dihapus ✅');
-}
+        // Isi data ke form
+        $this->room_id = $room->id;
+        $this->number = $room->room_number;
+        $this->name = $room->name;
+        $this->status = $room->status;
+        $this->facility = $room->facility;
+        $this->description = $room->description;
+
+        // Simpan gambar lama untuk preview
+        $this->oldImage = $room->image;
+        $this->image = null; // Reset input file baru
+
+        // Buka Modal Edit via JS Dispatch
+        $this->dispatch('open-modal-edit');
+    }
+    public function update()
+    {
+        // Validasi Input
+        $validatedData = $this->validate([
+            // unique:rooms,room_number,ID -> Cek unik tapi abaikan ID yang sedang diedit
+            'number' => 'required|unique:rooms,room_number,' . $this->room_id,
+            'name' => 'required',
+            'status' => 'required|in:available,unavailable,repair',
+            'facility' => 'nullable|string',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048', // 2MB Max
+        ], [
+            'number.required' => 'Nomor kamar wajib diisi.',
+            'number.unique' => 'Nomor kamar sudah digunakan.',
+            'image.max' => 'Ukuran foto maksimal 2MB.',
+        ]);
+
+        // Ambil data kamar yang mau diupdate
+        $room = ModelsRoom::findOrFail($this->room_id);
+
+        // Logic Upload Gambar Baru
+        if ($this->image) {
+            // 1. Hapus gambar lama jika ada dan file-nya beneran ada di storage
+            if ($room->image && Storage::exists('public/' . $room->image)) {
+                Storage::delete('public/' . $room->image);
+            }
+
+            // 2. Upload gambar baru & ambil path-nya
+            $imagePath = $this->image->store('rooms', 'public');
+        } else {
+            // Jika tidak upload gambar baru, pakai path gambar lama
+            $imagePath = $room->image;
+        }
+
+        // Update Database
+        $room->update([
+            'room_number' => $this->number,
+            'name' => $this->name,
+            'status' => $this->status,
+            'facility' => $this->facility,
+            'description' => $this->description,
+            'image' => $imagePath,
+        ]);
+
+        // Kirim notifikasi sukses
+        session()->flash('message', 'Data kamar berhasil diperbarui!');
+
+        // Kirim event ke JS untuk menutup modal
+        $this->dispatch('room-updated');
+
+        // Bersihkan form
+       
+    }
 
     public function render()
     {

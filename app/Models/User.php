@@ -65,4 +65,18 @@ class User extends Authenticatable
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+    public function booking()
+    {
+        return $this->hasOne(Booking::class);
+    }
+
+    /**
+     * Helper untuk mengecek apakah user punya booking dengan status confirmed
+     */
+    public function hasConfirmedBooking(): bool
+    {
+        // Cek apakah relasi booking ada datanya DAN statusnya confirmed
+        return $this->booking && $this->booking->status === 'confirmed';
+    }
 }

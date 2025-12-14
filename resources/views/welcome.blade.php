@@ -1076,6 +1076,7 @@
             position: relative;
             overflow: hidden;
             margin-bottom: 2rem;
+
         }
 
         .contact-info::before {
@@ -1828,42 +1829,187 @@
             }
 
         }
+
         .alert {
-    padding: 14px 18px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    font-size: 14px;
-    line-height: 1.5;
-    position: relative;
-    animation: fadeIn 0.3s ease-in-out;
-}
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
 
-/* Success Alert */
-.alert-success {
-    background-color: #e6f9f0;
-    color: #0f5132;
-    border: 1px solid #a3e4c1;
-}
+        /* Success Alert */
+        .alert-success {
+            background-color: #e6f9f0;
+            color: #0f5132;
+            border: 1px solid #a3e4c1;
+        }
 
-/* Optional icon */
-.alert-success::before {
-    content: "✔";
-    font-weight: bold;
-    margin-right: 10px;
-}
+        /* Optional icon */
+        .alert-success::before {
+            content: "✔";
+            font-weight: bold;
+            margin-right: 10px;
+        }
 
-/* Animasi */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        /* Animasi */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
 
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Container agar bisa scroll horizontal */
+        .kamar-grid {
+            display: flex;
+            /* Ubah dari grid ke flex */
+            gap: 20px;
+            /* Jarak antar kartu */
+            overflow-x: auto;
+            /* Izinkan scroll horizontal */
+            scroll-behavior: smooth;
+            /* Scroll menjadi halus */
+            padding: 10px 5px;
+
+            /* Sembunyikan scrollbar default agar lebih rapi (Opsional) */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .kamar-grid::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
+
+        /* Pastikan kartu memiliki lebar tetap agar tidak menyusut */
+        .kamar-card {
+            min-width: 300px;
+            /* Atur lebar minimal kartu */
+            flex-shrink: 0;
+            /* Mencegah kartu mengecil */
+            /* Style card lainnya tetap sama... */
+        }
+
+        /* Style untuk Tombol Navigasi */
+        .scroll-btn {
+            position: absolute;
+            top: 100%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .scroll-btn:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .prev-btn {
+            left: -20px;
+        }
+
+        .next-btn {
+            right: -20px;
+        }
+
+        /* Sembunyikan tombol jika di mobile (opsional, karena bisa swipe jari) */
+        @media (max-width: 768px) {
+            .scroll-btn {
+                display: none;
+            }
+        }
+
+        /* Container Utama Kamar */
+        .kamar-grid {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 20px 5px;
+            /* Padding sedikit dilonggarkan */
+
+            /* Sembunyikan scrollbar */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .kamar-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .kamar-card {
+            min-width: 320px;
+            /* Lebar fix agar rapi */
+            flex-shrink: 0;
+        }
+
+        /* --- STYLE TOMBOL TENGAH --- */
+        .scroll-btn {
+            position: absolute;
+            /* Wajib absolute agar bisa menimpa */
+            top: 50%;
+            /* Turunkan 50% dari atas parent */
+            transform: translateY(-50%);
+            /* Tarik naik 50% dari tinggi tombol itu sendiri */
+            z-index: 20;
+            /* Pastikan di atas kartu */
+
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background-color: white;
+            /* Background putih biar kontras */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            /* Bayangan agar terlihat melayang */
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .scroll-btn:hover {
+            background-color: #1a4b8c;
+            /* Ganti warna saat hover (sesuai tema haramain) */
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+            /* Efek membesar sedikit */
+        }
+
+        /* Posisi Kiri dan Kanan */
+        .prev-btn {
+            left: 10px;
+            /* Jarak dari kiri layar */
+        }
+
+        .next-btn {
+            right: 10px;
+            /* Jarak dari kanan layar */
+        }
     </style>
 </head>
 
@@ -1923,14 +2069,14 @@
         </div>
     </header>
 
-   @if (session('success'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Panggil fungsi JS showSuccessMessage dengan pesan dari Laravel
-            showSuccessMessage("{{ session('success') }}");
-        });
-    </script>
-@endif
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Panggil fungsi JS showSuccessMessage dengan pesan dari Laravel
+                showSuccessMessage("{{ session('success') }}");
+            });
+        </script>
+    @endif
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-bg"></div>
@@ -2007,105 +2153,130 @@
                 </button>
             </div>
 
-            <div class="kamar-grid" id="kamarGrid">
-                @forelse($rooms as $item)
-                    <div class="kamar-card" data-type="{{ strtolower($item->name) }}"
-                        data-status="{{ $item->status }}" data-id="{{ $item->id }}">
 
-                        <div class="kamar-badge {{ $item->status }}">
-                            {{-- {{ $item->status_label }} --}}
-                        </div>
+            {{-- kamar wrapper --}}
+            <div class="kamar-wrapper" style="position: relative;">
 
-                        <div class="kamar-img-container">
-                            <img src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}"
-                                alt="Kamar {{ $item->room_number }}" class="kamar-img">
-                        </div>
+                <button class="scroll-btn prev-btn" onclick="scrollKamar('left')">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
 
-                        <div class="kamar-info">
-                            <div class="kamar-header">
-                                <div>
-                                    <h3 class="kamar-name">Kamar {{ $item->room_number }}</h3>
-                                    <span class="kamar-type">{{ $item->name }}</span>
-                                </div>
-                                <div class="kamar-price">
-                                    <span class="price-from">Mulai dari</span>
-                                    <div class="price-amount">10000</div>
-                                    <span class="price-period">/bulan</span>
+                <div class="kamar-grid" id="kamarGrid">
+                    @forelse($rooms as $item)
+                        <div class="kamar-card" data-type="{{ strtolower($item->name) }}"
+                            data-status="{{ $item->status }}" data-id="{{ $item->id }}">
 
-                                </div>
+                            <div class="kamar-badge {{ $item->status }}">
+                                {{-- {{ $item->status_label }} --}}
                             </div>
 
-                            <p class="kamar-description">{{ $item->description }}</p>
-                            <form action="{{ route('checkout') }}" method="post">
-                                <input type="hidden" name="room_id" value="{{ $item->id }}">
-                                @csrf
-                                <div class="pricing-tabs">
-                                    <div class="price-option">
-                                        <div class="price-duration">3 Bulan</div>
-                                        <div class="price-value">Rp 1.500.000</div>
-                                        <input type="radio" name="choose_month" value="3" required>
-                                    </div>
+                            <div class="kamar-img-container">
+                                <img src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}"
+                                    alt="Kamar {{ $item->room_number }}" class="kamar-img">
+                            </div>
 
-                                    <div class="price-option">
-                                        <div class="price-duration">6 Bulan</div>
-                                        <div class="price-value">Rp 3.000.000</div>
-                                        <input type="radio" name="choose_month" value="6">
+                            <div class="kamar-info">
+                                <div class="kamar-header">
+                                    <div>
+                                        <h3 class="kamar-name">Kamar {{ $item->room_number }}</h3>
+                                        <span class="kamar-type">{{ $item->name }}</span>
                                     </div>
-
-                                    <div class="price-option">
-                                        <div class="price-duration">1 Tahun</div>
-                                        <div class="price-value">Rp 6.000.000</div>
-                                        <input type="radio" name="choose_month" value="12">
+                                    <div class="kamar-price">
+                                        <span class="price-from">Mulai dari</span>
+                                        {{-- Tambahkan number_format agar angka rupiah rapi --}}
+                                        <div class="price-amount">{{ number_format(10000, 0, ',', '.') }}</div>
+                                        <span class="price-period">/bulan</span>
                                     </div>
                                 </div>
 
+                                <p class="kamar-description">{{ $item->description }}</p>
 
-                                <div class="kamar-facilities">
-
-                                    <span class="facility-tag">{{ $item->facility }}</span>
-
-                                </div>
-
-
-                                {{-- Cek dulu apakah user sudah login --}}
-                                @if (auth()->check())
-                                    {{-- Jika user login dan statusnya pending --}}
-                                    @if (auth()->user()->status == 'pending')
-                                        <button class="btn-action btn-disabled" disabled>
-                                            Menunggu Verifikasi
-                                        </button>
-
-                                        {{-- Jika user login dan statusnya TIDAK pending (sudah verified) --}}
-                                    @else
-                                        <div class="btn-after-verify">
-
-                                            @if ($item->status === 'available')
-                                                <button type="submit" class="btn-action btn-wa">
-                                                    Checkout
-                                                </button>
-                                                <button type="button" class="btn-action btn-wa">
-                                                    <i class="fab fa-whatsapp"></i> Tanya
-                                                </button>
-                                            @else
-                                                <button class="btn-action btn-disabled" disabled>
-                                                    <i class="fas fa-lock"></i> Tidak Tersedia
-                                                </button>
-                                            @endif
+                                <form action="{{ route('checkout') }}" method="post">
+                                    <input type="hidden" name="room_id" value="{{ $item->id }}">
+                                    @csrf
+                                    <div class="pricing-tabs">
+                                        <div class="price-option">
+                                            <div class="price-duration">3 Bulan</div>
+                                            <div class="price-value">Rp 1.500.000</div>
+                                            <input type="radio" name="choose_month" value="3" required>
                                         </div>
-                                    @endif
-                                @endif
-                            </form>
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-center">
-                        <i class="fas fa-bed text-4xl text-gray-300 mb-4"></i>
-                        <h3 class="text-lg font-semibold text-gray-600">Tidak ada kamar tersedia</h3>
-                        <p class="text-gray-500">Semua kamar sedang terisi atau dalam perawatan</p>
-                    </div>
-                @endforelse
-            </div>
 
+                                        <div class="price-option">
+                                            <div class="price-duration">6 Bulan</div>
+                                            <div class="price-value">Rp 3.000.000</div>
+                                            <input type="radio" name="choose_month" value="6">
+                                        </div>
+
+                                        <div class="price-option">
+                                            <div class="price-duration">1 Tahun</div>
+                                            <div class="price-value">Rp 6.000.000</div>
+                                            <input type="radio" name="choose_month" value="12">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="kamar-facilities">
+                                        <span class="facility-tag">{{ $item->facility }}</span>
+                                    </div>
+
+
+                                    {{-- Cek dulu apakah user sudah login --}}
+                                    @if (auth()->check())
+                                        {{-- Jika user login dan statusnya pending (Belum diverifikasi admin) --}}
+                                        @if (auth()->user()->status == 'pending')
+                                            <button class="btn-action btn-disabled" disabled type="button">
+                                                Menunggu Verifikasi
+                                            </button>
+
+                                            {{-- Jika user login dan statusnya TIDAK pending (sudah verified) --}}
+                                        @else
+                                            <div class="btn-after-verify">
+
+                                                @if ($item->status === 'available')
+                                                    {{-- PERBAIKAN LOGIKA DISINI --}}
+                                                    {{-- Menggunakan helper function dari Model User --}}
+                                                    @if (!auth()->user()->hasConfirmedBooking())
+                                                        <button type="submit" class="btn-action btn-wa">
+                                                            Checkout
+                                                        </button>
+                                                        <button type="button" class="btn-action btn-wa">
+                                                            <i class="fab fa-whatsapp"></i> Tanya
+                                                        </button>
+                                                    @else
+                                                        {{-- Opsional: Jika user sudah punya kamar, mungkin tombol didisable atau disembunyikan --}}
+                                                        <button type="button" class="btn-action btn-disabled"
+                                                            disabled>
+                                                            Anda Sudah Sewa
+                                                        </button>
+                                                    @endif
+                                                @else
+                                                    <button class="btn-action btn-disabled" disabled type="button">
+                                                        <i class="fas fa-lock"></i> Tidak Tersedia
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    @else
+                                        {{-- Opsional: Tombol login jika user belum login --}}
+                                        <a href="{{ route('login') }}" class="btn-action">Login untuk Pesan</a>
+                                    @endif
+                                </form>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center col-span-full">
+                            <i class="fas fa-bed text-4xl text-gray-300 mb-4"></i>
+                            <h3 class="text-lg font-semibold text-gray-600">Tidak ada kamar tersedia</h3>
+                            <p class="text-gray-500">Semua kamar sedang terisi atau dalam perawatan</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <button class="scroll-btn next-btn" onclick="scrollKamar('right')">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+            </div>
             @push('scripts')
                 <script>
                     // Fungsi untuk memilih harga
@@ -2304,84 +2475,17 @@
             </div>
             <div class="gallery-grid" id="galleryGrid">
                 <!-- Gallery 1 -->
-                <div class="gallery-item" onclick="openGalleryModal(0)">
-                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-                        alt="Tampak Depan Kos">
-                    <div class="gallery-overlay">
-                        <h4>Tampak Depan Kos</h4>
-                        <p>Bangunan modern dengan desain minimalis</p>
+                @foreach ($galleries as $gallery)
+                    <div class="gallery-item" onclick="openGalleryModal({{ $gallery->id }})">
+                        <img src="{{ url('storage/' . $gallery->image) }}" alt="Tampak Depan Kos">
+                        <div class="gallery-overlay">
+                            <h4>{{ $gallery->name }}</h4>
+                            <p>{{ $gallery->description }}</p>
+                        </div>
                     </div>
-                </div>
+                @endforeach
 
-                <!-- Gallery 2 -->
-                <div class="gallery-item" onclick="openGalleryModal(1)">
-                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                        alt="Kamar Standard">
-                    <div class="gallery-overlay">
-                        <h4>Kamar Standard</h4>
-                        <p>Kamar nyaman dengan pencahayaan alami</p>
-                    </div>
-                </div>
 
-                <!-- Gallery 3 -->
-                <div class="gallery-item" onclick="openGalleryModal(2)">
-                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                        alt="Kamar Deluxe">
-                    <div class="gallery-overlay">
-                        <h4>Kamar Deluxe</h4>
-                        <p>Kamar premium dengan fasilitas lengkap</p>
-                    </div>
-                </div>
-
-                <!-- Gallery 4 -->
-                <div class="gallery-item" onclick="openGalleryModal(3)">
-                    <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                        alt="Ruang Bersama">
-                    <div class="gallery-overlay">
-                        <h4>Ruang Bersama</h4>
-                        <p>Area santai untuk berkumpul dan bersosialisasi</p>
-                    </div>
-                </div>
-
-                <!-- Gallery 5 -->
-                <div class="gallery-item" onclick="openGalleryModal(4)">
-                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                        alt="Dapur Bersama">
-                    <div class="gallery-overlay">
-                        <h4>Dapur Bersama</h4>
-                        <p>Dapur modern dengan peralatan lengkap</p>
-                    </div>
-                </div>
-
-                <!-- Gallery 6 -->
-                <div class="gallery-item" onclick="openGalleryModal(5)">
-                    <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                        alt="Taman Depan">
-                    <div class="gallery-overlay">
-                        <h4>Taman Depan</h4>
-                        <p>Area hijau untuk bersantai di depan kos</p>
-                    </div>
-                </div>
-
-                <!-- Gallery 7 -->
-                <div class="gallery-item" onclick="openGalleryModal(6)">
-                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                        alt="Area Parkir">
-                    <div class="gallery-overlay">
-                        <h4>Area Parkir</h4>
-                        <p>Parkir luas dan aman untuk kendaraan</p>
-                    </div>
-                </div>
-
-                <!-- Gallery 8 -->
-                <div class="gallery-item" onclick="openGalleryModal(7)">
-                    <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                        alt="Lobi Utama">
-                    <div class="gallery-overlay">
-                        <h4>Lobi Utama</h4>
-                        <p>Area penerimaan tamu yang nyaman</p>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -2397,133 +2501,29 @@
 
                 <div class="testimonials-grid" id="testimonialsGrid">
                     <!-- Testimonial 1 -->
+                    @foreach ($testimonials as $item)
                     <div class="testimonial-card">
                         <div class="testimonial-quote">
                             <i class="fas fa-quote-left"></i>
                         </div>
                         <div class="testimonial-header">
                             <div class="testimonial-avatar">
-                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sari Dewi">
+                                <img src="{{ url('storage/' . $item->user->photo) }}" alt="Sari Dewi">
                             </div>
                             <div class="testimonial-info">
-                                <h4>Sari Dewi</h4>
-                                <span>Mahasiswa IAIN Curup - Semester 5</span>
+                                <h4>{{ $item->user->name }}</h4>
+
                             </div>
                         </div>
                         <div class="testimonial-rating">
-                            ★★★★★
+                            ★★★★★ {{ $item->rating }}
                         </div>
-                        <p class="testimonial-text">Tinggal di Kos Melati Indah sangat nyaman. Lokasinya strategis,
-                            fasilitas lengkap, dan lingkungannya aman. WiFi-nya cepat banget untuk kuliah online!
-                            Pengelola juga ramah dan responsif.</p>
+                        <p class="testimonial-text">{{ $item->comment }}.</p>
                     </div>
 
-                    <!-- Testimonial 2 -->
-                    <div class="testimonial-card">
-                        <div class="testimonial-quote">
-                            <i class="fas fa-quote-left"></i>
-                        </div>
-                        <div class="testimonial-header">
-                            <div class="testimonial-avatar">
-                                <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Rudi Hartono">
-                            </div>
-                            <div class="testimonial-info">
-                                <h4>Rudi Hartono</h4>
-                                <span>Mahasiswa IAIN Curup - Semester 7</span>
-                            </div>
-                        </div>
-                        <div class="testimonial-rating">
-                            ★★★★★
-                        </div>
-                        <p class="testimonial-text">Pengalaman terbaik selama jadi mahasiswa. Kamar bersih, parkir
-                            aman, dan pengelola sangat responsif. Recommended untuk mahasiswa yang serius kuliah!</p>
-                    </div>
+                    @endforeach
 
-                    <!-- Testimonial 3 -->
-                    <div class="testimonial-card">
-                        <div class="testimonial-quote">
-                            <i class="fas fa-quote-left"></i>
-                        </div>
-                        <div class="testimonial-header">
-                            <div class="testimonial-avatar">
-                                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Maya Sari">
-                            </div>
-                            <div class="testimonial-info">
-                                <h4>Maya Sari</h4>
-                                <span>Mahasiswa IAIN Curup - Semester 3</span>
-                            </div>
-                        </div>
-                        <div class="testimonial-rating">
-                            ★★★★☆
-                        </div>
-                        <p class="testimonial-text">Air panas 24 jam sangat membantu di cuaca dingin Curup. Dapur
-                            bersama juga lengkap peralatannya. Tinggal bawa bahan masak saja. Lingkungannya juga tenang
-                            untuk belajar.</p>
-                    </div>
 
-                    <!-- Testimonial 4 -->
-                    <div class="testimonial-card">
-                        <div class="testimonial-quote">
-                            <i class="fas fa-quote-left"></i>
-                        </div>
-                        <div class="testimonial-header">
-                            <div class="testimonial-avatar">
-                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Budi Santoso">
-                            </div>
-                            <div class="testimonial-info">
-                                <h4>Budi Santoso</h4>
-                                <span>Mahasiswa IAIN Curup - Semester 6</span>
-                            </div>
-                        </div>
-                        <div class="testimonial-rating">
-                            ★★★★★
-                        </div>
-                        <p class="testimonial-text">Sudah 2 tahun tinggal di sini dan sangat puas. Keamanan terjamin 24
-                            jam, parkir luas, dan fasilitas selalu terawat. Cocok untuk mahasiswa yang fokus studi.</p>
-                    </div>
-
-                    <!-- Testimonial 5 -->
-                    <div class="testimonial-card">
-                        <div class="testimonial-quote">
-                            <i class="fas fa-quote-left"></i>
-                        </div>
-                        <div class="testimonial-header">
-                            <div class="testimonial-avatar">
-                                <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Dewi Lestari">
-                            </div>
-                            <div class="testimonial-info">
-                                <h4>Dewi Lestari</h4>
-                                <span>Mahasiswa IAIN Curup - Semester 4</span>
-                            </div>
-                        </div>
-                        <div class="testimonial-rating">
-                            ★★★★☆
-                        </div>
-                        <p class="testimonial-text">Kamar bersih dan rapi setiap hari. Laundry service sangat membantu
-                            saat sibuk ujian. Lokasi dekat kampus menghemat waktu dan biaya transportasi.</p>
-                    </div>
-
-                    <!-- Testimonial 6 -->
-                    <div class="testimonial-card">
-                        <div class="testimonial-quote">
-                            <i class="fas fa-quote-left"></i>
-                        </div>
-                        <div class="testimonial-header">
-                            <div class="testimonial-avatar">
-                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Ahmad Fauzi">
-                            </div>
-                            <div class="testimonial-info">
-                                <h4>Ahmad Fauzi</h4>
-                                <span>Mahasiswa IAIN Curup - Semester 8</span>
-                            </div>
-                        </div>
-                        <div class="testimonial-rating">
-                            ★★★★★
-                        </div>
-                        <p class="testimonial-text">Sebagai mahasiswa tingkat akhir, butuh tempat yang kondusif untuk
-                            skripsi. Kos ini sempurna! Tenang, WiFi stabil, dan ada ruang belajar bersama yang nyaman.
-                        </p>
-                    </div>
                 </div>
             </div>
         </section>
@@ -2594,56 +2594,6 @@
                                 <i class="fas fa-envelope"></i>
                             </a>
                         </div>
-                    </div>
-
-                    <div class="contact-form-wrapper">
-                        <h3>Kirim Pesan</h3>
-                        <form id="contactForm">
-                            <div class="form-group">
-                                <label for="name">Nama Lengkap *</label>
-                                <input type="text" id="name" class="form-control"
-                                    placeholder="Masukkan nama Anda" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="phone">Nomor WhatsApp *</label>
-                                <input type="tel" id="phone" class="form-control" placeholder="08xxxxxxxxxx"
-                                    required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" class="form-control"
-                                    placeholder="nama@email.com">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="subject">Subjek *</label>
-                                <select id="subject" class="form-control" required>
-                                    <option value="">Pilih subjek</option>
-                                    <option value="kamar">Informasi Kamar</option>
-                                    <option value="booking">Booking Kamar</option>
-                                    <option value="fasilitas">Informasi Fasilitas</option>
-                                    <option value="kunjungan">Peninjauan Lokasi</option>
-                                    <option value="lainnya">Lainnya</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="message">Pesan *</label>
-                                <textarea id="message" class="form-control" rows="4" placeholder="Tulis pesan Anda di sini..." required></textarea>
-                            </div>
-
-                            <div class="checkbox-container">
-                                <input type="checkbox" id="terms" required>
-                                <span class="checkmark"></span>
-                                <label for="terms">Saya setuju dengan syarat dan ketentuan</label>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-                                <i class="fas fa-paper-plane"></i> Kirim Pesan
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -3218,6 +3168,58 @@ Status: ${kamar.status === 'available' ? 'TERSEDIA' : 'TERISI'}
                 }
 
             })
+        });
+
+        function scrollKamar(direction) {
+            const container = document.getElementById('kamarGrid');
+
+            // Ambil lebar satu kartu + gap untuk menentukan jarak scroll
+            // Kita ambil element card pertama jika ada
+            const card = container.querySelector('.kamar-card');
+            const scrollAmount = card ? card.offsetWidth + 20 : 320; // Default 320px jika card belum load
+
+            if (direction === 'left') {
+                container.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            } else {
+                container.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // OPSI TAMBAHAN: Drag to Scroll (agar enak di desktop seperti mobile)
+        const slider = document.getElementById('kamarGrid');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active'); // Bisa tambah cursor: grabbing di CSS
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
+
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
+
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // Kecepatan scroll (* 2 biar lebih cepat)
+            slider.scrollLeft = scrollLeft - walk;
         });
     </script>
 </body>

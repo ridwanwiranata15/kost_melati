@@ -57,6 +57,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Volt::route('booking', 'booking')->name('admin.booking');
     Volt::route('gallery', 'gallery')->name('admin.gallery');
 });
+Route::middleware(['auth'])->group(function(){
 
 // Customer Profile
 Route::get('profile', function () {
@@ -72,3 +73,5 @@ Route::put('/booking/{id}/update', [MyOrderCustomerController::class, 'paynow'])
 Route::get('testimonial', [TestimonialController::class, 'index'])->name('customer.testimonial');
 Route::post('testimonial', [TestimonialController::class, 'store'])->name('customer.testimonial.store');
 Route::get('/invoice/{id}', [TransactionController::class, 'invoice'])->name('invoice.show');
+
+});

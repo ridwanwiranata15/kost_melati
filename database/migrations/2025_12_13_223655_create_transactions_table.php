@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('payment_receipt')->nullable();
             $table->enum('status', ['pending', 'confirmed', 'rejected'])->default('pending');
             $table->date('date_pay')->nullable();
-
+            $table->string('nominal')->nullable();
             $table->timestamps();
         });
     }

@@ -6,10 +6,12 @@ use App\Models\Room as ModelsRoom;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class Room extends Component
 {
     use WithFileUploads;
+    use WithPagination;
 
     public $number;
     public $name;
@@ -18,7 +20,20 @@ class Room extends Component
     public $image;
     public $description;
     public $room_id;
+    public $search = '';
+    public $filterStatus = '';
+    public $isCreateModalOpen = false;
+    public $isEditModalOpen = false;
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterStatus()
+    {
+        $this->resetPage();
+    }
 
     // Define validation rules
     protected $rules = [
@@ -29,7 +44,23 @@ class Room extends Component
         'image' => 'nullable|image|max:2048', // 2MB Max
         'description' => 'nullable|string',
     ];
+    public function openCreateModal()
+    {
+        $this->resetValidation();
+        $this->reset(['number', 'name', 'status', 'facility', 'image', 'description']);
+        $this->isCreateModalOpen = true; // Buka modal via PHP
+    }
 
+    public function closeCreateModal()
+    {
+        $this->isCreateModalOpen = false;
+        $this->reset(['image']); // Reset image agar tidak nyangkut saat buka lagi
+    }
+        public function closeEditModal()
+    {
+        $this->isEditModalOpen = false;
+        $this->reset(['image', 'oldImage']);
+    }
     public function save()
     {
         // 1. Validate Input
@@ -57,8 +88,8 @@ class Room extends Component
 
         // Dispatch event to close modal (requires simple JS listener)
         $this->dispatch('room-saved');
-
-        session()->flash('message', 'Kamar berhasil ditambahkan!');
+        $this->closeCreateModal(); // Tutup modal setelah simpan
+        session()->flash('message', 'Data berhasil disimpan.');
     }
     public function delete($id)
     {
@@ -78,7 +109,7 @@ class Room extends Component
     public function edit($id)
     {
         $room = ModelsRoom::find($id);
-
+        $this->isEditModalOpen = true;
         // Isi data ke form
         $this->room_id = $room->id;
         $this->number = $room->room_number;
@@ -94,6 +125,7 @@ class Room extends Component
         // Buka Modal Edit via JS Dispatch
         $this->dispatch('open-modal-edit');
     }
+
     public function update()
     {
         // Validasi Input
@@ -145,16 +177,39 @@ class Room extends Component
         $this->dispatch('room-updated');
 
         // Bersihkan form
-       
+        $this->closeEditModal();
+
     }
 
     public function render()
     {
-        // Fetch data ordered by newest
-        $rooms = ModelsRoom::latest()->get();
+        // 1. Query Data Kamar dengan Filter
+        $query = ModelsRoom::query();
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('room_number', 'like', '%' . $this->search . '%')
+                    ->orWhere('facility', 'like', '%' . $this->search . '%');
+            });
+        }
+
+        if ($this->filterStatus) {
+            $query->where('status', $this->filterStatus);
+        }
+
+        $rooms = $query->latest()->paginate(10);
+
+        // 2. Hitung Statistik untuk Cards
+        $totalAvailable = ModelsRoom::where('status', 'available')->count();
+        $totalRepair = ModelsRoom::where('status', 'repair')->count();
+        $totalUnavailable = ModelsRoom::where('status', 'unavailable')->count();
 
         return view('livewire.room', [
-            'rooms' => $rooms
+            'rooms' => $rooms,
+            'totalAvailable' => $totalAvailable,
+            'totalRepair' => $totalRepair,
+            'totalUnavailable' => $totalUnavailable,
         ]);
     }
 }

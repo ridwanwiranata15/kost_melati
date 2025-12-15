@@ -240,6 +240,7 @@
                                 <th class="px-6 py-4 font-bold">Jatuh Tempo</th>
                                 <th class="px-6 py-4 font-bold text-center">Status</th>
                                 <th class="px-6 py-4 font-bold">Tgl Bayar</th>
+                                <th class="px-6 py-4 font-bold">Nominal</th>
                                 <th class="px-6 py-4 font-bold text-center">Aksi / Invoice</th>
                             </tr>
                         </thead>
@@ -269,25 +270,24 @@
                                             {{ $bulanTagihan->copy()->day(10)->translatedFormat('d F Y') }}
                                         </div>
                                     </td>
-
                                     {{-- Status --}}
                                     <td class="px-6 py-4 text-center">
                                         @if ($item->status == 'pending')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
-                                                <i class="fa-solid fa-clock mr-1.5"></i> Menunggu
-                                            </span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                                            <i class="fa-solid fa-clock mr-1.5"></i> Menunggu
+                                        </span>
                                         @elseif($item->status == 'confirmed')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                                <i class="fa-solid fa-check-circle mr-1.5"></i> Lunas
-                                            </span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                            <i class="fa-solid fa-check-circle mr-1.5"></i> Lunas
+                                        </span>
                                         @elseif($item->status == 'rejected')
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
-                                                <i class="fa-solid fa-circle-xmark mr-1.5"></i> Ditolak
-                                            </span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+                                            <i class="fa-solid fa-circle-xmark mr-1.5"></i> Ditolak
+                                        </span>
                                         @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
-                                                Belum Bayar
-                                            </span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                                            Belum Bayar
+                                        </span>
                                         @endif
                                     </td>
 
@@ -295,6 +295,7 @@
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $item->date_pay ? \Carbon\Carbon::parse($item->date_pay)->translatedFormat('d M Y') : '-' }}
                                     </td>
+                                    <td>{{ $item->nominal }}</td>
 
                                     {{-- Aksi --}}
                                     <td class="px-6 py-4 text-center">

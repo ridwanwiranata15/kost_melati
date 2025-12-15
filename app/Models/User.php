@@ -66,17 +66,17 @@ class User extends Authenticatable
             ->implode('');
     }
 
-    public function booking()
-    {
-        return $this->hasOne(Booking::class);
-    }
+    public function bookings() // Gunakan nama plural (bookings) untuk relasi hasMany
+{
+    // Relasi yang benar jika user bisa punya banyak booking
+    return $this->hasMany(Booking::class);
+}
 
-    /**
-     * Helper untuk mengecek apakah user punya booking dengan status confirmed
-     */
-    public function hasConfirmedBooking(): bool
-    {
-        // Cek apakah relasi booking ada datanya DAN statusnya confirmed
-        return $this->booking && $this->booking->status === 'confirmed';
-    }
+// // Catatan: Anda mungkin perlu menghapus atau memperbaiki fungsi hasConfirmedBooking
+// // yang saat ini menggunakan relasi tunggal.
+// /*
+// public function hasConfirmedBooking(): bool
+// {
+//     return $this->booking && $this->booking->status === 'confirmed';
+// }
 }

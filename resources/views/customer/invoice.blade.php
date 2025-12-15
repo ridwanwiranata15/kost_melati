@@ -2,147 +2,223 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice #{{ $transaction->id }} - {{ $providerName }}</title>
-
-    {{-- Menggunakan Tailwind CSS (Sesuaikan dengan setup project Anda, misal vite) --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    {{-- Font Awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    {{-- Font Google (Inter) --}}
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-
+    <title>Kwitansi #{{ $transaksi->id }}</title>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        /* CSS Reset */
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 14px;
+            padding: 20px;
+        }
 
-        /* CSS Khusus Print: Sembunyikan tombol saat dicetak */
-        @media print {
-            .no-print { display: none !important; }
-            body { background-color: white; }
-            .receipt-card { box-shadow: none; border: 1px solid #ddd; }
+        /* Helper Classes */
+        .w-100 { width: 100%; }
+        .text-right { text-align: right; }
+        .text-bold { font-weight: bold; }
+        .text-center { text-align: center; }
+        .valign-top { vertical-align: top; }
+
+        /* Header */
+        .header-table {
+            width: 100%;
+            border-bottom: 3px double #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .hotel-name {
+            font-size: 24px;
+            color: blue;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        /* Layout Utama 2 Kolom */
+        .main-layout {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Kolom Kiri (Info) */
+        .col-left {
+            width: 55%;
+            padding-right: 20px;
+            border-right: 1px solid #ccc;
+        }
+
+        /* Kolom Kanan (Uang) */
+        .col-right {
+            width: 45%;
+            padding-left: 20px;
+        }
+
+        /* Tabel Data di dalam Kolom */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table td {
+            padding: 4px 0;
+            vertical-align: top;
+        }
+        .label { width: 100px; color: #555; }
+
+        /* Tabel Keuangan */
+        .money-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .money-table td {
+            padding: 5px 0;
+        }
+        .m-lbl { width: 50%; }
+        .m-sep { width: 5%; text-align: right; }
+        .m-val { width: 45%; text-align: right; font-weight: bold; }
+
+        /* Highlight Row */
+        .highlight-row td {
+            background-color: #f0f0f0;
+            font-size: 16px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #eee;
+            border: 1px solid #ddd;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-success { background: #d4edda; color: #155724; border-color: #c3e6cb; }
+        .badge-warning { background: #fff3cd; color: #856404; border-color: #ffeeba; }
+
+        .footer {
+            margin-top: 50px;
+            width: 100%;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center py-10 px-4">
+<body>
 
-    <div class="w-full max-w-md">
+    <table class="header-table">
+        <tbody>
+            <tr>
+                <td width="60" class="valign-top">
+                    <h1 style="font-size:40px; margin:0;">👑</h1>
+                </td>
+                <td>
+                    <h1 class="hotel-name">{{ $providerName }}</h1>
+                    <div>Kwitansi Pembayaran Kost & Penginapan</div>
+                </td>
+                <td class="text-right valign-top">
+                    <span style="font-size:11px; color:#555;">No. Kwitansi</span><br>
+                    <span style="font-size:16px; font-weight:bold;">#{{ $transaksi->id }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-        {{-- KARTU STRUK / INVOICE --}}
-        <div class="receipt-card bg-white rounded-3xl shadow-2xl overflow-hidden relative">
+    <table class="main-layout">
+        <tbody>
+            <tr>
+                <td class="col-left valign-top">
+                    <div class="text-bold" style="margin-bottom: 5px; text-decoration: underline;">Data Tamu & Kamar</div>
 
-            {{-- Hiasan Lingkaran Atas (Kesan kertas sobek/punch hole) --}}
-            <div class="absolute -left-3 top-24 w-6 h-6 bg-gray-100 rounded-full"></div>
-            <div class="absolute -right-3 top-24 w-6 h-6 bg-gray-100 rounded-full"></div>
+                    <table class="data-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">Nama Tamu</td>
+                                <td>: {{ $booking->user->name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Email</td>
+                                <td>: {{ $booking->user->email }}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">No. HP</td>
+                                <td>: {{ $booking->user->phone ?? '-' }}</td>
+                            </tr>
+                            <tr><td colspan="2" style="height: 10px;"></td></tr>
+                            <tr>
+                                <td class="label">Nomor Kamar</td>
+                                <td>: <span style="font-size: 14px; font-weight:bold;">{{ $kamar->room_number }}</span></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Tanggal Bayar</td>
+                                <td>: {{ \Carbon\Carbon::parse($transaksi->date_pay)->format('d F Y') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
 
-            {{-- HEADER --}}
-            <div class="bg-slate-900 text-white p-8 text-center relative overflow-hidden">
-                <div class="relative z-10">
-                    <div class="inline-flex items-center justify-center w-12 h-12 bg-white/10 rounded-xl mb-4 text-emerald-400 backdrop-blur-sm">
-                        <i class="fa-solid fa-check text-2xl"></i>
-                    </div>
-                    <h1 class="text-xl font-bold tracking-wide uppercase">Bukti Pembayaran</h1>
-                    <p class="text-slate-400 text-sm mt-1">ID Transaksi: #TRX-{{ str_pad($transaction->id, 5, '0', STR_PAD_LEFT) }}</p>
-                </div>
+                <td class="col-right valign-top">
+                    <div class="text-bold" style="margin-bottom: 5px; text-decoration: underline;">Rincian Pembayaran</div>
 
-                {{-- Pattern Background --}}
-                <div class="absolute top-0 left-0 w-full h-full opacity-10">
-                    <i class="fa-solid fa-building text-9xl absolute -right-4 -bottom-4 transform rotate-12"></i>
-                </div>
-            </div>
+                    <table class="money-table">
+                        <tbody>
+                            <tr>
+                                <td class="m-lbl">Harga Sewa</td>
+                                <td class="m-sep">: Rp</td>
+                                <td class="m-val">{{ number_format($hargaKamar, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td class="m-lbl">Lama Inap</td>
+                                <td class="m-sep">: </td>
+                                <td class="m-val">{{ $lamaInap }} Bulan</td>
+                            </tr>
 
-            {{-- BODY CONTENT --}}
-            <div class="p-8 pt-10">
+                            <tr>
+                                <td colspan="3" style="height: 15px;"></td>
+                            </tr>
 
-                {{-- Detail Utama --}}
-                {{-- Detail Utama --}}
-                <div class="space-y-4">
-                    {{-- Penyedia --}}
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Penyedia</span>
-                        <span class="text-gray-800 font-bold text-right">{{ $providerName }}</span>
-                    </div>
+                            <tr class="highlight-row">
+                                <td class="m-lbl">Tagihan Bulan Ini</td>
+                                <td class="m-sep">: Rp</td>
+                                <td class="m-val">{{ number_format($tagihanBulanIni, 0, ',', '.') }}</td>
+                            </tr>
 
-                    {{-- Customer --}}
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Penyewa</span>
-                        {{-- FIX: Gunakan tanda tanya (?) sebelum panah --}}
-                        <span class="text-gray-800 font-semibold text-right">
-                            {{ $transaction->booking?->user?->name}}
-                        </span>
-                    </div>
+                            <tr>
+                                <td colspan="3" style="height: 15px;"></td>
+                            </tr>
 
-                    {{-- Garis Putus --}}
-                    <div class="border-b border-dashed border-gray-200 my-4"></div>
+                            <tr>
+                                <td class="m-lbl">Status</td>
+                                <td class="m-sep">: </td>
+                                <td class="m-val">
+                                    @if($transaksi->status == 'confirmed')
+                                        <span class="badge badge-success">Sudah bayar</span>
+                                    @elseif($transaksi->status == 'pending')
+                                        <span class="badge badge-warning">PENDING</span>
+                                    @else
+                                        <span class="badge">{{ strtoupper($transaksi->status) }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-                    {{-- Kamar --}}
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Tipe Kamar</span>
-                        {{-- FIX: Null check untuk room --}}
-                        <span class="text-gray-900 font-bold">
-                            {{ $transaction->booking?->room?->name }}
-                        </span>
-                    </div>
-
-                    {{-- Durasi --}}
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Durasi Sewa</span>
-                        <span class="text-gray-900 font-medium">
-                            {{ $transaction->booking?->duration }} Bulan
-                        </span>
-                    </div>
-
-                    {{-- Tanggal Mulai --}}
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Mulai Kost</span>
-                        <span class="text-gray-900 font-medium">
-                            @if($transaction->booking && $transaction->booking->start_date)
-                                {{ \Carbon\Carbon::parse($transaction->booking->start_date)->translatedFormat('d F Y') }}
-                            @else
-                                -
-                            @endif
-                        </span>
-                    </div>
-
-                    {{-- Metode Bayar (Ini aman karena ada di tabel transaction langsung) --}}
-                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Metode Bayar</span>
-                        <span class="capitalize px-2 py-0.5 rounded text-xs font-bold bg-gray-100 text-gray-600">
-                            {{ $transaction->payment_method}}
-                        </span>
-                    </div>
-                </div>
-
-                {{-- TOTAL SECTION --}}
-                <div class="mt-8 bg-emerald-50 rounded-2xl p-6 border border-emerald-100 text-center">
-                    <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mb-1">Total Dibayarkan</p>
-                    <h2 class="text-3xl font-black text-emerald-700">
-                        Rp {{ number_format($transaction->nominal, 0, ',', '.') }}
-                    </h2>
-                    <p class="text-[10px] text-emerald-500 mt-2">
-                        <i class="fa-solid fa-clock mr-1"></i> Dibayar pada: {{ \Carbon\Carbon::parse($transaction->date_pay)->translatedFormat('d M Y, H:i') }}
-                    </p>
-                </div>
-
-                {{-- Footer Note --}}
-                <div class="mt-8 text-center">
-                    <p class="text-xs text-gray-400">Terima kasih telah mempercayai layanan kami.</p>
-                    <p class="text-[10px] text-gray-300 mt-1">{{ $providerName }} System</p>
-                </div>
-            </div>
-        </div>
-
-        {{-- BUTTONS ACTION (Hilang saat Print) --}}
-        <div class="no-print mt-6 flex flex-col gap-3">
-            <button onclick="window.print()" class="w-full bg-slate-900 hover:bg-black text-white py-3 rounded-xl font-bold shadow-lg transform active:scale-95 transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
-            </button>
-
-            <a href="{{ url()->previous() }}" class="w-full bg-white hover:bg-gray-50 text-gray-700 py-3 rounded-xl font-bold shadow border border-gray-200 text-center block transition-colors">
-                Kembali
-            </a>
-        </div>
-
+    <div class="footer">
+        <table width="100%">
+            <tbody>
+                <tr>
+                    <td width="50%"></td>
+                    <td width="50%" class="text-center">
+                        <p>Bandar Lampung, {{ now()->format('d F Y') }}</p>
+                        <p>Admin,</p>
+                        <br><br><br>
+                        <p>( ................................. )</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
 </body>

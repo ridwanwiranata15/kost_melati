@@ -4,14 +4,17 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Booking as BookingModel;
+use Livewire\WithPagination;
 
 class Booking extends Component
 {
-    public function render()
-    {
-        $bookings = BookingModel::all();
-        return view('livewire.booking', compact('bookings'));
-    }
+    use WithPagination;
+    public $search;
+    public $filterStatus;
+
+    public function updatedSearch(){$this->resetPage();}
+    public function updatedFilterStatus(){$this->resetPage();}
+
     public function updateStatus($id, $status)
 {
     // 1. Cari data booking
@@ -54,4 +57,38 @@ class Booking extends Component
         session()->flash('message', "Status booking #{$booking->booking_code} berhasil diubah menjadi {$status} dan tagihan telah dibuat.");
     }
 }
+
+    public function render()
+    {
+        // 1. Query Data
+        $query = BookingModel::with(['user', 'room']); // Eager load relasi biar ringan
+
+        // Search Logic (Cari kode booking atau nama user)
+        if ($this->search) {
+            $query->where(function($q) {
+                $q->where('booking_code', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('user', function($u) {
+                      $u->where('name', 'like', '%' . $this->search . '%');
+                  });
+            });
+        }
+
+        // Filter Status Logic
+        if ($this->filterStatus) {
+            $query->where('status', $this->filterStatus);
+        }
+
+        $bookings = $query->latest()->paginate(10);
+
+        // 2. Hitung Statistik untuk 5 Card
+        $stats = [
+            'pending'   => BookingModel::where('status', 'pending')->count(),
+            'confirmed' => BookingModel::where('status', 'confirmed')->count(),
+            'checkin'   => BookingModel::where('status', 'checkin')->count(),
+            'checkout'  => BookingModel::where('status', 'checkout')->count(),
+            'cancelled' => BookingModel::where('status', 'cancelled')->count(),
+        ];
+
+        return view('livewire.booking', compact('bookings', 'stats'));
+    }
 }

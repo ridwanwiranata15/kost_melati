@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\MyOrderCustomerController;
 use App\Http\Controllers\TestimonialController;
 use App\Models\Gallery;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\TransactionController;
+use App\Livewire\Dashboard as AdminDashboard;
 // Halaman utama
 Route::get('/', function () {
     $rooms = Room::all();
@@ -73,5 +75,10 @@ Route::put('/booking/{id}/update', [MyOrderCustomerController::class, 'paynow'])
 Route::get('testimonial', [TestimonialController::class, 'index'])->name('customer.testimonial');
 Route::post('testimonial', [TestimonialController::class, 'store'])->name('customer.testimonial.store');
 Route::get('/invoice/{id}', [TransactionController::class, 'invoice'])->name('invoice.show');
+
+Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Action Update Password
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
 });

@@ -1,34 +1,26 @@
-<header
-    class="h-16 bg-white dark:bg-dark-card border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6 sticky top-0 z-30">
+<header class="h-16 flex items-center justify-between px-0 md:px-6 bg-white dark:bg-dark-card border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
 
-    <div class="flex items-center gap-4">
-        <span class="hidden font-bold text-primary-600 dark:text-primary-500">
-            Kost Asri
-        </span>
-    </div>
+    <button @click="sidebarOpen = true"
+            class="h-16 px-4 flex items-center text-gray-500 hover:text-primary-600 md:hidden focus:outline-none">
+        <i class="fas fa-bars text-2xl"></i>
+    </button>
 
-    <div class="flex items-center space-x-4 ml-auto">
-        {{-- Dark Mode Button --}}
-        <button onclick="toggleDarkMode()"
-            class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-yellow-400 transition-colors">
+    <div class="flex items-center gap-4 pr-4 md:pr-0 ml-auto">
+
+        <button onclick="toggleDarkMode()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
             <i id="theme-icon" class="fas fa-moon"></i>
         </button>
 
-        {{-- Notification Button --}}
-        <button
-            class="relative w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors">
+        <button class="relative text-gray-500 hover:text-gray-700 dark:text-gray-400">
             <i class="fas fa-bell"></i>
-            <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+            <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white transform translate-x-1/2 -translate-y-1/2"></span>
         </button>
 
-        {{-- Profile Section --}}
-        <div class="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-600">
-            <div class="text-right hidden sm:block">
-                <p class="text-sm font-semibold dark:text-white">Admin Utama</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Pemilik Kost</p>
-            </div>
-            <img src="https://ui-avatars.com/api/?name=Admin+Kost&background=10b981&color=fff"
-                class="w-9 h-9 rounded-full border-2 border-white dark:border-gray-600 shadow-sm" alt="Profile">
+        <div class="relative">
+            <button class="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+                <span class="text-xs font-medium">AK</span>
+            </button>
         </div>
     </div>
+
 </header>

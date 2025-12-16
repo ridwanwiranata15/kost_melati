@@ -11,10 +11,12 @@
     $totalRooms = Room::count();
     $totalResidents = User::where('role', '!=', 'admin')->count();
     $totalBookings = Booking::where('status', 'pending')->count();
-    $totalIncomeCard = Transaction::sum('nominal'); // Total semua uang masuk
+
+    // PERBAIKAN: Hanya hitung nominal jika status 'confirmed'
+    $totalIncomeCard = Transaction::where('status', 'confirmed')->sum('nominal');
 
     // B. Data Tabel Transaksi
-    $recentTransactions = Transaction::with(['user', 'room'])->latest()->take(5)->get();
+    $recentTransactions = Transaction::with(['booking.user', 'booking.room'])->latest()->take(5)->get();
 
     // C. DATA KHUSUS DIAGRAM (YANG ANDA MINTA)
 
@@ -24,6 +26,7 @@
             DB::raw('MONTH(created_at) as month')
         )
         ->whereYear('created_at', date('Y'))
+        ->where('status', 'confirmed') // TAMBAHAN: Filter status confirmed
         ->groupBy('month')
         ->pluck('total', 'month')
         ->toArray();
@@ -35,8 +38,12 @@
     }
 
     // 2. Perbandingan Total Nominal (Masuk) vs Amount (Hutang) untuk Doughnut Chart
-    $totalNominal = Transaction::sum('nominal'); // Uang Masuk
-    $totalAmount  = Transaction::sum('amount');  // Sisa Hutang
+
+    // PERBAIKAN: Hanya hitung nominal jika status 'confirmed'
+    $totalNominal = Transaction::where('status', 'confirmed')->sum('nominal');
+
+    // Hutang biasanya tetap dihitung terlepas dari status pembayaran, atau bisa disesuaikan
+    $totalAmount  = Transaction::sum('amount');
 
 @endphp
 

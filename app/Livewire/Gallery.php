@@ -5,73 +5,112 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Gallery as GalleryModel;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
 class Gallery extends Component
 {
     use WithFileUploads;
 
-    public $name;
-    public $description;
-    public $image;
-    public $selected_id;
-    public $old_image;
+    public $name, $description, $image, $old_image, $selected_id;
 
+    // Listener agar Livewire tahu komponen perlu refresh saat ada event tertentu
+    protected $listeners = ['refreshComponent' => '$refresh'];
+
+    public function render()
+    {
+        // Ambil data terbaru
+        $galleries = GalleryModel::latest()->get();
+        return view('livewire.gallery', compact('galleries'));
+    }
+
+    // --- LOGIC CREATE ---
+    public function create()
+    {
+        $this->resetInput();
+        // Event ini ditangkap oleh AlpineJS di Modal Create
+        $this->dispatch('open-create-modal');
+    }
+
+    public function save()
+    {
+        $this->validate([
+            'name' => 'required|string|max:255',
+            'image' => 'required|image|max:2048', // Wajib saat create
+            'description' => 'required|string',
+        ]);
+
+        $imagePath = $this->image->store('gallery-images', 'public');
+
+        GalleryModel::create([
+            "name"        => $this->name,
+            "image"       => $imagePath,
+            "description" => $this->description
+        ]);
+
+        $this->dispatch('gallery-saved'); // Tutup modal lewat Alpine
+        $this->resetInput();
+        session()->flash('message', 'Foto berhasil ditambahkan!');
+    }
+
+    // --- LOGIC EDIT ---
     public function edit($id)
     {
-        // 1. Cari data berdasarkan ID
-        $gallery = GalleryModel::find($id); // Sesuaikan Model Anda
+        $gallery = GalleryModel::find($id);
 
         if ($gallery) {
             $this->selected_id = $id;
             $this->name = $gallery->name;
             $this->description = $gallery->description;
-            $this->old_image = $gallery->image; // Simpan path gambar lama
+            $this->old_image = $gallery->image;
 
-            // Reset input file gambar baru agar kosong
-            $this->reset('image');
+            $this->reset('image'); // Reset input file baru
 
-            // 2. Kirim event ke JS untuk buka modal
+            // Event ini ditangkap oleh AlpineJS di Modal Edit
             $this->dispatch('open-edit-modal');
         }
-    }
-    public function delete($id){
-         $gallery = GalleryModel::find($id); // Sesuaikan Model Anda
-         $gallery->delete();
-         
-
     }
 
     public function update()
     {
-        // 1. Validasi
         $this->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'image' => 'nullable|image|max:2048', // Image jadi nullable saat update
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|max:2048', // Nullable saat update
         ]);
 
         $gallery = GalleryModel::find($this->selected_id);
-
-        // 2. Cek apakah user upload gambar baru?
-        $imagePath = $gallery->image; // Default pakai gambar lama
+        $imagePath = $gallery->image;
 
         if ($this->image) {
-            // Jika ada upload baru, simpan & ganti path
-            $imagePath = $this->image->store('gallery', 'public');
+            // Hapus gambar lama jika ada
+            if ($gallery->image && Storage::disk('public')->exists($gallery->image)) {
+                Storage::disk('public')->delete($gallery->image);
+            }
+            $imagePath = $this->image->store('gallery-images', 'public');
         }
 
-        // 3. Update Data
         $gallery->update([
             'name' => $this->name,
             'description' => $this->description,
             'image' => $imagePath,
         ]);
 
-        session()->flash('message', 'Data berhasil diperbarui.');
-
-        // 4. Tutup modal & Reset
-        $this->dispatch('room-saved');
+        $this->dispatch('gallery-saved'); // Tutup modal lewat Alpine
         $this->resetInput();
+        session()->flash('message', 'Data berhasil diperbarui.');
+    }
+
+    // --- LOGIC DELETE ---
+    public function delete($id)
+    {
+        $gallery = GalleryModel::find($id);
+        if ($gallery) {
+            if ($gallery->image && Storage::disk('public')->exists($gallery->image)) {
+                Storage::disk('public')->delete($gallery->image);
+            }
+            $gallery->delete();
+            session()->flash('message', 'Foto berhasil dihapus.');
+        }
     }
 
     public function resetInput()
@@ -81,43 +120,5 @@ class Gallery extends Component
         $this->image = null;
         $this->old_image = null;
         $this->selected_id = null;
-    }
-
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'image' => 'nullable|image|max:2048', // 2MB Max
-        'description' => 'nullable|string',
-    ];
-    public function save()
-    {
-        // 1. Validate Input
-        $validatedData = $this->validate();
-
-        // 2. Handle Image Upload
-        if ($this->image) {
-            // Stores in storage/app/public/room-images
-            $imagePath = $this->image->store('gallery-images', 'public');
-            $validatedData['image'] = $imagePath;
-        }
-
-        // 3. Create Record
-        GalleryModel::create([
-            "name"  => $this->name,
-            "image"  => $validatedData['image'] ?? null,
-            "description"  => $this->description
-        ]);
-
-        // 4. Reset Form and Close Modal
-        $this->reset(['name', 'image', 'description']);
-
-        // Dispatch event to close modal (requires simple JS listener)
-        $this->dispatch('room-saved');
-
-        session()->flash('message', 'Kamar berhasil ditambahkan!');
-    }
-    public function render()
-    {
-        $galleries = GalleryModel::latest()->get();
-        return view('livewire.gallery', compact('galleries'));
     }
 }

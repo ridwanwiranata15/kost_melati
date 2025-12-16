@@ -7,29 +7,54 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Booking;     // Sesuaikan nama model Booking Anda
 use App\Models\Transaction; // Sesuaikan nama model Transaction Anda
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class MyOrderCustomerController extends Controller
 {
-    public function index()
-    {
-        // 1. Ambil User ID yang sedang login
-        $userId = Auth::id();
+public function index()
+{
+    $userId = Auth::id();
 
-        // 2. Cari Booking berdasarkan user_id
-        // Kita gunakan 'with' untuk mengambil relasi 'transactions' dan 'room' sekaligus (Eager Loading)
-        // ->latest() digunakan untuk mengambil booking paling baru jika user punya history lama
-        $booking = Booking::with(['transactions', 'room'])
-                    ->where('user_id', $userId)
-                    ->latest()
-                    ->first();
+    // 1. Ambil Booking
+    $booking = Booking::with(['transactions', 'room'])
+                ->where('user_id', $userId)
+                ->latest()
+                ->first();
 
-        // 3. Ambil Transaksi
-        // Jika booking ditemukan, ambil transaksinya. Jika tidak, buat collection kosong biar gak error di view
-        $transactions = $booking ? $booking->transactions : collect([]);
+    // 2. Ambil Transaksi (agar tidak error undefined variable)
+    $transactions = $booking ? $booking->transactions : collect([]);
 
-        // Kirim data ke view
-        return view('customer.my-order', compact('booking', 'transactions'));
+    $tagihanList = collect([]);
+
+    // 3. LOGIKA BARU: Loop berdasarkan DURASI (bukan tanggal)
+    if ($booking) {
+        $startDate = \Carbon\Carbon::parse($booking->date_in);
+
+        // Ambil durasi (default 1 bulan jika kosong/nol)
+        $durasi = $booking->duration > 0 ? $booking->duration : 1;
+
+        // Loop sebanyak durasi sewa
+        for ($i = 0; $i < $durasi; $i++) {
+
+            // Hitung bulan ke-i
+            $date = $startDate->copy()->addMonths($i);
+
+            // Ambil transaksi yang sesuai urutan (jika ada)
+            $transaction = $transactions->get($i);
+
+            $tagihanList->push([
+                'bulan'       => $date->translatedFormat('F Y'),
+                'jatuh_tempo' => $date->copy()->addDays(9)->translatedFormat('d F Y'), // Jatuh tempo tgl 10
+                'transaction' => $transaction,
+                'status'      => $transaction ? $transaction->status : 'pending',
+                'nominal'     => $transaction ? $transaction->nominal : ($booking->total_amount / $durasi),
+            ]);
+        }
     }
+
+    return view('customer.my-order', compact('booking', 'transactions', 'tagihanList'));
+}
     public function payment($id){
         $transaction = Transaction::findOrFail($id);
         return view('customer.upload_payment', compact('transaction'));

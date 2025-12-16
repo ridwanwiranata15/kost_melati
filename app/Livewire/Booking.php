@@ -45,7 +45,7 @@ class Booking extends Component
                         'payment_receipt' => null, // Nullable sesuai request
                         'date_pay' => null,
                         'nominal' => null,
-                        'amount'          => $booking->total_amount,
+                        'amount'          => 500000,
 
                         'status'          => 'pending', // Default status transaksi
                     ]);

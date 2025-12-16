@@ -62,9 +62,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth'])->group(function(){
 
 // Customer Profile
-Route::get('profile', function () {
-    return view('customer.profile');
-})->name('customer.profile');
+Route::get('profile', [ProfileController::class, 'index'])->name('customer.profile');
 Route::get('my-order', [MyOrderCustomerController::class, 'index'])->name('customer.order');
 
 

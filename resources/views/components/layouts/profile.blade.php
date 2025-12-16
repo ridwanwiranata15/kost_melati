@@ -59,11 +59,7 @@
                     <span class="font-medium">Tagihan & Booking</span>
                 </a>
 
-                <a href="#" class="flex items-center px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white rounded-xl transition-all group">
-                    <i class="fa-regular fa-bell w-6 text-lg group-hover:scale-110 transition-transform"></i>
-                    <span class="font-medium">Notifikasi</span>
-                    <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">2</span>
-                </a>
+
             </nav>
 
             <div class="p-4 border-t border-gray-800/50">

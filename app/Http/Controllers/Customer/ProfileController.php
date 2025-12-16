@@ -13,17 +13,22 @@ class ProfileController extends Controller
 {
     // Menampilkan Halaman Profil
     public function index()
-    {
-        $user = auth()->user();
+{
+    // 1. Ambil User yang sedang login
+    $user = auth()->user();
 
-        // Ambil booking aktif user (untuk ditampilkan di card info hunian)
-        $booking = Booking::with('room')
-                    ->where('user_id', $user->id)
-                    ->latest()
-                    ->first();
+    // 2. AMBIL DATA BOOKING (Ini yang sering ketinggalan!)
+    // Cari booking milik user ini, urutkan dari yang terbaru, ambil satu saja.
+    $booking = \App\Models\Booking::with('room') // Load relasi kamar biar gak error
+                ->where('user_id', $user->id)
+                ->latest() // Ambil yang paling baru
+                ->first(); // Gunakan first() agar hasilnya Obyek, bukan Array
 
-        return view('customer.profile', compact('user', 'booking'));
-    }
+
+    // 4. KIRIM KE VIEW (Compact)
+    // Pastikan 'booking' ada di dalam kurung compact
+    return view('customer.profile', compact('user', 'booking'));
+}
 
     // Proses Update Data Diri (Nama, Email, Foto, HP)
     public function update(UpdateProfileRequest $request)
@@ -53,7 +58,7 @@ class ProfileController extends Controller
     public function updatePassword(Request $request)
     {
         // Validasi password
-        
+
 
         // Update password
         auth()->user()->update([

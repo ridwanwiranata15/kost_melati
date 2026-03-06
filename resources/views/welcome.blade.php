@@ -3,37 +3,34 @@
 
 <head>
 
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Primary Meta Tags -->
     <meta name="title" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP">
-    <meta name="description"
-        content="Kost yang terdekat dari IAIN Curup">
-    <meta name="keywords"
-        content="kost dekat IAIN curup, kost IAIN curup">
+    <meta name="description" content="Kost yang terdekat dari IAIN Curup">
+    <meta name="keywords" content="kost dekat IAIN curup, kost IAIN curup">
     <meta name="author" content="risky037">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://all-kos.allcode.my.id/">
+    <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP">
-    <meta property="og:description"
-        content="kost dekat IAIN curup, kost IAIN curup.">
-    <meta property="og:image" content="https://all-kos.allcode.my.id/storage/default.jpg">
+    <meta property="og:description" content="kost dekat IAIN curup, kost IAIN curup.">
+    <meta property="og:image" content="{{ url('storage/default.jpg') }}">
     <meta property="og:site_name" content="Kost dekat IAIN Curup">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kost dekat IAIN Curup - Wisata Edukasi Kalimantan">
-    <meta name="twitter:description"
-        content="Kost El Sholeha - Kost terdekat dari IAIN CURUP.">
-    <meta name="twitter:image" content="https://www.lembahbambuborneo.com/storage/default.jpg">
-    <link rel="canonical" href="https://all-kos.allcode.my.id">
+    <meta name="twitter:description" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP.">
+    <meta name="twitter:image" content="{{ url('storage/default.jpg') }}">
+    <link rel="canonical" href="{{ url()->current() }}">
+    <title>Kost El Sholeha - Kost terdekat dari IAIN CURUP</title>
     <title>Kost El Sholeha - Kost terdekat dari IAIN CURUP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">       
+        rel="stylesheet">
     <style>
         :root {
             /* Colors */
@@ -898,8 +895,8 @@
                 <li><a href="#home" class="nav-link active" onclick="toggleMenu()">Beranda</a></li>
                 <li><a href="#kamar" class="nav-link" onclick="toggleMenu()">Kamar</a></li>
                 <li><a href="#fasilitas" class="nav-link" onclick="toggleMenu()">Fasilitas</a></li>
-                <li><a href="#lokasi" class="nav-link" onclick="toggleMenu()">Lokasi</a></li>
                 <li><a href="#testimoni" class="nav-link" onclick="toggleMenu()">Testimoni</a></li>
+                <li><a href="#lokasi" class="nav-link" onclick="toggleMenu()">Lokasi</a></li>
 
                 <div class="nav-btns">
                     @if (auth()->check())
@@ -1066,44 +1063,44 @@
         </div>
     </section>
 
-   <section class="section" id="fasilitas">
-    <div class="sec-header">
-        <h2>Fasilitas</h2>
-        <p>Semua yang kamu butuhkan ada di sini.</p>
-    </div>
-    <div class="fac-grid">
-        <div class="fac-card">
-            <div class="fac-icon"><i class="fas fa-kitchen-set"></i></div>
-            <h4>Dapur Pribadi Perkamar</h4>
-            <p class="fac-desc">Fasilitas memasak lengkap di setiap kamar untuk kebebasan berekspresi kuliner</p>
+    <section class="section" id="fasilitas">
+        <div class="sec-header">
+            <h2>Fasilitas</h2>
+            <p>Semua yang kamu butuhkan ada di sini.</p>
         </div>
-        <div class="fac-card">
-            <div class="fac-icon"><i class="fas fa-shower"></i></div>
-            <h4>Kamar Mandi Eksklusif</h4>
-            <p class="fac-desc">Kenyamanan maksimal dengan kamar mandi pribadi dalam setiap unit</p>
+        <div class="fac-grid">
+            <div class="fac-card">
+                <div class="fac-icon"><i class="fas fa-kitchen-set"></i></div>
+                <h4>Dapur Pribadi Perkamar</h4>
+                <p class="fac-desc">Fasilitas memasak lengkap di setiap kamar untuk kebebasan berekspresi kuliner</p>
+            </div>
+            <div class="fac-card">
+                <div class="fac-icon"><i class="fas fa-shower"></i></div>
+                <h4>Kamar Mandi Eksklusif</h4>
+                <p class="fac-desc">Kenyamanan maksimal dengan kamar mandi pribadi dalam setiap unit</p>
+            </div>
+            <div class="fac-card">
+                <div class="fac-icon"><i class="fas fa-camera"></i></div>
+                <h4>Sistem Keamanan CCTV 24 Jam</h4>
+                <p class="fac-desc">Pengawasan terpadu untuk menjamin keamanan dan ketenangan penghuni</p>
+            </div>
+            <div class="fac-card">
+                <div class="fac-icon"><i class="fas fa-wifi"></i></div>
+                <h4>Internet High-Speed</h4>
+                <p class="fac-desc">Koneksi WiFi super cepat untuk kerja, belajar, dan hiburan tanpa buffering</p>
+            </div>
+            <div class="fac-card">
+                <div class="fac-icon"><i class="fas fa-parking"></i></div>
+                <h4>Area Parkir Terlindung</h4>
+                <p class="fac-desc">Parkiran aman indoor & outdoor dengan sistem pengawasan khusus</p>
+            </div>
+            <div class="fac-card">
+                <div class="fac-icon"><i class="fas fa-bed"></i></div>
+                <h4>Furnitur Premium</h4>
+                <p class="fac-desc">Ranjang dan perlengkapan tidur berkualitas tinggi dengan kenyamanan terjamin</p>
+            </div>
         </div>
-        <div class="fac-card">
-            <div class="fac-icon"><i class="fas fa-camera"></i></div>
-            <h4>Sistem Keamanan CCTV 24 Jam</h4>
-            <p class="fac-desc">Pengawasan terpadu untuk menjamin keamanan dan ketenangan penghuni</p>
-        </div>
-        <div class="fac-card">
-            <div class="fac-icon"><i class="fas fa-wifi"></i></div>
-            <h4>Internet High-Speed</h4>
-            <p class="fac-desc">Koneksi WiFi super cepat untuk kerja, belajar, dan hiburan tanpa buffering</p>
-        </div>
-        <div class="fac-card">
-            <div class="fac-icon"><i class="fas fa-parking"></i></div>
-            <h4>Area Parkir Terlindung</h4>
-            <p class="fac-desc">Parkiran aman indoor & outdoor dengan sistem pengawasan khusus</p>
-        </div>
-        <div class="fac-card">
-            <div class="fac-icon"><i class="fas fa-bed"></i></div>
-            <h4>Furnitur Premium</h4>
-            <p class="fac-desc">Ranjang dan perlengkapan tidur berkualitas tinggi dengan kenyamanan terjamin</p>
-        </div>
-    </div>
-</section>
+    </section>
 
     <section class="section" id="gallery">
         <div class="sec-header">
@@ -1173,7 +1170,8 @@
                     <i class="fas fa-map-marker-alt"></i>
                     <div>
                         <h4>Alamat</h4>
-                        <p>Jalan Hegel Blok A No.03, Dusun Curup, Kec. Curup Utara, Kabupaten Rejang Lebong, Bengkulu 39119, Indonesia</p>
+                        <p>Jalan Hegel Blok A No.03, Dusun Curup, Kec. Curup Utara, Kabupaten Rejang Lebong, Bengkulu
+                            39119, Indonesia</p>
                     </div>
                 </div>
             </div>

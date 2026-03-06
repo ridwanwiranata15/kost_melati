@@ -20,6 +20,16 @@ Route::get('/', function () {
     return view('welcome', compact('rooms', 'galleries', 'testimonials'));
 })->name('home');
 
+// 2. BUAT Route BARU khusus untuk Sitemap (Taruh di bawahnya)
+Route::get('/sitemap.xml', function () {
+    // Jika sitemap Anda butuh data (misal list kamar), ambil lagi di sini
+    // $rooms = Room::all(); 
+    
+    return response()
+        ->view('sitemap') // Pastikan file view-nya bernama sitemap.blade.php
+        ->header('Content-Type', 'text/xml');
+});
+
 // Dashboard Admin
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified', 'admin'])
@@ -55,7 +65,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Edit Room (Admin) - dengan parameter
     Volt::route('room/{id}', 'roomindex')->name('admin.room.edit');
     Volt::route('users', 'user')->name('admin.user');
-    Volt::route('user/{id}', 'detailuser')->name('admin.user.detail');
+    Volt::route('user/{id}', 'detail-user')->name('admin.user.detail');
     Volt::route('booking', 'booking')->name('admin.booking');
     Volt::route('gallery', 'gallery')->name('admin.gallery');
 });
@@ -79,4 +89,12 @@ Route::put('/profile/update', [ProfileController::class, 'update'])->name('profi
     // Action Update Password
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
+});
+
+
+Route::get('/kost-dekat-iain-curup', function () {
+    $rooms = Room::all();
+    $galleries = Gallery::all();
+    $testimonials = Testimonial::all();
+    return view('welcome', compact('rooms', 'galleries', 'testimonials'));
 });

@@ -9,7 +9,6 @@
 
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #FAFAFA; }
-        /* Transisi halus untuk alert */
         #error-message { transition: all 0.3s ease-in-out; }
     </style>
 </head>
@@ -42,8 +41,9 @@
         </div>
 
         <div class="flex flex-col w-full md:w-[500px]">
-            <form action="{{ route('booking') }}" id="booking-form" class="bg-white border border-gray-100 shadow-xl rounded-3xl p-6 md:p-8 flex flex-col gap-6" method="post">
-                @csrf
+            <form action="{{ route('booking') }}" id="booking-form" class="bg-white border border-gray-100 shadow-xl rounded-3xl p-6 md:p-8 flex flex-col gap-6" method="POST">
+                @csrf 
+                
                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                 <input type="hidden" name="duration" id="duration-data" value="{{ $duration }}">
 
@@ -60,8 +60,7 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm text-red-700 font-medium" id="error-text">
-                                </p>
+                            <p class="text-sm text-red-700 font-medium" id="error-text"></p>
                         </div>
                     </div>
                 </div>
@@ -97,7 +96,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const dateInInput = document.getElementById('date_in');
             const dateOutInput = document.getElementById('date_out');
-            const duration = parseInt(document.getElementById('duration-data').value); // Durasi dari PHP (integer)
+            const duration = parseInt(document.getElementById('duration-data').value);
             const submitBtn = document.getElementById('submit-btn');
             const errorMessageDiv = document.getElementById('error-message');
             const errorText = document.getElementById('error-text');
@@ -106,48 +105,45 @@
                 const dateInVal = dateInInput.value;
                 const dateOutVal = dateOutInput.value;
 
-                // Jika salah satu tanggal belum diisi, jangan lakukan apa-apa
                 if (!dateInVal || !dateOutVal) return;
 
                 const startDate = new Date(dateInVal);
                 const endDate = new Date(dateOutVal);
 
-                // Hitung selisih bulan secara kasar
-                // Logika: (Tahun * 12 + Bulan) - (Tahun * 12 + Bulan)
+                // Hitung selisih bulan
                 let monthsDiff = (endDate.getFullYear() - startDate.getFullYear()) * 12;
                 monthsDiff -= startDate.getMonth();
                 monthsDiff += endDate.getMonth();
 
-                // Hitung selisih hari untuk presisi (opsional, tapi bagus untuk validasi user)
-                // Jika tanggal hari (date) di endDate lebih kecil dari startDate, kurangi 1 bulan
                 if (endDate.getDate() < startDate.getDate()) {
                     monthsDiff--;
                 }
 
                 // Cek Validasi
                 if (monthsDiff !== duration) {
-                    // KONDISI GAGAL
+                    // GAGAL
                     errorMessageDiv.classList.remove('hidden');
-
                     let message = "";
                     if (monthsDiff < duration) {
-                        message = `Anda memesan paket <strong>${duration} Bulan</strong>, tetapi rentang tanggal yang Anda pilih hanya <strong>${monthsDiff <= 0 ? 'kurang dari 1' : monthsDiff} Bulan</strong>. Silakan perpanjang Tanggal Keluar.`;
+                        message = `Durasi hanya <strong>${monthsDiff < 0 ? 0 : monthsDiff} Bulan</strong>. Harus <strong>${duration} Bulan</strong>.`;
                     } else {
-                        message = `Anda memesan paket <strong>${duration} Bulan</strong>, tetapi rentang tanggal yang Anda pilih kelebihan menjadi <strong>${monthsDiff} Bulan</strong>. Silakan sesuaikan Tanggal Keluar.`;
+                        message = `Durasi kelebihan menjadi <strong>${monthsDiff} Bulan</strong>. Harus <strong>${duration} Bulan</strong>.`;
                     }
-
                     errorText.innerHTML = message;
 
-                    // Disable tombol & style abu-abu
+                    // Disable tombol
                     submitBtn.disabled = true;
                     submitBtn.classList.remove('bg-green-500', 'text-white', 'hover:bg-green-600', 'cursor-pointer');
                     submitBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
                     submitBtn.innerText = "Perbaiki Tanggal";
+                    
+                    // SAYA SUDAH MENGHAPUS BARIS 'addEventListener' YANG ERROR DI SINI
+                    
                 } else {
-                    // KONDISI SUKSES (Valid)
+                    // SUKSES (Valid)
                     errorMessageDiv.classList.add('hidden');
 
-                    // Enable tombol & style hijau
+                    // Enable tombol
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
                     submitBtn.classList.add('bg-green-500', 'text-white', 'hover:bg-green-600', 'cursor-pointer');
@@ -155,26 +151,21 @@
                 }
             }
 
-            // Fitur Tambahan UX: Auto-suggest Tanggal Keluar saat Tanggal Masuk dipilih
+            // Auto-suggest Tanggal Keluar
             dateInInput.addEventListener('change', function() {
                 if(this.value) {
                     const d = new Date(this.value);
-                    // Tambahkan durasi bulan secara otomatis
                     d.setMonth(d.getMonth() + duration);
-                    // Format ke YYYY-MM-DD untuk input date
+                    
                     const yyyy = d.getFullYear();
                     const mm = String(d.getMonth() + 1).padStart(2, '0');
                     const dd = String(d.getDate()).padStart(2, '0');
 
-                    // Set nilai ke input date_out otomatis (User masih bisa ubah kalau mau ngetes validasi)
                     dateOutInput.value = `${yyyy}-${mm}-${dd}`;
-
-                    // Panggil validasi langsung
-                    validateDates();
+                    validateDates(); 
                 }
             });
 
-            // Jalankan validasi saat user mengubah tanggal keluar manual
             dateOutInput.addEventListener('change', validateDates);
         });
     </script>

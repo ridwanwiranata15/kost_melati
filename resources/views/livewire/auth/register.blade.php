@@ -172,10 +172,7 @@
                             <div class="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><i class="fas fa-shield-alt text-white"></i></div>
                             <span class="text-sm font-medium">Aman 24 Jam</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <div class="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><i class="fas fa-bolt text-white"></i></div>
-                            <span class="text-sm font-medium">Bebas Listrik</span>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

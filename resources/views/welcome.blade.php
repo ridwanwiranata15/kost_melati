@@ -2,13 +2,38 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kos Melati Indah - Hunian Premium</title>
+
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP">
+    <meta name="description"
+        content="Kost yang terdekat dari IAIN Curup">
+    <meta name="keywords"
+        content="kost dekat IAIN curup, kost IAIN curup">
+    <meta name="author" content="risky037">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://all-kos.allcode.my.id/">
+    <meta property="og:title" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP">
+    <meta property="og:description"
+        content="kost dekat IAIN curup, kost IAIN curup.">
+    <meta property="og:image" content="https://all-kos.allcode.my.id/storage/default.jpg">
+    <meta property="og:site_name" content="Kost dekat IAIN Curup">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kost dekat IAIN Curup - Wisata Edukasi Kalimantan">
+    <meta name="twitter:description"
+        content="Kost El Sholeha - Kost terdekat dari IAIN CURUP.">
+    <meta name="twitter:image" content="https://www.lembahbambuborneo.com/storage/default.jpg">
+    <link rel="canonical" href="https://all-kos.allcode.my.id">
+    <title>Kost El Sholeha - Kost terdekat dari IAIN CURUP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+        rel="stylesheet">       
     <style>
         :root {
             /* Colors */
@@ -862,7 +887,7 @@
             <a href="#" class="logo">
                 <i class="fas fa-home"></i>
                 <div>
-                    <h1>Kos Melati</h1>
+                    <h1>Kos El Sholeha</h1>
                     <span>Indah & Nyaman</span>
                 </div>
             </a>
@@ -914,8 +939,8 @@
             </div>
         </div>
         <div class="hero-img">
-            <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Kos">
+            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                alt="Kost El Sholeha">
         </div>
     </section>
 
@@ -1041,35 +1066,49 @@
         </div>
     </section>
 
-    <section class="section" id="fasilitas">
-        <div class="sec-header">
-            <h2>Fasilitas</h2>
-            <p>Semua yang kamu butuhkan ada di sini.</p>
+   <section class="section" id="fasilitas">
+    <div class="sec-header">
+        <h2>Fasilitas</h2>
+        <p>Semua yang kamu butuhkan ada di sini.</p>
+    </div>
+    <div class="fac-grid">
+        <div class="fac-card">
+            <div class="fac-icon"><i class="fas fa-kitchen-set"></i></div>
+            <h4>Dapur Pribadi Perkamar</h4>
+            <p class="fac-desc">Fasilitas memasak lengkap di setiap kamar untuk kebebasan berekspresi kuliner</p>
         </div>
-        <div class="fac-grid">
-            <div class="fac-card">
-                <div class="fac-icon"><i class="fas fa-wifi"></i></div>
-                <h4>WiFi Kencang</h4>
-            </div>
-            <div class="fac-card">
-                <div class="fac-icon"><i class="fas fa-shield-alt"></i></div>
-                <h4>Keamanan 24/7</h4>
-            </div>
-            <div class="fac-card">
-                <div class="fac-icon"><i class="fas fa-bolt"></i></div>
-                <h4>Free Listrik</h4>
-            </div>
-            <div class="fac-card">
-                <div class="fac-icon"><i class="fas fa-utensils"></i></div>
-                <h4>Dapur Bersama</h4>
-            </div>
+        <div class="fac-card">
+            <div class="fac-icon"><i class="fas fa-shower"></i></div>
+            <h4>Kamar Mandi Eksklusif</h4>
+            <p class="fac-desc">Kenyamanan maksimal dengan kamar mandi pribadi dalam setiap unit</p>
         </div>
-    </section>
+        <div class="fac-card">
+            <div class="fac-icon"><i class="fas fa-camera"></i></div>
+            <h4>Sistem Keamanan CCTV 24 Jam</h4>
+            <p class="fac-desc">Pengawasan terpadu untuk menjamin keamanan dan ketenangan penghuni</p>
+        </div>
+        <div class="fac-card">
+            <div class="fac-icon"><i class="fas fa-wifi"></i></div>
+            <h4>Internet High-Speed</h4>
+            <p class="fac-desc">Koneksi WiFi super cepat untuk kerja, belajar, dan hiburan tanpa buffering</p>
+        </div>
+        <div class="fac-card">
+            <div class="fac-icon"><i class="fas fa-parking"></i></div>
+            <h4>Area Parkir Terlindung</h4>
+            <p class="fac-desc">Parkiran aman indoor & outdoor dengan sistem pengawasan khusus</p>
+        </div>
+        <div class="fac-card">
+            <div class="fac-icon"><i class="fas fa-bed"></i></div>
+            <h4>Furnitur Premium</h4>
+            <p class="fac-desc">Ranjang dan perlengkapan tidur berkualitas tinggi dengan kenyamanan terjamin</p>
+        </div>
+    </div>
+</section>
 
     <section class="section" id="gallery">
         <div class="sec-header">
             <h2>Galeri</h2>
-            <p>Suasana Kos Melati Indah.</p>
+            <p>Suasana Kost El Sholeha.</p>
         </div>
         <div class="gallery-grid">
             @foreach ($galleries as $gallery)
@@ -1120,21 +1159,21 @@
                     <i class="fas fa-university"></i>
                     <div>
                         <h4>IAIN Curup</h4>
-                        <p>5 Menit</p>
+                        <p>5 Menit jalan kaki</p>
                     </div>
                 </div>
                 <div class="loc-item">
                     <i class="fas fa-shopping-cart"></i>
                     <div>
                         <h4>Pasar</h4>
-                        <p>3 Menit Jalan Kaki</p>
+                        <p>5 Menit naik motor</p>
                     </div>
                 </div>
                 <div class="loc-item">
                     <i class="fas fa-map-marker-alt"></i>
                     <div>
                         <h4>Alamat</h4>
-                        <p>Jl. Merpati No. 45, Curup</p>
+                        <p>Jalan Hegel Blok A No.03, Dusun Curup, Kec. Curup Utara, Kabupaten Rejang Lebong, Bengkulu 39119, Indonesia</p>
                     </div>
                 </div>
             </div>
@@ -1145,7 +1184,7 @@
     <footer>
         <div class="footer-grid">
             <div class="foot-col">
-                <h4 style="color: var(--primary);">Kos Melati Indah</h4>
+                <h4 style="color: var(--primary);">Kost El Sholeha</h4>
                 <p style="color:#94a3b8; font-size:0.9rem;">Hunian nyaman untuk mahasiswa. Fokus belajar, istirahat
                     tenang.</p>
             </div>
@@ -1157,17 +1196,14 @@
             </div>
             <div class="foot-col">
                 <h4>Kontak</h4>
-                <a href="#">0812-3456-7890</a>
-                <a href="#">admin@kos.com</a>
-                <div class="socials" style="margin-top:10px;">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                </div>
+                <a href="#">085273599597</a>
+                <a href="#">085267399374</a>
+                <a href="#">082176253810</a>
             </div>
         </div>
         <div
             style="text-align:center; color:#64748b; font-size:0.8rem; margin-top:50px; border-top:1px solid #1e293b; padding-top:20px;">
-            &copy; 2025 Kos Melati Indah. All rights reserved.
+            &copy; 2025 Kost El Sholeha. All rights reserved.
         </div>
     </footer>
 
@@ -1252,9 +1288,9 @@
         }
 
         // Map
-        const map = L.map('map').setView([-3.4730, 102.5200], 15);
+        const map = L.map('map').setView([-3.4650, 102.5210], 15);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        L.marker([-3.4730, 102.5200]).addTo(map).bindPopup('Kos Melati Indah');
+        L.marker([-3.4650, 102.5210]).addTo(map).bindPopup('Kosan El Sholeha<br>Jalan Hegel Blok A No.03, Curup');
     </script>
 </body>
 

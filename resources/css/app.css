@@ -84,8 +84,19 @@ input:focus, select:focus, textarea:focus, [data-flux-control]:focus {
 
 @layer base {
     /* Custom scrollbar for textareas */
-    textarea {
-        @apply scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700;
+    textarea::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    textarea::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    textarea::-webkit-scrollbar-thumb {
+        background-color: #e5e5e5;
+        border-radius: 20px;
+    }
+    .dark textarea::-webkit-scrollbar-thumb {
+        background-color: #404040;
     }
 
     *,

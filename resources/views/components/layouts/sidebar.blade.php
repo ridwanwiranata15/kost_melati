@@ -41,7 +41,7 @@
 
         {{-- Menu Utama --}}
         <div class="pb-1 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Menu Utama</div>
-        <a href="{{ route('dashboard') }}" wire:navigate
+        <a href="{{ route('dashboard') }}"
             class="flex items-center px-4 py-2.5 {{ request()->routeIs('dashboard') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
             <i class="fas fa-home w-6"></i>
             <span class="font-medium">Dashboard</span>

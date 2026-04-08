@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Dashboard Kost Asri' }}</title>
+    <title>{{ $title ?? 'Dashboard Kos El Sholeha' }}</title>
 
     {{-- Vite for Tailwind 4 and App JS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -9,7 +9,7 @@ use Livewire\WithPagination;
 class Booking extends Component
 {
     use WithPagination;
-    public $search;
+    public $search = '';
     public $filterStatus;
 
     public function updatedSearch(){$this->resetPage();}

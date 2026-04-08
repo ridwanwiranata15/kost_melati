@@ -86,7 +86,7 @@
 
         {{-- Profil & Settings (semua role) --}}
         <div class="pt-3 pb-1 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Akun</div>
-        <a href="{{ route('customer.profile') }}" wire:navigate
+        <a href="{{ route('customer.profile') }}"
             class="flex items-center px-4 py-2.5 {{ request()->routeIs('customer.profile') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
             <i class="fas fa-user-circle w-6"></i>
             <span class="font-medium">Profil Saya</span>

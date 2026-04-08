@@ -41,7 +41,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-hashtag text-gray-400"></i>
                                 </div>
-                                <input type="text" wire:model="number" class="w-full pl-10 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm:text-sm py-2.5 shadow-sm" placeholder="Contoh: A-101">
+                                <input type="text" wire:model="number" class="w-full pl-10 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm:text-sm py-3 shadow-sm" placeholder="Contoh: A-101">
                             </div>
                             @error('number') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
@@ -50,7 +50,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Tipe / Nama <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm:text-sm py-2.5 shadow-sm" placeholder="Contoh: Deluxe (Kamar Mandi Dalam)">
+                             <input type="text" wire:model="name" class="w-full rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm:text-sm py-3 shadow-sm" placeholder="Contoh: Deluxe (Kamar Mandi Dalam)">
                             @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -58,7 +58,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Status Kamar <span class="text-red-500">*</span>
                             </label>
-                            <select wire:model="status" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm:text-sm py-2.5 shadow-sm">
+                             <select wire:model="status" class="w-full rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm:text-sm py-3 shadow-sm">
                                 <option value="">-- Pilih Status --</option>
                                 <option value="available">✅ Tersedia (Kosong)</option>
                                 <option value="unavailable">🚫 Tidak Tersedia (Isi)</option>
@@ -75,7 +75,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-wifi text-gray-400"></i>
                                 </div>
-                                <input type="text" wire:model="facility" class="w-full pl-10 rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm:text-sm py-2.5 shadow-sm" placeholder="AC, WiFi, Lemari...">
+                                <input type="text" wire:model="facility" class="w-full pl-10 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm:text-sm py-3 shadow-sm" placeholder="AC, WiFi, Lemari...">
                             </div>
                             @error('facility') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
@@ -133,4 +133,11 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Deskripsi Lengkap
                             </label>
-                            <textarea wire:model="description" rows="7" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all sm
+                            <textarea wire:model="description" rows="7" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all resize-none shadow-sm"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

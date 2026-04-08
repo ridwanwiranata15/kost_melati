@@ -3,48 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Kost Asri</title>
+    <title>{{ $title ?? 'Dashboard Kost Asri' }}</title>
 
-    {{-- Tailwind CSS --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Vite for Tailwind 4 and App JS --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    {{-- Flux UI Appearance (handles dark mode class on html) --}}
+    @fluxAppearance
 
-    {{-- Font Awesome & Google Fonts --}}
+    {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     {{-- Global Theme Script --}}
     @include('partials.theme-script')
-
-    {{-- KONFIGURASI TAILWIND --}}
-    <script>
-        const brandColors = {
-            light: '#3b82f6',
-            DEFAULT: '#3b82f6',
-            dark: '#1e3a8a',
-        };
-
-        window.tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        primary: {
-                            50: '#ecfdf5', 100: '#d1fae5', 500: '#10b981',
-                            600: '#059669', 700: '#047857', 900: '#064e3b'
-                        },
-                        dark: {
-                            bg: '#0f172a', card: '#1e293b', text: '#f8fafc'
-                        },
-                        brand: brandColors
-                    }
-                }
-            }
-        }
-    </script>
-
-    {{-- Alpine.js (must be before body, defer ensures it runs after DOM) --}}
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     {{-- x-cloak: hide elements before Alpine initializes --}}
     <style>[x-cloak] { display: none !important; }</style>
@@ -66,5 +37,8 @@
             </main>
         </div>
     </div>
+
+    {{-- Flux UI Scripts (handles Livewire and Alpine) --}}
+    @fluxScripts
 </body>
 </html>

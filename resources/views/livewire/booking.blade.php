@@ -74,21 +74,23 @@
             <input
                 wire:model.live.debounce.300ms="search"
                 type="text"
-                class="pl-10 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white"
+                class="pl-10 py-3 w-full rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all text-xs sm:text-sm"
                 placeholder="Cari Booking ID / Nama..."
             >
         </div>
 
         {{-- Filter Status --}}
-        <div class="w-full lg:w-48">
-            <select wire:model.live="filterStatus" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white">
-                <option value="">Semua Status</option>
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="checkin">Checkin</option>
-                <option value="checkout">Checkout</option>
-                <option value="cancelled">Cancelled</option>
-            </select>
+        <div class="flex flex-col lg:flex-row gap-4 w-full lg:w-auto flex-1 justify-end">
+            <div class="w-full lg:w-48">
+                <select wire:model.live="filterStatus" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all text-xs sm:text-sm">
+                    <option value="">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="checkin">Checkin</option>
+                    <option value="checkout">Checkout</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -173,7 +175,7 @@
                             {{-- Status Dropdown (Livewire Action) --}}
                             <td class="px-6 py-4 text-center">
                                 <div class="relative inline-block w-full max-w-[140px]">
-                                    <select wire:change="updateStatus({{ $booking->id }}, $event.target.value)"
+                                    <select x-on:change="$wire.updateStatus({{ $booking->id }}, $el.value)" wire:key="status-select-{{ $booking->id }}"
                                             class="block w-full rounded-lg border-0 py-1.5 pl-3 pr-8 text-xs font-medium cursor-pointer shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:leading-6 transition-colors
                                             {{ $booking->status == 'confirmed' ? 'bg-green-50 text-green-700 ring-green-200' :
                                              ($booking->status == 'cancelled' ? 'bg-red-50 text-red-700 ring-red-200' :
@@ -188,7 +190,7 @@
                                     </select>
 
                                     {{-- Loading Indicator --}}
-                                    <div wire:loading wire:target="updateStatus({{ $booking->id }}, $event.target.value)" class="absolute right-[-25px] top-1.5">
+                                    <div wire:loading wire:target="updateStatus" class="absolute right-[-25px] top-1.5">
                                         <i class="fas fa-circle-notch fa-spin text-primary-500 text-sm"></i>
                                     </div>
                                 </div>

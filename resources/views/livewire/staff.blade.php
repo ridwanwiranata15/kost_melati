@@ -8,28 +8,9 @@
         </div>
     </div>
 
-    {{-- SECTION 3: Filters, Search & Add Button --}}
-    <div class="bg-white dark:bg-dark-card rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col lg:flex-row justify-between gap-4 items-center">
-
-        <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto flex-1">
-            {{-- Search Bar --}}
-            <div class="relative w-full sm:w-64">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-gray-400"></i>
-                </div>
-                <input wire:model.live.debounce.300ms="search" type="text" class="pl-10 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white" placeholder="Cari staff...">
-            </div>
-        </div>
-
-        {{-- Add Button --}}
-        <button wire:click="openCreateModal" class="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-primary-500/30 whitespace-nowrap">
-            <i class="fas fa-plus mr-2"></i> <span class="hidden sm:inline">Tambah Staff</span><span class="sm:hidden">Tambah</span>
-        </button>
-    </div>
-
     {{-- Success Message --}}
     @if (session()->has('message'))
-        <div class="p-4 rounded-lg bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800 flex items-center gap-3 animate-fade-in">
+        <div class="p-4 rounded-xl bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800 flex items-center gap-3 animate-fade-in">
             <div class="p-2 bg-primary-100 dark:bg-primary-800 rounded-full text-primary-600 dark:text-primary-300">
                 <i class="fas fa-check"></i>
             </div>
@@ -37,8 +18,23 @@
         </div>
     @endif
 
-    {{-- SECTION 4: Table --}}
+    {{-- SECTION 4: Table and Actions --}}
     <div class="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        
+        {{-- Table Header & Actions --}}
+        <div class="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gray-50/30 dark:bg-gray-800/30">
+            <div class="relative w-full md:w-64">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input wire:model.live.debounce.300ms="search" type="text" class="pl-10 py-2.5 w-full rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all shadow-sm" placeholder="Cari staff...">
+            </div>
+
+            <button wire:click="openCreateModal" class="w-full md:w-auto flex items-center justify-center px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-sm font-medium transition-colors shadow-sm shadow-primary-500/30 whitespace-nowrap">
+                <i class="fas fa-plus mr-2"></i> Tambah Staff
+            </button>
+        </div>
+
         <div class="overflow-x-auto w-full">
             <table class="w-full text-left border-collapse whitespace-nowrap sm:whitespace-normal">
                 <thead>
@@ -99,31 +95,54 @@
     </div>
 
     {{-- MODAL CREATE STAFF --}}
-    @if($isCreateModalOpen)
-    <div class="fixed inset-0 z-50 overflow-y-auto">
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" wire:click="closeCreateModal"></div>
+    <div x-data="{ open: @entangle('isCreateModalOpen') }"
+         x-show="open"
+         x-cloak
+         @keydown.escape.window="open = false"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         aria-labelledby="modal-title" role="dialog" aria-modal="true">
+         
+        {{-- Background overlay --}}
+        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             x-show="open"
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="open = false"></div>
+
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
+            {{-- Modal Panel --}}
+            <div x-show="open"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
                 <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">Tambah Staff</h3>
-                    <button type="button" wire:click="closeCreateModal" class="text-gray-400 hover:text-gray-500"><i class="fas fa-times"></i></button>
+                    <button type="button" @click="open = false" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
                 </div>
 
                 <form wire:submit.prevent="save">
                     <div class="px-4 py-5 sm:p-6 space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Nama Lengkap</label>
-                            <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                            <input type="text" wire:model="name" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Email</label>
-                            <input type="email" wire:model="email" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                            <input type="email" wire:model="email" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('email') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Role</label>
-                            <select wire:model.live="role" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                            <select wire:model.live="role" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                                 <option value="caretaker">Caretaker</option>
                                 <option value="admin">Super Admin</option>
                             </select>
@@ -150,38 +169,60 @@
             </div>
         </div>
     </div>
-    @endif
 
     {{-- MODAL EDIT STAFF --}}
-    @if($isEditModalOpen)
-    <div class="fixed inset-0 z-50 overflow-y-auto">
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" wire:click="closeEditModal"></div>
+    <div x-data="{ open: @entangle('isEditModalOpen') }"
+         x-show="open"
+         x-cloak
+         @keydown.escape.window="open = false"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         aria-labelledby="modal-title" role="dialog" aria-modal="true">
+         
+        {{-- Background overlay --}}
+        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             x-show="open"
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="open = false"></div>
+
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
+            {{-- Modal Panel --}}
+            <div x-show="open"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
                 <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">Edit Staff</h3>
-                    <button type="button" wire:click="closeEditModal" class="text-gray-400 hover:text-gray-500"><i class="fas fa-times"></i></button>
+                    <button type="button" @click="open = false" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
                 </div>
 
                 <form wire:submit.prevent="update">
                     <div class="px-4 py-5 sm:p-6 space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Nama Lengkap</label>
-                            <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                            <input type="text" wire:model="name" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Email</label>
-                            <input type="email" wire:model="email" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                            <input type="email" wire:model="email" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('email') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Password (Kosongkan jika tidak diubah)</label>
-                            <input type="password" wire:model="password" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Password (Kosongkan jika tidak diubah)</label>
+                            <input type="password" wire:model="password" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Role</label>
-                            <select wire:model.live="role" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm">
+                            <select wire:model.live="role" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                                 <option value="caretaker">Caretaker</option>
                                 <option value="admin">Super Admin</option>
                             </select>
@@ -208,5 +249,4 @@
             </div>
         </div>
     </div>
-    @endif
 </div>

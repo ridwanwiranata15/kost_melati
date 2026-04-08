@@ -138,14 +138,14 @@
                         {{-- Input Name --}}
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Judul Foto</label>
-                            <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500" placeholder="Contoh: Tampak Depan">
+                            <input type="text" wire:model="name" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all" placeholder="Contoh: Tampak Depan">
                             @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
                         {{-- Input Image --}}
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Upload File</label>
-                            <div class="mt-1 flex justify-center rounded-lg border border-dashed border-gray-300 dark:border-gray-600 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors relative">
+                            <div class="mt-1 flex justify-center rounded-xl border border-dashed border-gray-300 dark:border-gray-600 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors relative">
                                 <div class="text-center">
                                     @if ($image)
                                         <img src="{{ $image->temporaryUrl() }}" class="mx-auto h-24 w-auto rounded-lg object-cover mb-2 shadow-sm">
@@ -171,7 +171,7 @@
                         {{-- Input Description --}}
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Deskripsi</label>
-                            <textarea wire:model="description" rows="3" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500 resize-none" placeholder="Keterangan foto..."></textarea>
+                            <textarea wire:model="description" rows="3" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all resize-none" placeholder="Keterangan foto..."></textarea>
                             @error('description') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -234,7 +234,7 @@
                         {{-- Input Name --}}
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Judul Foto</label>
-                            <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                            <input type="text" wire:model="name" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-yellow-500 focus:border-yellow-500 dark:text-white transition-all">
                             @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -255,7 +255,7 @@
                                 </div>
 
                                 <div class="flex-1">
-                                    <label class="flex flex-col justify-center w-full h-20 px-4 transition bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg cursor-pointer hover:border-yellow-500">
+                                    <label class="flex flex-col justify-center w-full h-20 px-4 transition bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-xl cursor-pointer hover:border-yellow-500">
                                         <div class="flex items-center space-x-2">
                                             <i class="fas fa-cloud-upload-alt text-gray-400"></i>
                                             <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Klik untuk ganti</span>
@@ -270,7 +270,7 @@
                         {{-- Input Description --}}
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Deskripsi</label>
-                            <textarea wire:model="description" rows="3" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500 resize-none"></textarea>
+                            <textarea wire:model="description" rows="3" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-yellow-500 focus:border-yellow-500 dark:text-white transition-all resize-none"></textarea>
                             @error('description') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>

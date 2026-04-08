@@ -53,7 +53,7 @@ class Staff extends Component
         $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
-            'password' => Hash::make($this->password ?? 'password123'),
+            'password' => Hash::make($this->password ?? 'password'),
             'role' => $this->role,
             'status' => 'active',
         ]);

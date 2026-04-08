@@ -42,6 +42,12 @@
             }
         }
     </script>
+
+    {{-- Alpine.js (must be before body, defer ensures it runs after DOM) --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {{-- x-cloak: hide elements before Alpine initializes --}}
+    <style>[x-cloak] { display: none !important; }</style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 dark:bg-dark-bg dark:text-dark-text font-sans antialiased">

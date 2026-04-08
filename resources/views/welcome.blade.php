@@ -1268,13 +1268,24 @@
                 <li><a href="#lokasi" class="nav-link" onclick="toggleMenu()">Lokasi</a></li>
 
                 <div class="nav-btns">
-                    @if (auth()->check())
-                        <a href="{{ route('customer.profile') }}" class="btn btn-primary"><i class="fas fa-user"></i>
-                            Akun</a>
+                    @auth
+                        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'caretaker')
+                            {{-- Staff: tombol ke Dashboard --}}
+                            <a href="{{ route('dashboard') }}" class="btn btn-primary">
+                                <i class="fas fa-layout"></i>
+                                Dashboard
+                            </a>
+                        @else
+                            {{-- Customer: tombol ke Profil --}}
+                            <a href="{{ route('customer.profile') }}" class="btn btn-primary">
+                                <i class="fas fa-user"></i>
+                                Profil
+                            </a>
+                        @endif
                     @else
                         <a href="{{ route('login') }}" class="btn btn-outline">Masuk</a>
                         <a href="{{ route('register') }}" class="btn btn-primary">Daftar</a>
-                    @endif
+                    @endauth
                 </div>
             </ul>
         </div>

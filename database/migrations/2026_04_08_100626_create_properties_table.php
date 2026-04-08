@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rooms', function (Blueprint $table) {
+        Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->string('room_number');
             $table->string('name');
-            $table->enum('status', ['available', 'unavailable', 'repair']);
-            $table->string('facility');
+            $table->string('slug')->unique();
+            $table->string('location')->nullable(); // Sumatera, Jawa, etc.
+            $table->text('address')->nullable();
+            $table->text('description')->nullable();
             $table->string('image')->nullable();
-            $table->string('description');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rooms');
+        Schema::dropIfExists('properties');
     }
 };

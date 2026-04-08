@@ -14,41 +14,76 @@ class Dashboard extends Component
 {
     public function render()
     {
+        $user = auth()->user();
+        $managedPropertyIds = $user->isCaretaker() ? $user->properties()->pluck('properties.id')->toArray() : null;
+
         // 1. CARD STATS
-        $totalRooms = Room::count();
-        // Asumsi: Penghuni adalah user dengan role 'resident' atau 'member'
-        $totalResidents = User::where('role', 'member')->count();
-        // Booking status pending
-        $totalBookings = Booking::where('status', 'pending')->count();
+        $roomsQuery = Room::query();
+        if ($managedPropertyIds) $roomsQuery->whereIn('property_id', $managedPropertyIds);
+        $totalRooms = $roomsQuery->count();
+
+        // Asumsi: Penghuni adalah user dengan role 'member'
+        // Untuk caretaker, mungkin hanya penghuni yang menyewa di properti mereka?
+        // Tapi relasi user -> property tidak langsung lewat User table.
+        // Penghuni terkait properti lewat Booking -> Room -> Property.
+        $totalResidents = User::where('role', 'member');
+        if ($managedPropertyIds) {
+            $totalResidents->whereHas('bookings.room', function($q) use ($managedPropertyIds) {
+                $q->whereIn('property_id', $managedPropertyIds);
+            });
+        }
+        $totalResidents = $totalResidents->count();
+
+        $bookingsQuery = Booking::where('status', 'pending');
+        if ($managedPropertyIds) {
+            $bookingsQuery->whereHas('room', function($q) use ($managedPropertyIds) {
+                $q->whereIn('property_id', $managedPropertyIds);
+            });
+        }
+        $totalBookings = $bookingsQuery->count();
 
         // 2. DATA TRANSAKSI TERBARU (TABLE)
-        $recentTransactions = Transaction::with(['user', 'room']) // Eager load relasi
-            ->latest()
-            ->take(5)
-            ->get();
+        $transactionsQuery = Transaction::with(['user', 'room.property']);
+        if ($managedPropertyIds) {
+            $transactionsQuery->whereHas('room', function($q) use ($managedPropertyIds) {
+                $q->whereIn('property_id', $managedPropertyIds);
+            });
+        }
+        $recentTransactions = $transactionsQuery->latest()->take(5)->get();
 
         // 3. CHART DATA (Pendapatan Tahunan)
-        // Mengambil total 'nominal' (uang masuk) per bulan di tahun ini
-        $incomeData = Transaction::select(
+        $incomeQuery = Transaction::select(
                 DB::raw('SUM(nominal) as total'),
-                DB::raw('MONTH(created_at) as month')
-            )
-            ->whereYear('created_at', date('Y'))
+                DB::raw('MONTH(transactions.created_at) as month')
+            );
+        if ($managedPropertyIds) {
+            $incomeQuery->whereHas('room', function($q) use ($managedPropertyIds) {
+                $q->whereIn('property_id', $managedPropertyIds);
+            });
+        }
+        $incomeData = $incomeQuery->whereYear('transactions.created_at', date('Y'))
             ->groupBy('month')
             ->pluck('total', 'month')
             ->toArray();
 
-        // Mengisi bulan yang kosong dengan 0
         $chartIncome = [];
         for ($i = 1; $i <= 12; $i++) {
             $chartIncome[] = $incomeData[$i] ?? 0;
         }
 
         // 4. CHART DATA (Perbandingan Lunas vs Hutang)
-        // Uang Masuk
-        $totalIncome = Transaction::sum('nominal');
-        // Sisa Hutang (Sesuai request: field 'amount' dianggap sisa hutang)
-        $totalDebt = Transaction::sum('amount');
+        $incomeSumQuery = Transaction::query();
+        $debtSumQuery = Transaction::query();
+        if ($managedPropertyIds) {
+            $incomeSumQuery->whereHas('room', function($q) use ($managedPropertyIds) {
+                $q->whereIn('property_id', $managedPropertyIds);
+            });
+            $debtSumQuery->whereHas('room', function($q) use ($managedPropertyIds) {
+                $q->whereIn('property_id', $managedPropertyIds);
+            });
+        }
+        $totalIncome = $incomeSumQuery->sum('nominal');
+        $totalDebt = $debtSumQuery->sum('amount');
 
         return view('livewire.dashboard', [
             'totalRooms' => $totalRooms,

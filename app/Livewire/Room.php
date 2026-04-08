@@ -20,8 +20,10 @@ class Room extends Component
     public $image;
     public $description;
     public $room_id;
+    public $property_id;
     public $search = '';
     public $filterStatus = '';
+    public $filterProperty = '';
     public $isCreateModalOpen = false;
     public $isEditModalOpen = false;
 
@@ -37,6 +39,7 @@ class Room extends Component
 
     // Define validation rules
     protected $rules = [
+        'property_id' => 'required|exists:properties,id',
         'number' => 'required|unique:rooms,room_number',
         'name' => 'required|string|max:255',
         'status' => 'required|in:available,unavailable,repair',
@@ -47,7 +50,7 @@ class Room extends Component
     public function openCreateModal()
     {
         $this->resetValidation();
-        $this->reset(['number', 'name', 'status', 'facility', 'image', 'description']);
+        $this->reset(['number', 'name', 'status', 'facility', 'image', 'description', 'property_id']);
         $this->isCreateModalOpen = true; // Buka modal via PHP
     }
 
@@ -75,6 +78,7 @@ class Room extends Component
 
         // 3. Create Record
         ModelsRoom::create([
+            "property_id" => $this->property_id,
             "room_number" => $this->number,
             "name"  => $this->name,
             "status"  => $this->status,
@@ -130,6 +134,7 @@ class Room extends Component
     {
         // Validasi Input
         $validatedData = $this->validate([
+            'property_id' => 'required|exists:properties,id',
             // unique:rooms,room_number,ID -> Cek unik tapi abaikan ID yang sedang diedit
             'number' => 'required|unique:rooms,room_number,' . $this->room_id,
             'name' => 'required',
@@ -162,6 +167,7 @@ class Room extends Component
 
         // Update Database
         $room->update([
+            'property_id' => $this->property_id,
             'room_number' => $this->number,
             'name' => $this->name,
             'status' => $this->status,
@@ -183,8 +189,16 @@ class Room extends Component
 
     public function render()
     {
+        $user = auth()->user();
+        
         // 1. Query Data Kamar dengan Filter
-        $query = ModelsRoom::query();
+        $query = ModelsRoom::query()->with('property');
+
+        // Role-based filtering
+        if ($user->isCaretaker()) {
+            $managedPropertyIds = $user->properties()->pluck('properties.id')->toArray();
+            $query->whereIn('property_id', $managedPropertyIds);
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -198,15 +212,33 @@ class Room extends Component
             $query->where('status', $this->filterStatus);
         }
 
+        if ($this->filterProperty) {
+            $query->where('property_id', $this->filterProperty);
+        }
+
         $rooms = $query->latest()->paginate(10);
 
         // 2. Hitung Statistik untuk Cards
-        $totalAvailable = ModelsRoom::where('status', 'available')->count();
-        $totalRepair = ModelsRoom::where('status', 'repair')->count();
-        $totalUnavailable = ModelsRoom::where('status', 'unavailable')->count();
+        $statsQuery = ModelsRoom::query();
+        if ($user->isCaretaker()) {
+            $managedPropertyIds = $user->properties()->pluck('properties.id')->toArray();
+            $statsQuery->whereIn('property_id', $managedPropertyIds);
+        }
+
+        $totalAvailable = (clone $statsQuery)->where('status', 'available')->count();
+        $totalRepair = (clone $statsQuery)->where('status', 'repair')->count();
+        $totalUnavailable = (clone $statsQuery)->where('status', 'unavailable')->count();
+
+        // 3. Ambil list property untuk dropdown (jika admin semua, jika caretaker yang dia kelola)
+        if ($user->isAdmin()) {
+            $properties = \App\Models\Property::all();
+        } else {
+            $properties = $user->properties;
+        }
 
         return view('livewire.room', [
             'rooms' => $rooms,
+            'properties' => $properties,
             'totalAvailable' => $totalAvailable,
             'totalRepair' => $totalRepair,
             'totalUnavailable' => $totalUnavailable,

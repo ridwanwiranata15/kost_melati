@@ -67,16 +67,23 @@ class User extends Authenticatable
     }
 
     public function bookings() // Gunakan nama plural (bookings) untuk relasi hasMany
-{
-    // Relasi yang benar jika user bisa punya banyak booking
-    return $this->hasMany(Booking::class);
-}
+    {
+        // Relasi yang benar jika user bisa punya banyak booking
+        return $this->hasMany(Booking::class);
+    }
 
-// // Catatan: Anda mungkin perlu menghapus atau memperbaiki fungsi hasConfirmedBooking
-// // yang saat ini menggunakan relasi tunggal.
-// /*
-// public function hasConfirmedBooking(): bool
-// {
-//     return $this->booking && $this->booking->status === 'confirmed';
-// }
+    public function properties()
+    {
+        return $this->belongsToMany(Property::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isCaretaker(): bool
+    {
+        return $this->role === 'caretaker';
+    }
 }

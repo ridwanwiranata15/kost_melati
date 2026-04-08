@@ -83,14 +83,29 @@
             <span class="font-medium">Manajemen Staff</span>
         </a>
         @endif
+
+        {{-- Profil & Settings (semua role) --}}
+        <div class="pt-3 pb-1 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Akun</div>
+        <a href="{{ route('customer.profile') }}" wire:navigate
+            class="flex items-center px-4 py-2.5 {{ request()->routeIs('customer.profile') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
+            <i class="fas fa-user-circle w-6"></i>
+            <span class="font-medium">Profil Saya</span>
+        </a>
+        <a href="{{ route('home') }}"
+            class="flex items-center px-4 py-2.5 {{ $inactiveClass }} rounded-lg transition-colors">
+            <i class="fas fa-globe w-6"></i>
+            <span class="font-medium">Halaman Utama</span>
+        </a>
     </nav>
-    <div class="p-1 border-t border-gray-200 dark:border-gray-700">
-            <form action="{{ route('logout') }}" method="post">
-                @csrf
-                <button class="w-full flex items-center px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
-                    <i class="fas fa-sign-out-alt w-6"></i>
-                    <span class="font-medium">Logout</span>
-                </button>
-            </form>
-        </div>
+
+    {{-- Logout di sidebar (backup, sama dengan di navbar dropdown) --}}
+    <div class="p-2 border-t border-gray-200 dark:border-gray-700">
+        <form action="{{ route('logout') }}" method="post">
+            @csrf
+            <button class="w-full flex items-center px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                <i class="fas fa-sign-out-alt w-6"></i>
+                <span class="font-medium">Logout</span>
+            </button>
+        </form>
+    </div>
 </aside>

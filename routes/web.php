@@ -68,6 +68,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Volt::route('user/{id}', 'detail-user')->name('admin.user.detail');
     Volt::route('booking', 'booking')->name('admin.booking');
     Volt::route('gallery', 'gallery')->name('admin.gallery');
+    
+    // Manajemen Properti & Staff (Super Admin Only)
+    Route::middleware(['superadmin'])->group(function () {
+        Route::get('properties', \App\Livewire\Property::class)->name('admin.properties');
+        Route::get('staff', \App\Livewire\Staff::class)->name('admin.staff');
+    });
 });
 Route::middleware(['auth'])->group(function(){
 

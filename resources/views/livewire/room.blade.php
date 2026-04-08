@@ -68,6 +68,16 @@
                     <option value="repair">Perbaikan</option>
                 </select>
             </div>
+
+            {{-- Filter Properti --}}
+            <div class="w-full sm:w-48">
+                <select wire:model.live="filterProperty" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white">
+                    <option value="">Semua Properti</option>
+                    @foreach($properties as $prop)
+                        <option value="{{ $prop->id }}">{{ $prop->name }}</p>
+                    @endforeach
+                </select>
+            </div>
         </div>
 
         {{-- Add Button (Memicu method PHP openCreateModal) --}}
@@ -114,6 +124,7 @@
                                     </div>
                                     <div>
                                         <p class="font-semibold text-gray-800 dark:text-white">{{ $room->name }}</p>
+                                        <p class="text-[10px] text-primary-600 dark:text-primary-400 font-medium uppercase tracking-tighter">{{ $room->property->name ?? 'Tanpa Properti' }}</p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 hidden sm:block">{{ Str::limit($room->description, 30) }}</p>
                                     </div>
                                 </div>
@@ -206,6 +217,17 @@
                                 </select>
                                 @error('status') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Properti (Lokasi)</label>
+                                <select wire:model="property_id" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500">
+                                    <option value="">Pilih Properti</option>
+                                    @foreach($properties as $prop)
+                                        <option value="{{ $prop->id }}">{{ $prop->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('property_id') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                            </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Fasilitas</label>
                                 <input type="text" wire:model="facility" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500" placeholder="AC, WiFi...">
@@ -293,6 +315,17 @@
                                     <option value="repair">Perbaikan</option>
                                 </select>
                                 @error('status') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Properti (Lokasi)</label>
+                                <select wire:model="property_id" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                                    <option value="">Pilih Properti</option>
+                                    @foreach($properties as $prop)
+                                        <option value="{{ $prop->id }}">{{ $prop->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('property_id') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Fasilitas</label>

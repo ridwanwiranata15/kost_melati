@@ -60,10 +60,20 @@ class Booking extends Component
 
     public function render()
     {
-        // 1. Query Data
-        $query = BookingModel::with(['user', 'room']); // Eager load relasi biar ringan
+        $user = auth()->user();
+        $managedPropertyIds = $user->isCaretaker() ? $user->properties()->pluck('properties.id')->toArray() : null;
 
-        // Search Logic (Cari kode booking atau nama user)
+        // 1. Query Data
+        $query = BookingModel::with(['user', 'room.property']);
+
+        // Role-based filtering
+        if ($managedPropertyIds) {
+            $query->whereHas('room', function($q) use ($managedPropertyIds) {
+                $q->whereIn('property_id', $managedPropertyIds);
+            });
+        }
+
+        // Search Logic
         if ($this->search) {
             $query->where(function($q) {
                 $q->where('booking_code', 'like', '%' . $this->search . '%')
@@ -81,12 +91,19 @@ class Booking extends Component
         $bookings = $query->latest()->paginate(10);
 
         // 2. Hitung Statistik untuk 5 Card
+        $statsQuery = BookingModel::query();
+        if ($managedPropertyIds) {
+            $statsQuery->whereHas('room', function($q) use ($managedPropertyIds) {
+                $q->whereIn('property_id', $managedPropertyIds);
+            });
+        }
+
         $stats = [
-            'pending'   => BookingModel::where('status', 'pending')->count(),
-            'confirmed' => BookingModel::where('status', 'confirmed')->count(),
-            'checkin'   => BookingModel::where('status', 'checkin')->count(),
-            'checkout'  => BookingModel::where('status', 'checkout')->count(),
-            'cancelled' => BookingModel::where('status', 'cancelled')->count(),
+            'pending'   => (clone $statsQuery)->where('status', 'pending')->count(),
+            'confirmed' => (clone $statsQuery)->where('status', 'confirmed')->count(),
+            'checkin'   => (clone $statsQuery)->where('status', 'checkin')->count(),
+            'checkout'  => (clone $statsQuery)->where('status', 'checkout')->count(),
+            'cancelled' => (clone $statsQuery)->where('status', 'cancelled')->count(),
         ];
 
         return view('livewire.booking', compact('bookings', 'stats'));

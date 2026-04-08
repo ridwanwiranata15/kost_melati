@@ -2,7 +2,7 @@
 <html lang="id">
 
 <head>
-
+    @include('partials.theme-script')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Primary Meta Tags -->
     <meta name="title" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP">
@@ -25,7 +25,6 @@
     <meta name="twitter:description" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP.">
     <meta name="twitter:image" content="{{ url('storage/default.jpg') }}">
     <link rel="canonical" href="{{ url()->current() }}">
-    <title>Kost El Sholeha - Kost terdekat dari IAIN CURUP</title>
     <title>Kost El Sholeha - Kost terdekat dari IAIN CURUP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />

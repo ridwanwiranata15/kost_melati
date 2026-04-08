@@ -17,29 +17,34 @@
         </button>
     </div>
 
+    @php
+        $activeClass = 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400';
+        $inactiveClass = 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700';
+    @endphp
+
     <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         <a href="{{ route('dashboard') }}" wire:navigate
-            class="flex items-center px-4 py-3 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-lg transition-colors">
+            class="flex items-center px-4 py-3 {{ request()->routeIs('dashboard') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
             <i class="fas fa-home w-6"></i>
             <span class="font-medium">Dashboard</span>
         </a>
         <a href="{{ route('admin.room') }}" wire:navigate
-            class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            class="flex items-center px-4 py-3 {{ request()->routeIs('admin.room') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
             <i class="fas fa-door-open w-6"></i>
             <span class="font-medium">Data Kamar</span>
         </a>
         <a href="{{ route('admin.user') }}" wire:navigate
-            class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            class="flex items-center px-4 py-3 {{ request()->routeIs('admin.user') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
             <i class="fas fa-users w-6"></i>
             <span class="font-medium">Penghuni</span>
         </a>
         <a href="{{ route('admin.booking') }}" wire:navigate
-            class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-            <i class="fa fa-book-open w-6"></i> {{-- Tambah w-6 agar rata --}}
+            class="flex items-center px-4 py-3 {{ request()->routeIs('admin.booking') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
+            <i class="fa fa-book-open w-6"></i>
             <span class="font-medium">Booking</span>
         </a>
         <a href="{{ route('admin.gallery') }}" wire:navigate
-            class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            class="flex items-center px-4 py-3 {{ request()->routeIs('admin.gallery') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
             <i class="fas fa-file-invoice-dollar w-6"></i>
             <span class="font-medium">Galeri</span>
         </a>

@@ -864,15 +864,385 @@
             }
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0
-            }
+        /* =============================================
+           ROOM CARDS v2 — Premium Redesign
+        ============================================= */
+        .kamar-section-wrapper {
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+            padding: 60px 0;
+        }
 
-            to {
-                opacity: 1
+        /* Filter Tabs dengan lokasi */
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .filter-divider {
+            width: 1px;
+            background: #e2e8f0;
+            margin: 0 4px;
+        }
+
+        /* Redesigned Card */
+        .kamar-card-v2 {
+            min-width: 300px;
+            max-width: 300px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+            position: relative;
+            scroll-snap-align: center;
+            border: 1px solid rgba(241,245,249,0.8);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .kamar-card-v2:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+        }
+
+        /* Image area */
+        .kc-img {
+            position: relative;
+            height: 190px;
+            overflow: hidden;
+        }
+
+        .kc-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .kamar-card-v2:hover .kc-img img {
+            transform: scale(1.05);
+        }
+
+        .kc-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.5) 100%);
+        }
+
+        /* Badges on image */
+        .kc-badges {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .kc-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            backdrop-filter: blur(8px);
+            letter-spacing: 0.02em;
+        }
+
+        .kc-status.available {
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+        }
+
+        .kc-status.unavailable {
+            background: rgba(239, 68, 68, 0.88);
+            color: white;
+        }
+
+        .kc-status.repair {
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+        }
+
+        .kc-location-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.92);
+            color: var(--dark);
+            backdrop-filter: blur(8px);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            max-width: 120px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        /* Bottom property label on image */
+        .kc-property-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 14px 8px;
+            color: white;
+        }
+
+        .kc-property-label small {
+            font-size: 0.72rem;
+            opacity: 0.85;
+            font-weight: 500;
+        }
+
+        .kc-property-label strong {
+            display: block;
+            font-size: 0.9rem;
+            margin-top: 1px;
+        }
+
+        /* Card Body */
+        .kc-body {
+            padding: 18px 18px 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .kc-room-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .kc-room-number {
+            font-size: 0.75rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .kc-price-tag {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .kc-price-tag .price-amount {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .kc-price-tag .price-unit {
+            font-size: 0.68rem;
+            color: var(--gray);
+        }
+
+        .kc-desc {
+            font-size: 0.85rem;
+            color: var(--gray);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        /* Facilities chips */
+        .kc-facilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 14px;
+        }
+
+        .kc-fac-chip {
+            font-size: 0.68rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: var(--gray-light);
+            color: var(--gray);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Price tabs */
+        .kc-price-tabs {
+            display: flex;
+            background: #f1f5f9;
+            padding: 3px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            gap: 2px;
+        }
+
+        .kc-tab {
+            flex: 1;
+            text-align: center;
+            padding: 7px 4px;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .kc-tab.active {
+            background: white;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .kc-tab .t-dur {
+            font-size: 0.65rem;
+            color: var(--gray);
+            font-weight: 600;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .kc-tab .t-val {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: block;
+        }
+
+        .kc-tab.active .t-val {
+            color: var(--primary);
+        }
+
+        /* Card actions / footer */
+        .kc-footer {
+            padding: 14px 18px 18px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .kc-btn-book {
+            flex: 1;
+            padding: 11px 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .kc-btn-book.available {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,168,89,0.25);
+        }
+
+        .kc-btn-book.available:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(0,168,89,0.35);
+        }
+
+        .kc-btn-book.full {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .kc-btn-book.repair {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .kc-btn-book.guest {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,168,89,0.25);
+        }
+
+        .kc-btn-book.guest:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .kc-btn-wa {
+            width: 42px;
+            height: 42px;
+            background: #f0fdf4;
+            color: #16a34a;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            cursor: pointer;
+            border: 1px solid #bbf7d0;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+
+        .kc-btn-wa:hover {
+            background: #16a34a;
+            color: white;
+            border-color: #16a34a;
+        }
+
+        /* Alert states redesigned */
+        .kc-alert {
+            margin: 0 0 14px;
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kc-alert.pending {
+            background: #fef9c3;
+            color: #854d0e;
+            border: 1px solid #fde68a;
+        }
+
+        .kc-alert.booked {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        @media (max-width: 768px) {
+            .kamar-card-v2 {
+                min-width: 82vw;
+                max-width: 82vw;
             }
         }
+        /* ============================================= */
+
     </style>
 </head>
 
@@ -940,125 +1310,218 @@
         </div>
     </section>
 
-    <section class="section" id="kamar">
+    <section class="section" id="kamar" style="padding-top: 60px; padding-bottom: 20px;">
         <div class="sec-header">
             <h2>Pilihan Kamar</h2>
-            <p>Geser untuk melihat pilihan kamar terbaik kami.</p>
+            <p>Temukan kamar terbaik di lokasi pilihan Anda. Geser untuk melihat semua pilihan.</p>
         </div>
 
-        <div class="filters">
-            <button class="filter-btn active" onclick="filterKamar('all')">Semua</button>
-            <button class="filter-btn" onclick="filterKamar('available')">Tersedia</button>
-            <button class="filter-btn" onclick="filterKamar('unavailable')">Penuh</button>
+        {{-- Filter Status + Lokasi --}}
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 28px;">
+
+            {{-- Filter Status --}}
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="filterKamar('all', this)">Semua</button>
+                <button class="filter-btn" onclick="filterKamar('available', this)"><i class="fas fa-check-circle" style="color:#22c55e; font-size:0.75rem"></i> Tersedia</button>
+                <button class="filter-btn" onclick="filterKamar('unavailable', this)"><i class="fas fa-lock" style="color:#ef4444; font-size:0.75rem"></i> Penuh</button>
+                <button class="filter-btn" onclick="filterKamar('repair', this)"><i class="fas fa-tools" style="color:#f59e0b; font-size:0.75rem"></i> Perbaikan</button>
+            </div>
+
+            {{-- Filter Lokasi / Properti --}}
+            @php
+                $uniqueLocations = $rooms->map(fn($r) => $r->property)->filter()->unique('id');
+            @endphp
+            @if($uniqueLocations->count() > 1)
+            <div class="filter-group" id="locationFilters">
+                <button class="filter-btn active" onclick="filterLocation('all', this)"><i class="fas fa-globe-asia" style="font-size:0.75rem"></i> Semua Lokasi</button>
+                @foreach($uniqueLocations as $loc)
+                <button class="filter-btn" onclick="filterLocation('{{ $loc->slug }}', this)">
+                    <i class="fas fa-map-marker-alt" style="font-size:0.75rem"></i> {{ $loc->name }}
+                </button>
+                @endforeach
+            </div>
+            @endif
         </div>
 
-        <div class="kamar-scroll-area" id="kamarContainer">
+        <div class="kamar-scroll-area" id="kamarContainer" style="gap: 20px; padding: 16px 16px 40px;">
             @forelse($rooms as $item)
-                <div class="kamar-card" data-status="{{ $item->status }}">
-                    {{-- Bagian Gambar Tetap Sama --}}
-                    <div class="kamar-img-box">
-                        <div class="status-badge {{ $item->status }}">
-                            @if ($item->status == 'available')
-                                <i class="fas fa-check"></i> Tersedia
-                            @else
-                                <i class="fas fa-lock"></i> Penuh
+                @php
+                    $property = $item->property;
+                    $facilityChips = $item->facility ? collect(explode(',', $item->facility))->take(3) : collect([]);
+                @endphp
+                <div class="kamar-card-v2"
+                     data-status="{{ $item->status }}"
+                     data-property-slug="{{ $property?->slug ?? 'tanpa-lokasi' }}">
+
+                    {{-- Image --}}
+                    <div class="kc-img">
+                        <img src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80' }}"
+                            alt="Kamar {{ $item->room_number }}" loading="lazy">
+                        <div class="kc-img-overlay"></div>
+
+                        {{-- Top badges --}}
+                        <div class="kc-badges">
+                            <span class="kc-status {{ $item->status }}">
+                                @if($item->status == 'available')
+                                    <i class="fas fa-check"></i> Tersedia
+                                @elseif($item->status == 'repair')
+                                    <i class="fas fa-tools"></i> Perbaikan
+                                @else
+                                    <i class="fas fa-lock"></i> Penuh
+                                @endif
+                            </span>
+                            @if($property)
+                            <span class="kc-location-badge">
+                                <i class="fas fa-map-marker-alt" style="color: var(--primary); font-size: 0.6rem;"></i>
+                                {{ $property->location ?? $property->name }}
+                            </span>
                             @endif
                         </div>
-                        <img src="{{ $item->image ? asset('storage/' . $item->image) : 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' }}"
-                            loading="lazy">
+
+                        {{-- Bottom property label --}}
+                        @if($property)
+                        <div class="kc-property-label">
+                            <small>Properti</small>
+                            <strong>{{ $property->name }}</strong>
+                        </div>
+                        @endif
                     </div>
 
-                    <div class="kamar-body">
-                        <div class="kamar-title">
-                            <h3>Kamar {{ $item->room_number }}</h3>
-                            <span class="kamar-price">Rp 1.5jt</span>
+                    {{-- Body --}}
+                    <div class="kc-body">
+                        <div class="kc-header">
+                            <div>
+                                <p class="kc-room-name">{{ $item->name ?: 'Kamar Kost' }}</p>
+                                <p class="kc-room-number">No. {{ $item->room_number }}</p>
+                            </div>
+                            <div class="kc-price-tag">
+                                <span class="price-amount">1.5Jt</span>
+                                <span class="price-unit">/bulan</span>
+                            </div>
                         </div>
-                        <p class="kamar-desc">{{ $item->description }}</p>
 
-                        {{-- LOGIKA PENGKONDISIAN --}}
-                        @guest
-                            {{-- KONDISI 1: BELUM LOGIN --}}
-                            <div class="alert-box"
-                                style="background: #f0f0f0; padding: 10px; border-radius: 8px; text-align: center; margin-top: 10px;">
-                                <p style="font-size: 12px; margin-bottom: 5px; color: #666;">Silahkan login untuk memesan
-                                </p>
-                                <a href="{{ route('login') }}" class="btn btn-primary"
-                                    style="width:100%; display:block; text-decoration:none; line-height: 30px;">Login
-                                    Sekarang</a>
+                        @if($item->description)
+                        <p class="kc-desc">{{ $item->description }}</p>
+                        @endif
+
+                        @if($facilityChips->count())
+                        <div class="kc-facilities">
+                            @foreach($facilityChips as $fac)
+                            <span class="kc-fac-chip"><i class="fas fa-check" style="color:var(--primary);font-size:0.6rem"></i> {{ trim($fac) }}</span>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        {{-- Status khusus: Perbaikan --}}
+                        @if($item->status == 'repair')
+                            <div class="kc-alert" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; margin-bottom:0;">
+                                <i class="fas fa-tools"></i> Kamar sedang dalam perbaikan
+                            </div>
+                        @elseif($item->status == 'unavailable')
+                            <div class="kc-alert" style="background:#fee2e2; color:#991b1b; border:1px solid #fecaca; margin-bottom:0;">
+                                <i class="fas fa-lock"></i> Kamar sudah terisi penuh
                             </div>
                         @else
-                            {{-- Cek apakah user sudah booking kamar INI --}}
-                            {{-- Asumsi relasi user ke bookings bernama 'bookings' --}}
+                            {{-- Price Tabs (hanya tampil jika tersedia) --}}
+                            @guest
+                            {{-- Guest: hanya tampilkan durasi tanpa form --}}
+                            <div class="kc-price-tabs">
+                                <button type="button" class="kc-tab active" onclick="kcSelectTab(this)">
+                                    <span class="t-dur">3 Bln</span>
+                                    <span class="t-val">4.5 Jt</span>
+                                </button>
+                                <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
+                                    <span class="t-dur">6 Bln</span>
+                                    <span class="t-val">9 Jt</span>
+                                </button>
+                                <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
+                                    <span class="t-dur">1 Thn</span>
+                                    <span class="t-val">18 Jt</span>
+                                </button>
+                            </div>
+                            @else
                             @php
                                 $alreadyBooked = Auth::user()
                                     ->bookings()
                                     ->where('room_id', $item->id)
-                                    ->where('status', '!=', 'cancelled')
-                                    ->first(); // Ambil satu hasil, jika ada.
+                                    ->whereNotIn('status', ['cancelled'])
+                                    ->exists();
                             @endphp
-
-                            @if (Auth::user()->status == 'pending')
-                                {{-- KONDISI 2: USER STATUS PENDING --}}
-                                <div class="alert-box"
-                                    style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px; border: 1px solid #ffeeba;">
-                                    <i class="fas fa-clock"></i> Akun Menunggu Verifikasi
+                            @if(!$alreadyBooked && Auth::user()->status != 'pending')
+                            <form id="form-room-{{ $item->id }}" action="{{ route('checkout') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="room_id" value="{{ $item->id }}">
+                                <div class="kc-price-tabs">
+                                    <button type="button" class="kc-tab active" onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 3)">
+                                        <span class="t-dur">3 Bln</span>
+                                        <span class="t-val">4.5 Jt</span>
+                                    </button>
+                                    <button type="button" class="kc-tab" onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 6)">
+                                        <span class="t-dur">6 Bln</span>
+                                        <span class="t-val">9 Jt</span>
+                                    </button>
+                                    <button type="button" class="kc-tab" onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 12)">
+                                        <span class="t-dur">1 Thn</span>
+                                        <span class="t-val">18 Jt</span>
+                                    </button>
                                 </div>
-                            @elseif($alreadyBooked)
-                                {{-- KONDISI 3: SUDAH BOOKING KAMAR INI --}}
-                                <div class="alert-box"
-                                    style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb;">
-                                    <i class="fas fa-check-circle"></i> Anda sudah booking kamar ini
+                                <input type="hidden" name="choose_month" id="month-{{ $item->id }}" value="3">
+                            </form>
+                            @endif
+                            @endguest
+                        @endif
+                    </div>
+
+                    {{-- Footer / Actions --}}
+                    <div class="kc-footer">
+                        @if($item->status == 'repair')
+                            <button class="kc-btn-book repair" style="flex:1" disabled>
+                                <i class="fas fa-tools"></i> Dalam Perbaikan
+                            </button>
+                        @elseif($item->status == 'unavailable')
+                            <button class="kc-btn-book full" style="flex:1" disabled>
+                                <i class="fas fa-lock"></i> Tidak Tersedia
+                            </button>
+                        @else
+                            @guest
+                            <a href="{{ route('login') }}" class="kc-btn-book guest" style="text-decoration:none">
+                                <i class="fas fa-calendar-check"></i> Pesan Sekarang
+                            </a>
+                            @else
+                            @if(Auth::user()->status == 'pending')
+                                <div class="kc-alert pending" style="flex:1; margin:0; justify-content: center;">
+                                    <i class="fas fa-clock"></i> Akun belum diverifikasi
+                                </div>
+                            @elseif($alreadyBooked ?? false)
+                                <div class="kc-alert booked" style="flex:1; margin:0; justify-content: center;">
+                                    <i class="fas fa-check-circle"></i> Sudah Dipesan
                                 </div>
                             @else
-                                {{-- KONDISI 4: USER AKTIF & BELUM BOOKING (TAMPILKAN FORM) --}}
-                                <form action="{{ route('checkout') }}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="room_id" value="{{ $item->id }}">
-
-                                    <div class="price-tabs">
-                                        <div class="tab-item active" onclick="selectPrice(this, '1.500.000')">
-                                            <input type="radio" name="choose_month" value="3" checked
-                                                style="display:none">
-                                            <span class="tab-dur">3 Bln</span>
-                                            <span class="tab-val">1.5 Jt</span>
-                                        </div>
-                                        <div class="tab-item" onclick="selectPrice(this, '3.000.000')">
-                                            <input type="radio" name="choose_month" value="6"
-                                                style="display:none">
-                                            <span class="tab-dur">6 Bln</span>
-                                            <span class="tab-val">3 Jt</span>
-                                        </div>
-                                        <div class="tab-item" onclick="selectPrice(this, '6.000.000')">
-                                            <input type="radio" name="choose_month" value="12"
-                                                style="display:none">
-                                            <span class="tab-dur">1 Thn</span>
-                                            <span class="tab-val">6 Jt</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="card-footer">
-                                        @if ($item->status == 'available')
-                                            <button type="submit" class="btn btn-primary"
-                                                style="width:100%">Pesan</button>
-                                        @else
-                                            <button type="button" class="btn btn-outline" disabled
-                                                style="width:100%; opacity:0.6">Penuh</button>
-                                        @endif
-                                        <button type="button" class="btn-wa-icon"
-                                            onclick="openWa('{{ $item->room_number }}')">
-                                            <i class="fab fa-whatsapp"></i>
-                                        </button>
-                                    </div>
-                                </form>
+                                <button type="submit" form="form-room-{{ $item->id }}" class="kc-btn-book available">
+                                    <i class="fas fa-calendar-check"></i> Pesan
+                                </button>
                             @endif
-                        @endguest
-                        {{-- AKHIR LOGIKA --}}
+                            @endguest
+                        @endif
 
+                        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Kamar%20{{ $item->room_number }}" target="_blank" class="kc-btn-wa">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
                     </div>
                 </div>
             @empty
-                <div style="text-align:center; width:100%; padding:20px;">Belum ada data kamar.</div>
+                <div style="text-align:center; width:100%; padding: 40px 20px;">
+                    <i class="fas fa-door-open" style="font-size: 3rem; color: #cbd5e1; display:block; margin-bottom: 16px;"></i>
+                    <p style="color: var(--gray); font-weight: 600;">Belum ada kamar tersedia.</p>
+                </div>
             @endforelse
+        </div>
+
+        {{-- Empty state saat filter --}}
+        <div id="emptyFilter" style="display:none; text-align:center; padding: 40px 20px;">
+            <i class="fas fa-search" style="font-size: 2.5rem; color: #cbd5e1; display:block; margin-bottom: 12px;"></i>
+            <p style="color: var(--gray); font-weight: 600;">Tidak ada kamar yang cocok dengan filter ini.</p>
+            <button onclick="filterKamar('all', document.querySelector('.filter-btn'))" style="margin-top:12px; background:var(--primary); color:white; border:none; padding: 8px 20px; border-radius: 20px; cursor:pointer; font-weight:600;">Reset Filter</button>
         </div>
     </section>
 
@@ -1253,26 +1716,66 @@
             card.querySelector('.kamar-price').innerText = "Rp " + displayPrice;
         }
 
-        // Filter Kamar
-        function filterKamar(status) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        // =============================================
+        // Room Cards v2 — JavaScript
+        // =============================================
 
-            const cards = document.querySelectorAll('.kamar-card');
+        // State for dual filters
+        let activeStatus = 'all';
+        let activeLocation = 'all';
+
+        function applyFilters() {
+            const cards = document.querySelectorAll('.kamar-card-v2');
+            let visible = 0;
             cards.forEach(card => {
-                const s = card.getAttribute('data-status');
-                if (status === 'all' || s === status) {
+                const status = card.getAttribute('data-status');
+                const propSlug = card.getAttribute('data-property-slug');
+                const matchStatus = activeStatus === 'all' || status === activeStatus;
+                const matchLocation = activeLocation === 'all' || propSlug === activeLocation;
+                if (matchStatus && matchLocation) {
                     card.style.display = 'flex';
+                    visible++;
                 } else {
                     card.style.display = 'none';
                 }
             });
+            const empty = document.getElementById('emptyFilter');
+            if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
         }
 
-        // WhatsApp Link
-        function openWa(room) {
-            window.open(`https://wa.me/6281234567890?text=Halo Admin, mau tanya kamar nomor ${room}`, '_blank');
+        function filterKamar(status, btn) {
+            activeStatus = status;
+            // Update active button — only within first filter-group (status)
+            if (btn) {
+                const group = btn.closest('.filter-group');
+                group.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            applyFilters();
         }
+
+        function filterLocation(slug, btn) {
+            activeLocation = slug;
+            if (btn) {
+                const group = btn.closest('.filter-group');
+                group.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            applyFilters();
+        }
+
+        // Tab selector for price tabs v2
+        // formId & months are optional (guest mode doesn't submit form)
+        function kcSelectTab(btn, formId, months) {
+            const tabs = btn.closest('.kc-price-tabs');
+            tabs.querySelectorAll('.kc-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            if (formId && months) {
+                const input = document.getElementById('month-' + formId.replace('form-room-', ''));
+                if (input) input.value = months;
+            }
+        }
+
 
         // Modal Logic
         function openModal(src) {

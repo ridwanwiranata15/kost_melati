@@ -14,7 +14,7 @@ use App\Http\Controllers\TransactionController;
 use App\Livewire\Dashboard as AdminDashboard;
 // Halaman utama
 Route::get('/', function () {
-    $rooms = Room::all();
+    $rooms = Room::with('property')->get();
     $galleries = Gallery::all();
     $testimonials = Testimonial::all();
     return view('welcome', compact('rooms', 'galleries', 'testimonials'));
@@ -99,7 +99,7 @@ Route::put('/profile/update', [ProfileController::class, 'update'])->name('profi
 
 
 Route::get('/kost-dekat-iain-curup', function () {
-    $rooms = Room::all();
+    $rooms = Room::with('property')->get();
     $galleries = Gallery::all();
     $testimonials = Testimonial::all();
     return view('welcome', compact('rooms', 'galleries', 'testimonials'));

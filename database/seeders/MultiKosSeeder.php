@@ -32,7 +32,7 @@ class MultiKosSeeder extends Seeder
         $penjagaJawa = User::updateOrCreate(['email' => 'penjaga.jawa@gmail.com'], [
             'name' => 'Penjaga Jawa',
             'phone' => '081234567890',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('password'),
             'role' => 'caretaker',
             'status' => 'active',
         ]);
@@ -41,7 +41,7 @@ class MultiKosSeeder extends Seeder
         $penjagaSumatera = User::updateOrCreate(['email' => 'penjaga.sumatera@gmail.com'], [
             'name' => 'Penjaga Sumatera',
             'phone' => '081234567891',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('password'),
             'role' => 'caretaker',
             'status' => 'active',
         ]);
@@ -50,7 +50,7 @@ class MultiKosSeeder extends Seeder
         $penjagaMulti = User::updateOrCreate(['email' => 'penjaga.multi@gmail.com'], [
             'name' => 'Penjaga Multi Lokasi',
             'phone' => '081234567892',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('password'),
             'role' => 'caretaker',
             'status' => 'active',
         ]);

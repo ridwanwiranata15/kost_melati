@@ -50,40 +50,44 @@
     {{-- SECTION 3: Filters, Search & Add Button --}}
     <div class="bg-white dark:bg-dark-card rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col lg:flex-row justify-between gap-4 items-center">
 
-        <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto flex-1">
-            {{-- Search Bar --}}
-            <div class="relative w-full sm:w-64">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-gray-400"></i>
+        <div class="flex flex-col lg:flex-row gap-4 w-full items-center">
+            <div class="flex flex-col sm:flex-row gap-4 w-full flex-1 min-w-0">
+                {{-- Search Bar --}}
+                <div class="relative w-full sm:w-64 flex-shrink-0">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input wire:model.live.debounce.300ms="search" type="text" class="pl-10 py-3 w-full rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all" placeholder="Cari kamar...">
                 </div>
-                <input wire:model.live.debounce.300ms="search" type="text" class="pl-10 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white" placeholder="Cari kamar...">
+
+                {{-- Filter Status --}}
+                <div class="w-full sm:w-44 flex-shrink-0">
+                    <select wire:model.live="filterStatus" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
+                        <option value="">Status</option>
+                        <option value="available">Tersedia</option>
+                        <option value="unavailable">Terisi</option>
+                        <option value="repair">Perbaikan</option>
+                    </select>
+                </div>
+
+                {{-- Filter Properti --}}
+                <div class="w-full sm:w-44 flex-shrink-1">
+                    <select wire:model.live="filterProperty" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
+                        <option value="">Properti</option>
+                        @foreach($properties as $prop)
+                            <option value="{{ $prop->id }}">{{ $prop->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
 
-            {{-- Filter Status --}}
-            <div class="w-full sm:w-48">
-                <select wire:model.live="filterStatus" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white">
-                    <option value="">Semua Status</option>
-                    <option value="available">Tersedia</option>
-                    <option value="unavailable">Terisi</option>
-                    <option value="repair">Perbaikan</option>
-                </select>
-            </div>
-
-            {{-- Filter Properti --}}
-            <div class="w-full sm:w-48">
-                <select wire:model.live="filterProperty" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white">
-                    <option value="">Semua Properti</option>
-                    @foreach($properties as $prop)
-                        <option value="{{ $prop->id }}">{{ $prop->name }}</p>
-                    @endforeach
-                </select>
+            {{-- Add Button --}}
+            <div class="w-full lg:w-auto flex-shrink-0">
+                <button wire:click="openCreateModal" class="flex items-center justify-center px-4 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary-500/25 active:scale-95 whitespace-nowrap">
+                    <i class="fas fa-plus mr-2"></i> Tambah Kamar
+                </button>
             </div>
         </div>
-
-        {{-- Add Button (Memicu method PHP openCreateModal) --}}
-        <button wire:click="openCreateModal" class="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-primary-500/30 whitespace-nowrap">
-            <i class="fas fa-plus mr-2"></i> <span class="hidden sm:inline">Tambah Kamar</span><span class="sm:hidden">Tambah</span>
-        </button>
     </div>
 
     {{-- Success Message --}}
@@ -175,69 +179,89 @@
         @endif
     </div>
 
-    {{-- MODAL CREATE KAMAR (DIKONTROL PHP $isCreateModalOpen) --}}
-    @if($isCreateModalOpen)
-    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        {{-- Backdrop: Close saat diklik --}}
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" wire:click="closeCreateModal"></div>
+    {{-- MODAL CREATE KAMAR (ALPINE + LIVEWIRE SYNC) --}}
+    <div x-data="{ open: @entangle('isCreateModalOpen') }"
+         x-show="open"
+         x-cloak
+         @keydown.escape.window="open = false"
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        
+        {{-- Backdrop --}}
+        <div x-show="open" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             @click="open = false"></div>
 
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
+            {{-- Modal Panel --}}
+            <div x-show="open"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-2xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
 
                  <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <span class="w-1.5 h-5 bg-primary-500 rounded-full"></span> Tambah Kamar
                     </h3>
-                    <button type="button" wire:click="closeCreateModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times"></i></button>
+                    <button type="button" @click="open = false" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
                 </div>
 
                 <form wire:submit.prevent="save">
                     <div class="px-4 py-5 sm:p-6 space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Nomor</label>
-                                <input type="text" wire:model="number" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500" placeholder="A-01">
+                            <div class="space-y-1">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Nomor Kamar</label>
+                                <input type="text" wire:model="number" placeholder="A-01" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                                 @error('number') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Tipe</label>
-                                <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500" placeholder="VIP / Standard">
+                            <div class="space-y-1">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Nama / Label Kamar</label>
+                                <input type="text" wire:model="name" placeholder="VIP / Standard" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                                 @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Status</label>
-                                <select wire:model="status" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500">
-                                    <option value="">Pilih Status</option>
+                            <div class="space-y-1">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Status Awal</label>
+                                <select wire:model="status" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                                     <option value="available">Tersedia</option>
-                                    <option value="unavailable">Tidak Tersedia</option>
+                                    <option value="unavailable">Terisi</option>
                                     <option value="repair">Perbaikan</option>
                                 </select>
                                 @error('status') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Properti (Lokasi)</label>
-                                <select wire:model="property_id" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500">
-                                    <option value="">Pilih Properti</option>
+                            <div class="space-y-1">
+                                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Pilih Properti</label>
+                                <select wire:model="property_id" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
+                                    <option value="">-- Pilih --</option>
                                     @foreach($properties as $prop)
                                         <option value="{{ $prop->id }}">{{ $prop->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('property_id') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Fasilitas</label>
-                                <input type="text" wire:model="facility" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500" placeholder="AC, WiFi...">
-                                @error('facility') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
-                            </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Foto</label>
-                            <div class="mt-1 flex justify-center rounded-lg border border-dashed border-gray-300 dark:border-gray-600 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors relative">
+                            <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Fasilitas</label>
+                            <input type="text" wire:model="facility" placeholder="AC, WiFi, Kamar Mandi Dalam" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
+                            @error('facility') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase">Foto Kamar (Opsional)</label>
+                            <div class="mt-1 flex justify-center rounded-xl border border-dashed border-gray-300 dark:border-gray-600 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors relative">
                                 <div class="text-center">
                                     @if ($image)
                                         <img src="{{ $image->temporaryUrl() }}" class="mx-auto h-20 w-auto rounded-lg object-cover mb-2">
@@ -261,7 +285,7 @@
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Deskripsi</label>
-                            <textarea wire:model="description" rows="3" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500"></textarea>
+                            <textarea wire:model="description" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex flex-col-reverse sm:flex-row-reverse gap-2 border-t border-gray-100 dark:border-gray-700">
@@ -269,26 +293,46 @@
                             <span wire:loading.remove wire:target="save">Simpan</span>
                             <span wire:loading wire:target="save"><i class="fas fa-circle-notch fa-spin mr-1"></i></span>
                         </button>
-                        <button type="button" wire:click="closeCreateModal" class="mt-2 sm:mt-0 inline-flex w-full justify-center rounded-lg bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:w-auto transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="mt-2 sm:mt-0 inline-flex w-full justify-center rounded-lg bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:w-auto transition-colors">Batal</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    @endif
 
-    {{-- MODAL EDIT KAMAR (DIKONTROL PHP $isEditModalOpen) --}}
-    @if($isEditModalOpen)
-    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" wire:click="closeEditModal"></div>
+    {{-- MODAL EDIT KAMAR (ALPINE + LIVEWIRE SYNC) --}}
+    <div x-data="{ open: @entangle('isEditModalOpen') }"
+         x-show="open"
+         x-cloak
+         @keydown.escape.window="open = false"
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        
+        <div x-show="open" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             @click="open = false"></div>
+
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
+            <div x-show="open"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-2xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
 
                 <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <span class="w-1.5 h-5 bg-yellow-500 rounded-full"></span> Edit Kamar
                     </h3>
-                    <button type="button" wire:click="closeEditModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times"></i></button>
+                    <button type="button" @click="open = false" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
                 </div>
 
                 <form wire:submit.prevent="update">
@@ -296,12 +340,12 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Nomor</label>
-                                <input type="text" wire:model="number" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                                <input type="text" wire:model="number">
                                 @error('number') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Tipe</label>
-                                <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                                <input type="text" wire:model="name">
                                 @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -309,17 +353,18 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Status</label>
-                                <select wire:model="status" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                                <select wire:model="status">
                                     <option value="available">Tersedia</option>
                                     <option value="unavailable">Tidak Tersedia</option>
                                     <option value="repair">Perbaikan</option>
                                 </select>
                                 @error('status') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
+                        </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Properti (Lokasi)</label>
-                                <select wire:model="property_id" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                                <select wire:model="property_id">
                                     <option value="">Pilih Properti</option>
                                     @foreach($properties as $prop)
                                         <option value="{{ $prop->id }}">{{ $prop->name }}</option>
@@ -329,7 +374,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Fasilitas</label>
-                                <input type="text" wire:model="facility" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                                <input type="text" wire:model="facility">
                                 @error('facility') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -365,7 +410,7 @@
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Deskripsi</label>
-                            <textarea wire:model="description" rows="3" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500"></textarea>
+                            <textarea wire:model="description" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex flex-col-reverse sm:flex-row-reverse gap-2 border-t border-gray-100 dark:border-gray-700">
@@ -373,13 +418,12 @@
                             <span wire:loading.remove wire:target="update">Update</span>
                             <span wire:loading wire:target="update"><i class="fas fa-circle-notch fa-spin mr-1"></i></span>
                         </button>
-                        <button type="button" wire:click="closeEditModal" class="mt-2 sm:mt-0 inline-flex w-full justify-center rounded-lg bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:w-auto transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="mt-2 sm:mt-0 inline-flex w-full justify-center rounded-lg bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:w-auto transition-colors">Batal</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    @endif
 
     {{-- Script untuk event listener sudah tidak dibutuhkan lagi --}}
 </div>

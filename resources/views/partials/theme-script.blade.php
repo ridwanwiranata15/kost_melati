@@ -1,19 +1,5 @@
 {{-- Centralized Theme Script --}}
 <script>
-    /**
-     * Set the theme class on the HTML element immediately to prevent FOUC.
-     */
-    function applyTheme() {
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }
-
-    /**
-     * Update the theme toggle icon based on the current theme.
-     */
     window.updateThemeIcon = function() {
         const themeIcon = document.getElementById('theme-icon');
         if (!themeIcon) return;
@@ -27,30 +13,63 @@
         }
     };
 
-    /**
-     * Toggle the theme and save the preference to localStorage.
-     */
     window.toggleDarkMode = function() {
-        const htmlElement = document.documentElement;
-        if (htmlElement.classList.contains('dark')) {
-            htmlElement.classList.remove('dark');
-            localStorage.theme = 'light';
+        const isDark = document.documentElement.classList.contains('dark');
+        const next = isDark ? 'light' : 'dark';
+
+        if (window.Flux && typeof window.Flux.applyAppearance === 'function') {
+            window.Flux.applyAppearance(next);
         } else {
-            htmlElement.classList.add('dark');
-            localStorage.theme = 'dark';
+            if (next === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            localStorage.setItem('flux.appearance', next);
         }
+        
         window.updateThemeIcon();
     };
 
-    // Initial application of the theme
-    applyTheme();
+    // Function to apply theme absolutely
+    window.syncTheme = () => {
+        try {
+            const savedTheme = localStorage.getItem('flux.appearance');
+            const isDark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.style.colorScheme = 'dark';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.style.colorScheme = 'light';
+            }
+            
+            if (typeof window.updateThemeIcon === 'function') {
+                window.updateThemeIcon();
+            }
+        } catch (e) {
+            console.error('Theme sync error:', e);
+        }
+    };
 
-    // Re-verify theme state on each Livewire navigation to prevent glitches
-    document.addEventListener('livewire:navigated', () => {
-        applyTheme();
-        window.updateThemeIcon();
-    });
+    // Immediate execution
+    window.syncTheme();
 
-    // Handle initial icon state
+    // High-aggression persistence (Brute force to fight other scripts resetting it)
+    setInterval(() => {
+        const savedTheme = localStorage.getItem('flux.appearance');
+        if (savedTheme) {
+            const isDark = savedTheme === 'dark';
+            if (document.documentElement.classList.contains('dark') !== isDark) {
+                window.syncTheme();
+            }
+        }
+    }, 500);
+
+    // Re-run on critical Livewire events
+    document.addEventListener('livewire:navigated', window.syncTheme);
+    document.addEventListener('livewire:initialized', window.syncTheme);
+
     document.addEventListener('DOMContentLoaded', window.updateThemeIcon);
 </script>

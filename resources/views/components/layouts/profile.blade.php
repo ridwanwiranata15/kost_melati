@@ -43,7 +43,7 @@
                     <div class="w-9 h-9 rounded-xl bg-primary-500 flex items-center justify-center text-white shadow-lg shadow-primary-500/20">
                         <i class="fas fa-home text-sm"></i>
                     </div>
-                    <span class="tracking-tight">TEDJIA<span class="text-primary-500">.</span></span>
+                    <span class="tracking-tight">KOST<span class="text-primary-500">.</span></span>
                 </a>
             </div>
 
@@ -58,6 +58,13 @@
                 <a href="{{ route('customer.order') }}" class="{{ request()->routeIs('customer.order') ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }} flex items-center px-4 py-3 rounded-xl transition-all group">
                     <i class="fa-solid fa-receipt w-6 text-lg group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium">Tagihan & Booking</span>
+                </a>
+                @endif
+
+                @if(auth()->check() && auth()->user()->role === 'admin' || auth()->check() && auth()->user()->role === 'staff')
+                <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }} flex items-center px-4 py-3 rounded-xl transition-all group">
+                    <i class="fa-solid fa-home w-6 text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Dashboard</span>
                 </a>
                 @endif
 

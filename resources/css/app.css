@@ -26,6 +26,22 @@
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+
+    --color-primary-50: #ecfdf5;
+    --color-primary-100: #d1fae5;
+    --color-primary-200: #a7f3d0;
+    --color-primary-300: #6ee7b7;
+    --color-primary-400: #34d399;
+    --color-primary-500: #10b981;
+    --color-primary-600: #059669;
+    --color-primary-700: #047857;
+    --color-primary-800: #065f46;
+    --color-primary-900: #064e3b;
+    --color-primary-950: #022c22;
+
+    --color-dark-bg: #0f172a;
+    --color-dark-card: #1e293b;
+    --color-dark-text: #f8fafc;
 }
 
 @layer theme {
@@ -36,7 +52,41 @@
     }
 }
 
+/* HIGH SPECIFICITY PREMIUM INPUT STYLING */
+/* Moving out of @layer base to ensure global priority */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="search"],
+select,
+textarea,
+[data-flux-control] {
+    padding-top: 0.75rem !important;    /* 12px - py-3 */
+    padding-bottom: 0.75rem !important; /* 12px - py-3 */
+    padding-left: 1rem !important;     /* 16px - px-4 */
+    padding-right: 1.25rem !important;  /* px-5 for dropdown room */
+    font-size: 0.875rem !important;    /* text-sm */
+    border-radius: 0.75rem !important;  /* rounded-xl */
+    line-height: 1.25rem !important;
+    transition-property: all !important;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition-duration: 200ms !important;
+    border-width: 1px !important;
+}
+
+input:focus, select:focus, textarea:focus, [data-flux-control]:focus {
+    box-shadow: 0 0 0 4px var(--color-primary-500, #10b981)20 !important;
+    border-color: var(--color-primary-500, #10b981) !important;
+    outline: none !important;
+}
+
 @layer base {
+    /* Custom scrollbar for textareas */
+    textarea {
+        @apply scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700;
+    }
 
     *,
     ::after,

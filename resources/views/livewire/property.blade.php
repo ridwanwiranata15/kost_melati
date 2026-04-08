@@ -17,7 +17,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-search text-gray-400"></i>
                 </div>
-                <input wire:model.live.debounce.300ms="search" type="text" class="pl-10 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white" placeholder="Cari properti...">
+                <input wire:model.live.debounce.300ms="search" type="text" class="pl-10 py-3 w-full rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all" placeholder="Cari properti...">
             </div>
         </div>
 
@@ -101,36 +101,60 @@
         @endif
     </div>
 
-    {{-- MODAL CREATE PROPERTY --}}
-    @if($isCreateModalOpen)
-    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" wire:click="closeCreateModal"></div>
+    {{-- MODAL CREATE PROPERTY (ALPINE + LIVEWIRE SYNC) --}}
+    <div x-data="{ open: @entangle('isCreateModalOpen') }"
+         x-show="open"
+         x-cloak
+         @keydown.escape.window="open = false"
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        
+        {{-- Backdrop --}}
+        <div x-show="open" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             @click="open = false"></div>
+
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
-                <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
+            {{-- Modal Panel --}}
+            <div x-show="open"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-2xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
+
+                 <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <span class="w-1.5 h-5 bg-primary-500 rounded-full"></span> Tambah Properti
                     </h3>
-                    <button type="button" wire:click="closeCreateModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times"></i></button>
+                    <button type="button" @click="open = false" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
                 </div>
 
                 <form wire:submit.prevent="save">
                     <div class="px-4 py-5 sm:p-6 space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Nama Properti</label>
-                            <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500" placeholder="Contoh: Kost Melati Jawa">
+                            <input type="text" wire:model="name" placeholder="Contoh: Kost Melati Jawa" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Lokasi (Wilayah)</label>
-                            <input type="text" wire:model="location" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500" placeholder="Contoh: Jawa Tengah / Sumatera Utara">
+                            <input type="text" wire:model="location" placeholder="Contoh: Jawa Tengah / Sumatera Utara" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('location') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Alamat Lengkap</label>
-                            <textarea wire:model="address" rows="2" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500"></textarea>
+                            <textarea wire:model="address" rows="2" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all resize-none"></textarea>
                             @error('address') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -156,49 +180,70 @@
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Deskripsi</label>
-                            <textarea wire:model="description" rows="3" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500"></textarea>
+                            <textarea wire:model="description" rows="3" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all resize-none"></textarea>
                         </div>
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex flex-col-reverse sm:flex-row-reverse gap-2 border-t border-gray-100 dark:border-gray-700">
                         <button type="submit" class="inline-flex w-full justify-center rounded-lg bg-primary-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-600 sm:w-auto transition-colors">Simpan</button>
-                        <button type="button" wire:click="closeCreateModal" class="mt-2 sm:mt-0 inline-flex w-full justify-center rounded-lg bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:w-auto transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="mt-2 sm:mt-0 inline-flex w-full justify-center rounded-lg bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:w-auto transition-colors">Batal</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    @endif
 
-    {{-- MODAL EDIT PROPERTY --}}
-    @if($isEditModalOpen)
-    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" wire:click="closeEditModal"></div>
+    {{-- MODAL EDIT PROPERTY (ALPINE + LIVEWIRE SYNC) --}}
+    <div x-data="{ open: @entangle('isEditModalOpen') }"
+         x-show="open"
+         x-cloak
+         @keydown.escape.window="open = false"
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        
+        <div x-show="open" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             @click="open = false"></div>
+
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
+            <div x-show="open"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 class="relative transform overflow-hidden rounded-xl bg-white dark:bg-dark-card text-left shadow-2xl transition-all w-full max-w-lg border border-gray-100 dark:border-gray-700">
+
                 <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <span class="w-1.5 h-5 bg-yellow-500 rounded-full"></span> Edit Properti
                     </h3>
-                    <button type="button" wire:click="closeEditModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"><i class="fas fa-times"></i></button>
+                    <button type="button" @click="open = false" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
                 </div>
 
                 <form wire:submit.prevent="update">
                     <div class="px-4 py-5 sm:p-6 space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Nama Properti</label>
-                            <input type="text" wire:model="name" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                            <input type="text" wire:model="name" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Lokasi (Wilayah)</label>
-                            <input type="text" wire:model="location" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500">
+                            <input type="text" wire:model="location" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('location') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Alamat Lengkap</label>
-                            <textarea wire:model="address" rows="2" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500"></textarea>
+                            <textarea wire:model="address" rows="2" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all resize-none"></textarea>
                             @error('address') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -228,16 +273,15 @@
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Deskripsi</label>
-                            <textarea wire:model="description" rows="3" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm py-2 px-3 focus:ring-yellow-500 focus:border-yellow-500"></textarea>
+                            <textarea wire:model="description" rows="3" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all resize-none"></textarea>
                         </div>
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex flex-col-reverse sm:flex-row-reverse gap-2 border-t border-gray-100 dark:border-gray-700">
                         <button type="submit" class="inline-flex w-full justify-center rounded-lg bg-yellow-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-600 sm:w-auto transition-colors">Update</button>
-                        <button type="button" wire:click="closeEditModal" class="mt-2 sm:mt-0 inline-flex w-full justify-center rounded-lg bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:w-auto transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="mt-2 sm:mt-0 inline-flex w-full justify-center rounded-lg bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:w-auto transition-colors">Batal</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    @endif
 </div>

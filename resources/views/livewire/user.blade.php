@@ -59,20 +59,23 @@
             <input
                 wire:model.live.debounce.300ms="search"
                 type="text"
-                class="pl-10 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white"
+                class="pl-10 py-3 w-full rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all"
                 placeholder="Cari nama, email, telepon..."
             >
         </div>
 
         {{-- Filter Status --}}
-        <div class="w-full md:w-48">
-            <select wire:model.live="filterStatus" class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white">
-                <option value="">Semua Status</option>
-                <option value="active">Aktif</option>
-                <option value="pending">Pending</option>
-                <option value="rejected">Ditolak</option>
-                <option value="inactive">Non-Aktif</option>
-            </select>
+        <div class="flex flex-col lg:flex-row gap-4 w-full lg:w-auto flex-1 justify-end">
+            <div class="w-full lg:w-48">
+                <select wire:model.live="filterStatus" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
+                    <option value="">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="checkin">Checkin</option>
+                    <option value="checkout">Checkout</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
         </div>
     </div>
 

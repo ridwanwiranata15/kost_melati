@@ -55,54 +55,39 @@
                 <div class="flex-grow w-full grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     <div class="col-span-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Nama
-                            Lengkap</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-regular fa-id-card text-gray-400"></i>
-                            </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Nama Lengkap</label>
                             <input type="text" readonly wire:model="name"
-                                class="block w-full pl-10 rounded-lg border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 sm:text-sm p-2.5 focus:ring-0 focus:border-gray-200 cursor-not-allowed font-medium">
+                                   class="w-full py-3 px-4 rounded-xl border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 text-sm cursor-not-allowed transition-all">
                         </div>
                     </div>
 
                     <div class="col-span-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Alamat
-                            Email</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-regular fa-envelope text-gray-400"></i>
-                            </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Email</label>
                             <input type="text" readonly wire:model="email"
-                                class="block w-full pl-10 rounded-lg border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 sm:text-sm p-2.5 focus:ring-0 focus:border-gray-200 cursor-not-allowed font-medium">
+                                   class="w-full py-3 px-4 rounded-xl border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 text-sm cursor-not-allowed transition-all">
                         </div>
                     </div>
 
                     <div class="col-span-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">No.
-                            Telepon</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-phone text-gray-400 text-xs"></i>
-                            </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">WhatsApp</label>
                             <input type="text" readonly wire:model="phone"
-                                class="block w-full pl-10 rounded-lg border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 sm:text-sm p-2.5 focus:ring-0 focus:border-gray-200 cursor-not-allowed font-medium">
+                                   class="w-full py-3 px-4 rounded-xl border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 text-sm cursor-not-allowed transition-all">
                         </div>
                     </div>
 
                     <div class="col-span-1">
-                        <label
-                            class="block text-xs font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider mb-1">Update
-                            Status Akun</label>
-                        <select wire:model.live="status" wire:change="updateStatus"
-                            class="block w-full rounded-lg border-primary-200 dark:border-primary-800 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm p-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer transition-colors hover:border-primary-400">
+                        <div>
+                        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Status Akun</label>
+                        <select wire:model.live="status" x-on:change="$wire.updateStatus()"
+                                class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             <option value="active">✅ Aktif</option>
                             <option value="pending">⏳ Pending</option>
                             <option value="rejected">🚫 Ditolak</option>
                         </select>
+                    </div>
                     </div>
 
                 </div>
@@ -233,19 +218,6 @@
                             </td>
 
                             {{-- Aksi Admin --}}
-                            {{-- <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <div class="relative inline-block w-full max-w-[140px]">
-                                    <select wire:change="updateStatusTransaction({{ $item->id }}, $event.target.value)"
-                                        class="block w-full rounded-lg border-0 py-1.5 pl-3 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:text-xs sm:leading-6 cursor-pointer shadow-sm
-                                        {{ $item->status == 'confirmed' ? 'bg-green-50 text-green-700 ring-green-200' : ($item->status == 'rejected' ? 'bg-red-50 text-red-700 ring-red-200' : 'bg-white') }}">
-
-                                        <option value="pending" {{ $item->status == 'pending' ? 'selected' : '' }}>⏳ Pending</option>
-                                        <option value="confirmed" {{ $item->status == 'confirmed' ? 'selected' : '' }}>✅ Terima</option>
-                                        <option value="rejected" {{ $item->status == 'rejected' ? 'selected' : '' }}>🚫 Tolak</option>
-                                    </select>
-                                </div>
-                            </td> --}}
-                            {{-- Aksi Admin --}}
                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                 <button wire:click="openEditModal({{ $item->id }})"
                                     class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-sm border border-blue-200"
@@ -305,16 +277,10 @@
 
                                 {{-- Input Harga --}}
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nominal Harga (Rp)</label>
-                                    <div class="relative rounded-md shadow-sm">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500 sm:text-sm">Rp</span>
-                                        </div>
-                                        <input type="number" wire:model="editAmount"
-                                            class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md"
-                                            placeholder="0">
-                                    </div>
-                                    @error('editAmount') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Jumlah Pembayaran</label>
+                                    <input type="number" wire:model="editAmount"
+                                           class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
+                                    @error('editAmount') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                                 </div>
 
                                 {{-- Input Gambar --}}

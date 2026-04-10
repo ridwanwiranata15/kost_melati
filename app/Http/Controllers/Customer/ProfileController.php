@@ -3,64 +3,66 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateProfileRequest; // Panggil Request yang tadi dibuat
+use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Booking; // Pastikan model Booking dipanggil
+use Illuminate\Support\Facades\Storage;
+use App\Models\Booking;
 
 class ProfileController extends Controller
 {
-    // Menampilkan Halaman Profil
+    // Show profile page
     public function index()
-{
-    // 1. Ambil User yang sedang login
-    $user = auth()->user();
+    {
+        $user    = auth()->user();
+        $booking = Booking::with('room')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->first();
 
-    // 2. AMBIL DATA BOOKING (Ini yang sering ketinggalan!)
-    // Cari booking milik user ini, urutkan dari yang terbaru, ambil satu saja.
-    $booking = \App\Models\Booking::with('room') // Load relasi kamar biar gak error
-                ->where('user_id', $user->id)
-                ->latest() // Ambil yang paling baru
-                ->first(); // Gunakan first() agar hasilnya Obyek, bukan Array
+        return view('customer.profile', compact('user', 'booking'));
+    }
 
-
-    // 4. KIRIM KE VIEW (Compact)
-    // Pastikan 'booking' ada di dalam kurung compact
-    return view('customer.profile', compact('user', 'booking'));
-}
-
-    // Proses Update Data Diri (Nama, Email, Foto, HP)
+    // Process profile update (name, email, phone, photo, new fields)
     public function update(UpdateProfileRequest $request)
     {
         $user = auth()->user();
-        $data = $request->validated(); // Ambil data yang sudah lolos validasi
+        $data = $request->validated();
 
-        // Cek jika ada upload foto baru
+        // Handle profile photo (public disk)
         if ($request->hasFile('photo')) {
-            // Hapus foto lama jika bukan avatar default/ui-avatars
-            if ($user->photo && Storage::exists('public/' . $user->photo)) {
-                Storage::delete('public/' . $user->photo);
+            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+                Storage::disk('public')->delete($user->photo);
             }
-
-            // Simpan foto baru ke folder 'profile-photos' di storage public
-            $path = $request->file('photo')->store('profile-photos', 'public');
-            $data['photo'] = $path;
+            $data['photo'] = $request->file('photo')->store('profile-photos', 'public');
+        } else {
+            unset($data['photo']); // Don't overwrite with null if no new upload
         }
 
-        // Update data user ke database
+        // Handle KTP photo (PRIVATE disk)
+        if ($request->hasFile('ktp_photo')) {
+            // Delete old KTP from private disk if it exists
+            if ($user->ktp_photo && Storage::disk('private')->exists($user->ktp_photo)) {
+                Storage::disk('private')->delete($user->ktp_photo);
+            }
+            $data['ktp_photo'] = $request->file('ktp_photo')->store('ktp_photos', 'private');
+        } else {
+            unset($data['ktp_photo']); // Don't overwrite with null if no new upload
+        }
+
         $user->update($data);
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }
 
-    // Proses Update Password
+    // Process password update
     public function updatePassword(Request $request)
     {
-        // Validasi password
+        $request->validate([
+            'current_password'      => ['required', 'current_password'],
+            'password'              => ['required', 'min:8', 'confirmed'],
+        ]);
 
-
-        // Update password
         auth()->user()->update([
             'password' => Hash::make($request->password),
         ]);

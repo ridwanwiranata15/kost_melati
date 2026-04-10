@@ -4,6 +4,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\MyOrderCustomerController;
 use App\Http\Controllers\TestimonialController;
+use App\Http\Controllers\KtpPhotoController;
 use App\Models\Gallery;
 use App\Models\Room;
 use App\Models\Testimonial;
@@ -80,6 +81,9 @@ Route::middleware(['auth'])->group(function(){
 // Customer Profile
 Route::get('profile', [ProfileController::class, 'index'])->name('customer.profile');
 Route::get('my-order', [MyOrderCustomerController::class, 'index'])->name('customer.order');
+
+// Secure KTP Photo (private disk - not publicly accessible)
+Route::get('/ktp-photo/{filename}', [KtpPhotoController::class, 'show'])->name('ktp.photo');
 
 
 Route::post('/checkout', [BookingController::class, 'checkout'])->name('checkout');

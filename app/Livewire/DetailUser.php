@@ -16,7 +16,7 @@ class DetailUser extends Component
     public $editStatus;
     public $selectedTransactionId;
     public $editAmount;
-    public $editProof; // Untuk file gambar baru
+    public $editProof;
     public $userId;
     public $name;
     public $email;
@@ -26,31 +26,43 @@ class DetailUser extends Component
     public $statusPayment;
     public $photo;
 
-    // TAMBAHKAN PROPERTY INI AGAR BISA DIBACA DI BLADE
+    // New profile fields
+    public $university;
+    public $parentsName;
+    public $parentsPhone;
+    public $ktpUrl;
+
+    // Booking & transactions
     public $booking;
     public $transactions;
 
     public function mount($id)
     {
-        // 1. Ambil data User berdasarkan ID yang dikirim (bukan Auth::id)
         $user = User::findOrFail($id);
 
-        $this->userId = $user->id;
-        $this->name = $user->name;
-        $this->email = $user->email;
-        $this->phone = $user->phone;
-        $this->role = $user->role;
-        $this->status = $user->status;
-        $this->photo = $user->photo;
+        $this->userId      = $user->id;
+        $this->name        = $user->name;
+        $this->email       = $user->email;
+        $this->phone       = $user->phone;
+        $this->role        = $user->role;
+        $this->status      = $user->status;
+        $this->photo       = $user->photo;
 
-        // 2. Cari Booking milik User Tersebut ($this->userId)
-        // JANGAN pakai Auth::id() karena itu ID Admin yang sedang login
+        // New fields
+        $this->university   = $user->university;
+        $this->parentsName  = $user->parents_name;
+        $this->parentsPhone = $user->parents_phone;
+
+        // Build secure KTP URL (served via auth-protected route)
+        if ($user->ktp_photo) {
+            $this->ktpUrl = route('ktp.photo', basename($user->ktp_photo));
+        }
+
         $this->booking = Booking::with(['transactions', 'room'])
             ->where('user_id', $this->userId)
             ->latest()
             ->first();
 
-        // 3. Masukkan ke public property $transactions
         $this->transactions = $this->booking ? $this->booking->transactions : collect([]);
     }
 

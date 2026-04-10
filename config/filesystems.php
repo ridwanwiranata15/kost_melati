@@ -47,6 +47,15 @@ return [
             'report' => false,
         ],
 
+        // Private disk – files here are NOT accessible via public URL.
+        // Used for sensitive documents like KTP photos.
+        'private' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

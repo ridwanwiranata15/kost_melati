@@ -9,17 +9,22 @@ class UpdateProfileRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Izinkan semua user yang login
+        return true;
     }
 
     public function rules(): array
     {
         return [
-            'name' => ['string', 'max:255'],
-            // Email harus unik, tapi abaikan untuk user yang sedang login saat ini
-            'email' => ['string', 'email', 'max:255', Rule::unique('users')->ignore($this->user()->id)],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'], // Max 2MB
+            'name'          => ['string', 'max:255'],
+            'email'         => ['string', 'email', 'max:255', Rule::unique('users')->ignore($this->user()->id)],
+            'phone'         => ['nullable', 'string', 'max:20'],
+            'photo'         => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+
+            // New fields
+            'university'    => ['nullable', 'string', 'max:255'],
+            'parents_name'  => ['nullable', 'string', 'max:255'],
+            'parents_phone' => ['nullable', 'string', 'max:20'],
+            'ktp_photo'     => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:4096'],
         ];
     }
 }

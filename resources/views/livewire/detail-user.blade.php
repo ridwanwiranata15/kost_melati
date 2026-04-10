@@ -90,8 +90,97 @@
                     </div>
                     </div>
 
+                    {{-- Universitas / Prodi --}}
+                    <div class="col-span-1">
+                        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Universitas / Prodi</label>
+                        <div class="flex items-center gap-2 py-3 px-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+                            <i class="fas fa-graduation-cap text-blue-400 text-xs w-4"></i>
+                            <span class="text-sm text-gray-600 dark:text-gray-300">{{ $university ?? '-' }}</span>
+                        </div>
+                    </div>
+
+                    {{-- Nama Orang Tua --}}
+                    <div class="col-span-1">
+                        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Nama Orang Tua / Wali</label>
+                        <div class="flex items-center gap-2 py-3 px-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+                            <i class="fas fa-people-roof text-purple-400 text-xs w-4"></i>
+                            <span class="text-sm text-gray-600 dark:text-gray-300">{{ $parentsName ?? '-' }}</span>
+                        </div>
+                    </div>
+
+                    {{-- No HP Orang Tua --}}
+                    <div class="col-span-1">
+                        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">No. HP Orang Tua / Wali</label>
+                        <div class="flex items-center gap-2 py-3 px-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+                            <i class="fas fa-phone text-green-400 text-xs w-4"></i>
+                            @if($parentsPhone)
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $parentsPhone) }}"
+                                   target="_blank"
+                                   class="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">
+                                    {{ $parentsPhone }}
+                                </a>
+                            @else
+                                <span class="text-sm text-gray-400">-</span>
+                            @endif
+                        </div>
+                    </div>
+
                 </div>
             </div>
+        </div>
+    </div>
+
+    {{-- KTP PHOTO CARD --}}
+    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="fas fa-id-card text-blue-500"></i> Foto KTP
+                </h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Verifikasi identitas penyewa. File tersimpan di storage privat.</p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800">
+                <i class="fas fa-shield-alt mr-1.5"></i> Private Storage
+            </span>
+        </div>
+        <div class="p-6">
+            @if($ktpUrl)
+                <div class="flex flex-col sm:flex-row items-start gap-6">
+                    {{-- Tampilkan foto KTP melalui URL aman --}}
+                    <a href="{{ $ktpUrl }}" target="_blank" class="block group flex-shrink-0">
+                        <div class="relative overflow-hidden rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all hover:border-primary-400">
+                            <img src="{{ $ktpUrl }}" alt="Foto KTP {{ $name }}"
+                                class="h-44 w-72 object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-colors">
+                                <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded-full px-3 py-1.5 text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                                    <i class="fas fa-expand-alt"></i> Buka Penuh
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-sm font-semibold text-green-700 dark:text-green-400">KTP telah diupload</span>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
+                            File disimpan pada private disk dan hanya dapat diakses melalui link terautentikasi ini.
+                        </p>
+                        <a href="{{ $ktpUrl }}" target="_blank"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors shadow-sm">
+                            <i class="fas fa-external-link-alt"></i> Buka di Tab Baru
+                        </a>
+                    </div>
+                </div>
+            @else
+                <div class="flex flex-col items-center justify-center py-10 text-center">
+                    <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
+                        <i class="fas fa-id-card text-3xl text-gray-300 dark:text-gray-600"></i>
+                    </div>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Belum ada foto KTP</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Pengguna belum mengupload foto KTP saat pendaftaran.</p>
+                </div>
+            @endif
         </div>
     </div>
 

@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone');
             $table->string('photo')->nullable();
+            $table->string('ktp_photo')->nullable();       // Stored privately
+            $table->string('university')->nullable();       // Universitas / Prodi
+            $table->string('parents_name')->nullable();    // Nama Orang Tua
+            $table->string('parents_phone')->nullable();   // No. HP Orang Tua
             $table->enum('role', ['customer', 'admin', 'owner'])->default('customer');
             $table->enum('status', ['pending', 'active', 'rejected'])->default('pending');
             $table->rememberToken();

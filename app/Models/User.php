@@ -26,7 +26,11 @@ class User extends Authenticatable
         'phone',
         'role',
         'status',
-        'photo'
+        'photo',
+        'ktp_photo',
+        'university',
+        'parents_name',
+        'parents_phone',
     ];
 
     /**

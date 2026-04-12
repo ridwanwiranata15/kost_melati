@@ -42,7 +42,7 @@
                         {{-- Image --}}
                         <div class="w-full md:w-1/3 shrink-0">
                             <div class="relative h-56 md:h-64 w-full overflow-hidden rounded-2xl shadow-md">
-                                <img src="{{ url('storage/' . $booking->room->image) }}" alt="Foto Kamar"
+                                <img src="{{ $booking->room->image ? url('storage/' . $booking->room->image) : 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80' }}" alt="Foto Kamar"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-4 left-4 text-white">

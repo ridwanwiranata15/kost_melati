@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('university')->nullable();       // Universitas / Prodi
             $table->string('parents_name')->nullable();    // Nama Orang Tua
             $table->string('parents_phone')->nullable();   // No. HP Orang Tua
-            $table->enum('role', ['customer', 'admin', 'owner'])->default('customer');
-            $table->enum('status', ['pending', 'active', 'rejected'])->default('pending');
+            $table->string('role')->default('customer');
+            $table->string('status')->default('pending');
             $table->rememberToken();
             $table->timestamps();
 

@@ -23,9 +23,20 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
                 'status' => 'active'
             ],
+            [
+                'name' => 'user',
+                'email' => 'user@gmail.com',
+                'password' => Hash::make('password'),
+                'phone' =>  '085777707854',
+                'role' => 'customer',
+                'status' => 'active'
+            ]
         ];
 
-
         User::insert($users);
+
+        $this->call([
+            MultiKosSeeder::class,
+        ]);
     }
 }

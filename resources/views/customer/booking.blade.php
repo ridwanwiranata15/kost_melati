@@ -19,9 +19,9 @@
         <div class="w-full md:w-[380px] shrink-0">
             <div class="sticky top-24 flex flex-col w-full rounded-3xl border border-gray-200 p-4 bg-white shadow-lg">
                 <div class="relative w-full h-[240px] rounded-2xl overflow-hidden mb-4">
-                    <img src="{{ $room->image ? url('storage/' . $room->image) : 'https://via.placeholder.com/400x300' }}"
+                    <img src="{{ $room->image ? url('storage/' . $room->image) : 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80' }}"
                          class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                         alt="{{ $room->name }}">
+                         alt="{{ $room->name }}" loading="lazy">
                     <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-800">
                         Room Preview
                     </div>

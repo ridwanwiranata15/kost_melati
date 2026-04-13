@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Room;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB; // Tambahkan ini untuk transaction
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class BookingController extends Controller
@@ -33,54 +34,63 @@ class BookingController extends Controller
 
     public function booking(Request $request)
     {
-        // 1. Validasi Input
         $request->validate([
-            "room_id"  => "required|exists:rooms,id",
-            "duration" => "required|numeric|min:1",
-            "date_in"  => "required|date|after_or_equal:today", // Tanggal masuk tidak boleh masa lalu
+            "room_id" => ["required", "exists:rooms,id"],
+            "duration" => ["required", "integer", "in:3,6,12"],
+            "date_in" => ["required", "date", "after_or_equal:today"],
         ]);
 
         try {
-            // Gunakan Transaction agar aman (jika gagal, semua dibatalkan)
-            DB::transaction(function () use ($request) {
-                
-                // Ambil data kamar terbaru
-                // lockForUpdate() berguna mencegah race condition saat traffic tinggi
-                $room = Room::where('id', $request->room_id)->lockForUpdate()->first();
+            $room = Room::findOrFail($request->room_id);
 
-                // Cek Validasi Ketersediaan Terakhir (PENTING)
+            $duration = (int) $request->duration;
+
+            $dateIn = Carbon::parse($request->date_in);
+            $dateOut = $dateIn->copy()->addMonths($duration);
+
+            $totalAmount = $room->price * $duration;
+
+            if ($room->status !== 'available') {
+                return back()->with('error', 'Kamar sudah tidak tersedia.');
+            }
+            $roomId = $request->room_id;
+
+            DB::transaction(function () use ($roomId, $duration, $dateIn, $dateOut, $totalAmount) {
+
+                $room = Room::where('id', $roomId)->lockForUpdate()->firstOrFail();
+
                 if ($room->status !== 'available') {
                     throw new \Exception("Maaf, kamar ini baru saja dibooking orang lain.");
                 }
 
-               
-                // Asumsi di table rooms ada kolom 'price' (harga per bulan)
-                // Jika flat 500rb, ganti $room->price dengan 500000
-                $totalAmount = $room->price * $request->duration; 
-
-                // 3. Create Data Booking
                 Booking::create([
                     "booking_code" => "KOS-" . strtoupper(Str::random(10)),
-                    "user_id"      => Auth::id(),
-                    "room_id"      => $room->id,
-                    "duration"     => $request->duration,
-                    "date_in"      => $request->date_in,
-                    "date_out"     => $request->date_out,
+                    "user_id" => Auth::id(),
+                    "room_id" => $room->id,
+                    "duration" => $duration,
+                    "date_in" => $dateIn,
+                    "date_out" => $dateOut,
                     "total_amount" => $totalAmount,
-                    "status"       => "pending"
+                    "status" => "pending"
                 ]);
 
-                // 4. Update Status Kamar
-                // Status pending booking biasanya membuat kamar jadi 'booked' atau 'unavailable'
-                // tergantung flow bisnis Anda (langsung kunci kamar atau tunggu bayar dulu)
                 $room->update(['status' => 'unavailable']);
             });
 
-            // Jika tidak ada error di dalam transaction, return success
-            return redirect()->route('home')->with('success', "Kamar berhasil di-booking! Silakan lakukan pembayaran.");
+            $admin = User::where('role', 'admin')->first();
+
+            return redirect()
+                ->route('home')
+                ->with('alert', [
+                    'type' => 'success',
+                    'title' => 'Booking Berhasil 🎉',
+                    'message' => 'Booking kamu sedang menunggu verifikasi admin.',
+                    'confirmText' => 'Cek Status',
+                    'redirect' => '/profile',
+                ])
+                ->with('admin_phone', $admin?->phone);
 
         } catch (\Exception $e) {
-            // Jika ada error (misal kamar sudah penuh duluan), kembalikan user
             return redirect()->back()->with('error', $e->getMessage());
         }
     }

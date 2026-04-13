@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profil Saya - Kos Melati Indah</title>
+    <title>Profil Saya - Kos El Sholeha</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -88,7 +88,7 @@
                 <button onclick="toggleSidebar()" class="text-gray-600 focus:outline-none p-2 rounded-md hover:bg-gray-100">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
-                <span class="font-bold text-gray-800">TEDJIA KOS</span>
+                <span class="font-bold text-gray-800">El Sholeha KOS</span>
                 <div class="w-8"></div> </header>
 
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">

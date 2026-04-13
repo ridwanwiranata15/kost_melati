@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Auth;
 
 class TestimonialController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('customer.testimonials');
     }
     public function store(Request $request)
@@ -18,10 +19,9 @@ class TestimonialController extends Controller
 
         // 2. Simpan ke Database
         Testimonial::create([
-
             'rating' => $request->rating,           // Masukkan data rating
             'comment' => $request->testimonial,     // Masukkan isi ulasan
-            'user_id' => auth()->id(),               // Aktifkan jika user wajib login
+            'user_id' => auth()->id(),
         ]);
 
         // 3. Redirect kembali

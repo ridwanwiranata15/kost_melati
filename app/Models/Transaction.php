@@ -14,10 +14,33 @@ class Transaction extends Model
         "status",
         "date_pay",
         "nominal",
-
     ];
 
-    public function booking(){
+    protected $casts = [
+        'nominal' => 'integer',
+        'amount' => 'integer',
+    ];
+
+    public function booking()
+    {
         return $this->belongsTo(Booking::class);
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function getNominalFormattedAttribute()
+    {
+        return number_format((float) ($this->nominal ?? 0), 0, ',', '.');
+    }
+
+    public function getAmountFormattedAttribute()
+    {
+        return number_format((float) ($this->amount ?? 0), 0, ',', '.');
     }
 }

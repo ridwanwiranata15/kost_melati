@@ -184,18 +184,18 @@
          x-show="open"
          x-cloak
          @keydown.escape.window="open = false"
-         class="fixed inset-0 z-50 overflow-y-auto" 
+         class="fixed inset-0 z-50 overflow-y-auto"
          aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        
+
         {{-- Backdrop --}}
-        <div x-show="open" 
+        <div x-show="open"
              x-transition:enter="ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              x-transition:leave="ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
              @click="open = false"></div>
 
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
@@ -305,17 +305,17 @@
          x-show="open"
          x-cloak
          @keydown.escape.window="open = false"
-         class="fixed inset-0 z-50 overflow-y-auto" 
+         class="fixed inset-0 z-50 overflow-y-auto"
          aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        
-        <div x-show="open" 
+
+        <div x-show="open"
              x-transition:enter="ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              x-transition:leave="ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
              @click="open = false"></div>
 
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
@@ -344,7 +344,7 @@
                                 @error('number') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Tipe</label>
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">NAMA / LABEL KAMAR</label>
                                 <input type="text" wire:model="name">
                                 @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>

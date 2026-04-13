@@ -15,14 +15,14 @@ class MultiKosSeeder extends Seeder
     {
         // 1. Create Properties
         $jawa = Property::updateOrCreate(['slug' => 'kost-melati-jawa'], [
-            'name' => 'Kost Melati Jawa',
+            'name' => 'Kost di Jawa',
             'location' => 'Jawa Tengah',
             'address' => 'Jl. Merdeka No. 123, Semarang',
             'description' => 'Kost nyaman di pusat kota Semarang.',
         ]);
 
         $sumatera = Property::updateOrCreate(['slug' => 'kost-melati-sumatera'], [
-            'name' => 'Kost Melati Sumatera',
+            'name' => 'Kost di Sumatera',
             'location' => 'Sumatera Utara',
             'address' => 'Jl. Thamrin No. 45, Medan',
             'description' => 'Kost strategis dekat kampus di Medan.',
@@ -56,23 +56,98 @@ class MultiKosSeeder extends Seeder
         ]);
         $penjagaMulti->properties()->sync([$jawa->id, $sumatera->id]);
 
-        // 3. Create Rooms
-        Room::updateOrCreate(['room_number' => 'J-01'], [
-            'property_id' => $jawa->id,
-            'name' => 'VIP Jawa',
-            'status' => 'available',
-            'facility' => 'AC, WiFi, Kamar Mandi Dalam',
-            'description' => 'Kamar VIP di lokasi Jawa.',
-        ]);
+        $roomsJawa = [
+            [
+                'room_number' => 'J-101',
+                'name' => 'VIP Executive',
+                'status' => 'available',
+                'facility' => 'AC, WiFi 100Mbps, Kamar Mandi Dalam, Water Heater, Lemari Besar',
+                'description' => 'Kamar premium dengan fasilitas lengkap di lantai 1.',
+            ],
+            [
+                'room_number' => 'J-102',
+                'name' => 'VIP Executive',
+                'status' => 'unavailable',
+                'facility' => 'AC, WiFi 100Mbps, Kamar Mandi Dalam, Water Heater',
+                'description' => 'Sudah ditempati penyewa aktif.',
+            ],
+            [
+                'room_number' => 'J-103',
+                'name' => 'Deluxe Room',
+                'status' => 'available',
+                'facility' => 'AC, WiFi, Kamar Mandi Dalam',
+                'description' => 'Kamar nyaman untuk mahasiswa atau pekerja.',
+            ],
+            [
+                'room_number' => 'J-104',
+                'name' => 'Standard Plus',
+                'status' => 'repair',
+                'facility' => 'Kipas Angin, WiFi, Kamar Mandi Luar',
+                'description' => 'Sedang renovasi ringan.',
+            ],
+        ];
 
-        Room::updateOrCreate(['room_number' => 'S-01'], [
-            'property_id' => $sumatera->id,
-            'name' => 'Standard Sumatera',
-            'status' => 'available',
-            'facility' => 'Kipas Angin, WiFi',
-            'description' => 'Kamar standard di lokasi Sumatera.',
-        ]);
-        
+        foreach ($roomsJawa as $room) {
+            Room::updateOrCreate(
+                ['room_number' => $room['room_number']],
+                array_merge($room, [
+                    'property_id' => $jawa->id,
+                ])
+            );
+        }
+
+        foreach ($roomsJawa as $room) {
+            Room::updateOrCreate(
+                ['room_number' => $room['room_number']],
+                array_merge($room, [
+                    'property_id' => $jawa->id,
+                ])
+            );
+        }
+
+        // 3. Create Rooms (SUMATERA)
+        $roomsSumatera = [
+            [
+                'room_number' => 'S-101',
+                'name' => 'Deluxe View',
+                'status' => 'available',
+                'facility' => 'AC, WiFi, Kamar Mandi Dalam, Balkon',
+                'description' => 'Kamar dengan view kota Medan.',
+            ],
+            [
+                'room_number' => 'S-102',
+                'name' => 'Standard Plus',
+                'status' => 'unavailable',
+                'facility' => 'Kipas Angin, WiFi',
+                'description' => 'Kamar ekonomis tapi nyaman.',
+            ],
+            [
+                'room_number' => 'S-103',
+                'name' => 'Standard',
+                'status' => 'available',
+                'facility' => 'Kipas Angin',
+                'description' => 'Cocok untuk mahasiswa baru.',
+            ],
+        ];
+
+        foreach ($roomsSumatera as $room) {
+            Room::updateOrCreate(
+                ['room_number' => $room['room_number']],
+                array_merge($room, [
+                    'property_id' => $sumatera->id,
+                ])
+            );
+        }
+
+        foreach ($roomsSumatera as $room) {
+            Room::updateOrCreate(
+                ['room_number' => $room['room_number']],
+                array_merge($room, [
+                    'property_id' => $sumatera->id,
+                ])
+            );
+        }
+
         $this->command->info('Multi-Kos test data seeded successfully!');
     }
 }

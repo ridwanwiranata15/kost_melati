@@ -16,15 +16,15 @@
     $totalIncomeCard = Transaction::where('status', 'confirmed')->sum('nominal');
 
     // B. Data Tabel Transaksi
-    $recentTransactions = Transaction::with(['booking.user', 'booking.room'])->latest()->take(5)->get();
+    $recentTransactions = Transaction::with(['booking.user', 'booking.room'])
+        ->latest()
+        ->take(5)
+        ->get();
 
     // C. DATA KHUSUS DIAGRAM (YANG ANDA MINTA)
 
     // 1. Nominal (Uang Masuk) per Bulan untuk Bar Chart
-    $incomePerMonth = Transaction::select(
-            DB::raw('SUM(nominal) as total'),
-            DB::raw('MONTH(created_at) as month')
-        )
+    $incomePerMonth = Transaction::select(DB::raw('SUM(nominal) as total'), DB::raw('MONTH(created_at) as month'))
         ->whereYear('created_at', date('Y'))
         ->where('status', 'confirmed') // TAMBAHAN: Filter status confirmed
         ->groupBy('month')
@@ -43,7 +43,7 @@
     $totalNominal = Transaction::where('status', 'confirmed')->sum('nominal');
 
     // Hutang biasanya tetap dihitung terlepas dari status pembayaran, atau bisa disesuaikan
-    $totalAmount  = Transaction::sum('amount');
+    $totalAmount = Transaction::sum('amount');
 
 @endphp
 
@@ -68,12 +68,14 @@
                 <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ $totalResidents }}</p>
             </div>
             {{-- Card 3 --}}
-            <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div
+                class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <p class="text-sm text-gray-500 dark:text-gray-400">Booking Pending</p>
                 <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ $totalBookings }}</p>
             </div>
             {{-- Card 4 --}}
-            <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div
+                class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <p class="text-sm text-gray-500 dark:text-gray-400">Total Uang Masuk</p>
                 <p class="text-xl font-bold text-green-600">Rp {{ number_format($totalIncomeCard, 0, ',', '.') }}</p>
             </div>
@@ -83,7 +85,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 
             {{-- DIAGRAM 1: PENDAPATAN BULANAN (NOMINAL) --}}
-            <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-2">
+            <div
+                class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-2">
                 <h3 class="font-bold text-gray-800 dark:text-white mb-4">Grafik Uang Masuk (Nominal)</h3>
                 <div class="relative h-64 w-full">
                     {{-- ID ini penting: revenueChart --}}
@@ -92,7 +95,8 @@
             </div>
 
             {{-- DIAGRAM 2: PERBANDINGAN LUNAS VS HUTANG (AMOUNT) --}}
-            <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div
+                class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-800 dark:text-white mb-4">Uang Masuk vs Hutang</h3>
                 <div class="relative h-48 w-full flex justify-center">
                     {{-- ID ini penting: debtChart --}}
@@ -118,7 +122,8 @@
         </div>
 
         {{-- Tabel Transaksi --}}
-        <div class="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div
+            class="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div class="p-6 border-b border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-800 dark:text-white">Transaksi Terbaru</h3>
             </div>
@@ -133,14 +138,19 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                        @foreach($recentTransactions as $trx)
-                        <tr>
-                            <td class="px-6 py-3 font-medium dark:text-white">{{ $trx->user->name ?? '-' }}</td>
-                            <td class="px-6 py-3 text-green-600">Rp {{ number_format($trx->nominal, 0, ',', '.') }}</td>
-                            <td class="px-6 py-3 text-red-500">Rp {{ number_format($trx->amount, 0, ',', '.') }}</td>
-                            <td class="px-6 py-3">{{ ucfirst($trx->status) }}</td>
-                        </tr>
-                        @endforeach
+                        @forelse($recentTransactions as $trx)
+                            <tr>
+                                <td class="px-6 py-3 font-medium dark:text-white">{{ $trx->user->name ?? '-' }}</td>
+                                <td class="px-6 py-3 text-green-600">Rp {{ $trx->nominal_formatted }}</td>
+                                <td class="px-6 py-3 text-red-500">Rp {{ $trx->amount_formatted }}
+                                </td>
+                                <td class="px-6 py-3">{{ ucfirst($trx->status) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada transaksi.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -157,8 +167,8 @@
 
             // 1. DATA DARI PHP KE JS
             const incomeData = @json($chartDataIncome); // Data per bulan
-            const totalNominal = {{ $totalNominal }};   // Total Uang Masuk
-            const totalAmount = {{ $totalAmount }};     // Total Hutang
+            const totalNominal = {{ $totalNominal }}; // Total Uang Masuk
+            const totalAmount = {{ $totalAmount }}; // Total Hutang
 
             // Cek apakah data kosong (untuk debugging)
             console.log("Data Income:", incomeData);
@@ -170,7 +180,9 @@
                 new Chart(ctxRevenue.getContext('2d'), {
                     type: 'bar',
                     data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt',
+                            'Nov', 'Des'
+                        ],
                         datasets: [{
                             label: 'Nominal (Uang Masuk)',
                             data: incomeData,
@@ -181,9 +193,15 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
                         scales: {
-                            y: { beginAtZero: true }
+                            y: {
+                                beginAtZero: true
+                            }
                         }
                     }
                 });
@@ -208,7 +226,9 @@
                         maintainAspectRatio: false,
                         cutout: '70%', // Membuat bolong tengah (Donut)
                         plugins: {
-                            legend: { display: false }, // Kita pakai legend manual HTML di atas
+                            legend: {
+                                display: false
+                            }, // Kita pakai legend manual HTML di atas
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {

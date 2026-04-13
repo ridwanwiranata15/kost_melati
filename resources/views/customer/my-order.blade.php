@@ -330,7 +330,7 @@
 
                                         {{-- 5. Nominal --}}
                                         <td class="px-6 py-4 font-medium">
-                                            Rp {{ number_format($item['nominal'], 0, ',', '.') }}
+                                            Rp {{ number_format((float) ($item['nominal'] ?? 0), 0, ',', '.') }}
                                         </td>
 
                                         {{-- 6. Aksi / Invoice --}}

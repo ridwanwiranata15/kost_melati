@@ -27,6 +27,7 @@
     <link rel="canonical" href="{{ url()->current() }}">
     <title>Kost El Sholeha - Kost terdekat dari IAIN CURUP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -893,11 +894,11 @@
             max-width: 300px;
             background: white;
             border-radius: 24px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             position: relative;
             scroll-snap-align: center;
-            border: 1px solid rgba(241,245,249,0.8);
+            border: 1px solid rgba(241, 245, 249, 0.8);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
@@ -906,7 +907,7 @@
 
         .kamar-card-v2:hover {
             transform: translateY(-6px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
         }
 
         /* Image area */
@@ -930,7 +931,7 @@
         .kc-img-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.5) 100%);
+            background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.5) 100%);
         }
 
         /* Badges on image */
@@ -976,7 +977,7 @@
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
-            background: rgba(255,255,255,0.92);
+            background: rgba(255, 255, 255, 0.92);
             color: var(--dark);
             backdrop-filter: blur(8px);
             display: inline-flex;
@@ -1107,7 +1108,7 @@
 
         .kc-tab.active {
             background: white;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         }
 
         .kc-tab .t-dur {
@@ -1157,13 +1158,13 @@
         .kc-btn-book.available {
             background: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(0,168,89,0.25);
+            box-shadow: 0 4px 12px rgba(0, 168, 89, 0.25);
         }
 
         .kc-btn-book.available:hover {
             background: var(--primary-dark);
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(0,168,89,0.35);
+            box-shadow: 0 6px 18px rgba(0, 168, 89, 0.35);
         }
 
         .kc-btn-book.full {
@@ -1180,7 +1181,7 @@
         .kc-btn-book.guest {
             background: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(0,168,89,0.25);
+            box-shadow: 0 4px 12px rgba(0, 168, 89, 0.25);
         }
 
         .kc-btn-book.guest:hover {
@@ -1241,8 +1242,8 @@
                 max-width: 82vw;
             }
         }
-        /* ============================================= */
 
+        /* ============================================= */
     </style>
 </head>
 
@@ -1269,7 +1270,7 @@
 
                 <div class="nav-btns">
                     @auth
-                        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'caretaker')
+                        @if (auth()->user()->role === 'admin' || auth()->user()->role === 'caretaker')
                             {{-- Staff: tombol ke Dashboard --}}
                             <a href="{{ route('dashboard') }}" class="btn btn-primary">
                                 <i class="fas fa-layout"></i>
@@ -1333,24 +1334,28 @@
             {{-- Filter Status --}}
             <div class="filter-group">
                 <button class="filter-btn active" onclick="filterKamar('all', this)">Semua</button>
-                <button class="filter-btn" onclick="filterKamar('available', this)"><i class="fas fa-check-circle" style="color:#22c55e; font-size:0.75rem"></i> Tersedia</button>
-                <button class="filter-btn" onclick="filterKamar('unavailable', this)"><i class="fas fa-lock" style="color:#ef4444; font-size:0.75rem"></i> Penuh</button>
-                <button class="filter-btn" onclick="filterKamar('repair', this)"><i class="fas fa-tools" style="color:#f59e0b; font-size:0.75rem"></i> Perbaikan</button>
+                <button class="filter-btn" onclick="filterKamar('available', this)"><i class="fas fa-check-circle"
+                        style="color:#22c55e; font-size:0.75rem"></i> Tersedia</button>
+                <button class="filter-btn" onclick="filterKamar('unavailable', this)"><i class="fas fa-lock"
+                        style="color:#ef4444; font-size:0.75rem"></i> Penuh</button>
+                <button class="filter-btn" onclick="filterKamar('repair', this)"><i class="fas fa-tools"
+                        style="color:#f59e0b; font-size:0.75rem"></i> Perbaikan</button>
             </div>
 
             {{-- Filter Lokasi / Properti --}}
             @php
                 $uniqueLocations = $rooms->map(fn($r) => $r->property)->filter()->unique('id');
             @endphp
-            @if($uniqueLocations->count() > 1)
-            <div class="filter-group" id="locationFilters">
-                <button class="filter-btn active" onclick="filterLocation('all', this)"><i class="fas fa-globe-asia" style="font-size:0.75rem"></i> Semua Lokasi</button>
-                @foreach($uniqueLocations as $loc)
-                <button class="filter-btn" onclick="filterLocation('{{ $loc->slug }}', this)">
-                    <i class="fas fa-map-marker-alt" style="font-size:0.75rem"></i> {{ $loc->name }}
-                </button>
-                @endforeach
-            </div>
+            @if ($uniqueLocations->count() > 1)
+                <div class="filter-group" id="locationFilters">
+                    <button class="filter-btn active" onclick="filterLocation('all', this)"><i
+                            class="fas fa-globe-asia" style="font-size:0.75rem"></i> Semua Lokasi</button>
+                    @foreach ($uniqueLocations as $loc)
+                        <button class="filter-btn" onclick="filterLocation('{{ $loc->slug }}', this)">
+                            <i class="fas fa-map-marker-alt" style="font-size:0.75rem"></i> {{ $loc->name }}
+                        </button>
+                    @endforeach
+                </div>
             @endif
         </div>
 
@@ -1360,9 +1365,8 @@
                     $property = $item->property;
                     $facilityChips = $item->facility ? collect(explode(',', $item->facility))->take(3) : collect([]);
                 @endphp
-                <div class="kamar-card-v2"
-                     data-status="{{ $item->status }}"
-                     data-property-slug="{{ $property?->slug ?? 'tanpa-lokasi' }}">
+                <div class="kamar-card-v2" data-status="{{ $item->status }}"
+                    data-property-slug="{{ $property?->slug ?? 'tanpa-lokasi' }}">
 
                     {{-- Image --}}
                     <div class="kc-img">
@@ -1373,7 +1377,7 @@
                         {{-- Top badges --}}
                         <div class="kc-badges">
                             <span class="kc-status {{ $item->status }}">
-                                @if($item->status == 'available')
+                                @if ($item->status == 'available')
                                     <i class="fas fa-check"></i> Tersedia
                                 @elseif($item->status == 'repair')
                                     <i class="fas fa-tools"></i> Perbaikan
@@ -1381,20 +1385,21 @@
                                     <i class="fas fa-lock"></i> Penuh
                                 @endif
                             </span>
-                            @if($property)
-                            <span class="kc-location-badge">
-                                <i class="fas fa-map-marker-alt" style="color: var(--primary); font-size: 0.6rem;"></i>
-                                {{ $property->location ?? $property->name }}
-                            </span>
+                            @if ($property)
+                                <span class="kc-location-badge">
+                                    <i class="fas fa-map-marker-alt"
+                                        style="color: var(--primary); font-size: 0.6rem;"></i>
+                                    {{ $property->location ?? $property->name }}
+                                </span>
                             @endif
                         </div>
 
                         {{-- Bottom property label --}}
-                        @if($property)
-                        <div class="kc-property-label">
-                            <small>Properti</small>
-                            <strong>{{ $property->name }}</strong>
-                        </div>
+                        @if ($property)
+                            <div class="kc-property-label">
+                                <small>Properti</small>
+                                <strong>{{ $property->name }}</strong>
+                            </div>
                         @endif
                     </div>
 
@@ -1411,81 +1416,90 @@
                             </div>
                         </div>
 
-                        @if($item->description)
-                        <p class="kc-desc">{{ $item->description }}</p>
+                        @if ($item->description)
+                            <p class="kc-desc">{{ $item->description }}</p>
                         @endif
 
-                        @if($facilityChips->count())
-                        <div class="kc-facilities">
-                            @foreach($facilityChips as $fac)
-                            <span class="kc-fac-chip"><i class="fas fa-check" style="color:var(--primary);font-size:0.6rem"></i> {{ trim($fac) }}</span>
-                            @endforeach
-                        </div>
+                        @if ($facilityChips->count())
+                            <div class="kc-facilities">
+                                @foreach ($facilityChips as $fac)
+                                    <span class="kc-fac-chip"><i class="fas fa-check"
+                                            style="color:var(--primary);font-size:0.6rem"></i>
+                                        {{ trim($fac) }}</span>
+                                @endforeach
+                            </div>
                         @endif
 
                         {{-- Status khusus: Perbaikan --}}
-                        @if($item->status == 'repair')
-                            <div class="kc-alert" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; margin-bottom:0;">
+                        @if ($item->status == 'repair')
+                            <div class="kc-alert"
+                                style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; margin-bottom:0;">
                                 <i class="fas fa-tools"></i> Kamar sedang dalam perbaikan
                             </div>
                         @elseif($item->status == 'unavailable')
-                            <div class="kc-alert" style="background:#fee2e2; color:#991b1b; border:1px solid #fecaca; margin-bottom:0;">
+                            <div class="kc-alert"
+                                style="background:#fee2e2; color:#991b1b; border:1px solid #fecaca; margin-bottom:0;">
                                 <i class="fas fa-lock"></i> Kamar sudah terisi penuh
                             </div>
                         @else
                             {{-- Price Tabs (hanya tampil jika tersedia) --}}
                             @guest
-                            {{-- Guest: hanya tampilkan durasi tanpa form --}}
-                            <div class="kc-price-tabs">
-                                <button type="button" class="kc-tab active" onclick="kcSelectTab(this)">
-                                    <span class="t-dur">3 Bln</span>
-                                    <span class="t-val">4.5 Jt</span>
-                                </button>
-                                <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
-                                    <span class="t-dur">6 Bln</span>
-                                    <span class="t-val">9 Jt</span>
-                                </button>
-                                <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
-                                    <span class="t-dur">1 Thn</span>
-                                    <span class="t-val">18 Jt</span>
-                                </button>
-                            </div>
-                            @else
-                            @php
-                                $alreadyBooked = Auth::user()
-                                    ->bookings()
-                                    ->where('room_id', $item->id)
-                                    ->whereNotIn('status', ['cancelled'])
-                                    ->exists();
-                            @endphp
-                            @if(!$alreadyBooked && Auth::user()->status != 'pending')
-                            <form id="form-room-{{ $item->id }}" action="{{ route('checkout') }}" method="post">
-                                @csrf
-                                <input type="hidden" name="room_id" value="{{ $item->id }}">
+                                {{-- Guest: hanya tampilkan durasi tanpa form --}}
                                 <div class="kc-price-tabs">
-                                    <button type="button" class="kc-tab active" onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 3)">
+                                    <button type="button" class="kc-tab active" onclick="kcSelectTab(this)">
                                         <span class="t-dur">3 Bln</span>
                                         <span class="t-val">4.5 Jt</span>
                                     </button>
-                                    <button type="button" class="kc-tab" onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 6)">
+                                    <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
                                         <span class="t-dur">6 Bln</span>
                                         <span class="t-val">9 Jt</span>
                                     </button>
-                                    <button type="button" class="kc-tab" onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 12)">
+                                    <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
                                         <span class="t-dur">1 Thn</span>
                                         <span class="t-val">18 Jt</span>
                                     </button>
                                 </div>
-                                <input type="hidden" name="choose_month" id="month-{{ $item->id }}" value="3">
-                            </form>
-                            @endif
+                            @else
+                                @php
+                                    $alreadyBooked = Auth::user()
+                                        ->bookings()
+                                        ->where('room_id', $item->id)
+                                        ->whereNotIn('status', ['cancelled'])
+                                        ->exists();
+                                @endphp
+                                @if (!$alreadyBooked && Auth::user()->status != 'pending')
+                                    <form id="form-room-{{ $item->id }}" action="{{ route('checkout') }}"
+                                        method="post">
+                                        @csrf
+                                        <input type="hidden" name="room_id" value="{{ $item->id }}">
+                                        <div class="kc-price-tabs">
+                                            <button type="button" class="kc-tab active"
+                                                onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 3)">
+                                                <span class="t-dur">3 Bln</span>
+                                                <span class="t-val">4.5 Jt</span>
+                                            </button>
+                                            <button type="button" class="kc-tab"
+                                                onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 6)">
+                                                <span class="t-dur">6 Bln</span>
+                                                <span class="t-val">9 Jt</span>
+                                            </button>
+                                            <button type="button" class="kc-tab"
+                                                onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 12)">
+                                                <span class="t-dur">1 Thn</span>
+                                                <span class="t-val">18 Jt</span>
+                                            </button>
+                                        </div>
+                                        <input type="hidden" name="choose_month" id="month-{{ $item->id }}"
+                                            value="3">
+                                    </form>
+                                @endif
                             @endguest
                         @endif
                     </div>
 
                     {{-- Footer / Actions --}}
                     <div class="kc-footer">
-                        @if($item->status == 'repair')
+                        @if ($item->status == 'repair')
                             <button class="kc-btn-book repair" style="flex:1" disabled>
                                 <i class="fas fa-tools"></i> Dalam Perbaikan
                             </button>
@@ -1495,34 +1509,37 @@
                             </button>
                         @else
                             @guest
-                            <a href="{{ route('login') }}" class="kc-btn-book guest" style="text-decoration:none">
-                                <i class="fas fa-calendar-check"></i> Pesan Sekarang
-                            </a>
+                                <a href="{{ route('login') }}" class="kc-btn-book guest" style="text-decoration:none">
+                                    <i class="fas fa-calendar-check"></i> Pesan Sekarang
+                                </a>
                             @else
-                            @if(Auth::user()->status == 'pending')
-                                <div class="kc-alert pending" style="flex:1; margin:0; justify-content: center;">
-                                    <i class="fas fa-clock"></i> Akun belum diverifikasi
-                                </div>
-                            @elseif($alreadyBooked ?? false)
-                                <div class="kc-alert booked" style="flex:1; margin:0; justify-content: center;">
-                                    <i class="fas fa-check-circle"></i> Sudah Dipesan
-                                </div>
-                            @else
-                                <button type="submit" form="form-room-{{ $item->id }}" class="kc-btn-book available">
-                                    <i class="fas fa-calendar-check"></i> Pesan
-                                </button>
-                            @endif
+                                @if (Auth::user()->status == 'pending')
+                                    <div class="kc-alert pending" style="flex:1; margin:0; justify-content: center;">
+                                        <i class="fas fa-clock"></i> Akun belum diverifikasi
+                                    </div>
+                                @elseif($alreadyBooked ?? false)
+                                    <div class="kc-alert booked" style="flex:1; margin:0; justify-content: center;">
+                                        <i class="fas fa-check-circle"></i> Sudah Dipesan
+                                    </div>
+                                @else
+                                    <button type="submit" form="form-room-{{ $item->id }}"
+                                        class="kc-btn-book available">
+                                        <i class="fas fa-calendar-check"></i> Pesan
+                                    </button>
+                                @endif
                             @endguest
                         @endif
 
-                        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Kamar%20{{ $item->room_number }}" target="_blank" class="kc-btn-wa">
+                        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Kamar%20{{ $item->room_number }}"
+                            target="_blank" class="kc-btn-wa">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
                 </div>
             @empty
                 <div style="text-align:center; width:100%; padding: 40px 20px;">
-                    <i class="fas fa-door-open" style="font-size: 3rem; color: #cbd5e1; display:block; margin-bottom: 16px;"></i>
+                    <i class="fas fa-door-open"
+                        style="font-size: 3rem; color: #cbd5e1; display:block; margin-bottom: 16px;"></i>
                     <p style="color: var(--gray); font-weight: 600;">Belum ada kamar tersedia.</p>
                 </div>
             @endforelse
@@ -1530,9 +1547,12 @@
 
         {{-- Empty state saat filter --}}
         <div id="emptyFilter" style="display:none; text-align:center; padding: 40px 20px;">
-            <i class="fas fa-search" style="font-size: 2.5rem; color: #cbd5e1; display:block; margin-bottom: 12px;"></i>
+            <i class="fas fa-search"
+                style="font-size: 2.5rem; color: #cbd5e1; display:block; margin-bottom: 12px;"></i>
             <p style="color: var(--gray); font-weight: 600;">Tidak ada kamar yang cocok dengan filter ini.</p>
-            <button onclick="filterKamar('all', document.querySelector('.filter-btn'))" style="margin-top:12px; background:var(--primary); color:white; border:none; padding: 8px 20px; border-radius: 20px; cursor:pointer; font-weight:600;">Reset Filter</button>
+            <button onclick="filterKamar('all', document.querySelector('.filter-btn'))"
+                style="margin-top:12px; background:var(--primary); color:white; border:none; padding: 8px 20px; border-radius: 20px; cursor:pointer; font-weight:600;">Reset
+                Filter</button>
         </div>
     </section>
 
@@ -1686,6 +1706,34 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (session('alert'))
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const alert = @json(session('alert'));
+
+                Swal.fire({
+                    icon: alert.type,
+                    title: alert.title,
+                    html: `<p>${alert.message}</p>`,
+                    showCancelButton: true,
+                    confirmButtonText: alert.confirmText ?? 'OK',
+                    confirmButtonColor: '#00a859',
+                    footer: `
+                <a href="https://wa.me/{{ session('admin_phone') }}" target="_blank"
+                   style="color:#25D366;font-weight:600;text-decoration:none;">
+                    💬 Hubungi Admin
+                </a>
+            `
+                }).then((result) => {
+                    if (result.isConfirmed && alert.redirect) {
+                        window.location.href = alert.redirect;
+                    }
+                });
+            });
+        </script>
+    @endif
     <script>
         // Toggle Mobile Menu
         function toggleMenu() {

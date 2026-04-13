@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,7 @@
 
     {{-- Vite for Tailwind 4 and App JS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
     {{-- Flux UI Appearance (handles dark mode class on html) --}}
     @fluxAppearance
 
@@ -18,7 +19,11 @@
     @include('partials.theme-script')
 
     {{-- x-cloak: hide elements before Alpine initializes --}}
-    <style>[x-cloak] { display: none !important; }</style>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 dark:bg-dark-bg dark:text-dark-text font-sans antialiased">
@@ -41,4 +46,5 @@
     {{-- Flux UI Scripts (handles Livewire and Alpine) --}}
     @fluxScripts
 </body>
+
 </html>

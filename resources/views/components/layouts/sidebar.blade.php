@@ -9,8 +9,10 @@
 
     <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center">
-            <i class="fas fa-leaf text-primary-500 text-2xl mr-3"></i>
-            <span class="text-xl font-bold text-primary-700 dark:text-primary-500">Kos El Sholeha</span>
+            <a href="{{ route('home') }}">
+                <i class="fas fa-leaf text-primary-500 text-2xl mr-3"></i>
+                <span class="text-xl font-bold text-primary-700 dark:text-primary-500">Kos El Sholeha</span>
+            </a>
         </div>
         <button @click="sidebarOpen = false" class="md:hidden text-gray-500 hover:text-red-500">
             <i class="fas fa-times text-xl"></i>

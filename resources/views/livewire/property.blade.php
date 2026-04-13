@@ -106,18 +106,18 @@
          x-show="open"
          x-cloak
          @keydown.escape.window="open = false"
-         class="fixed inset-0 z-50 overflow-y-auto" 
+         class="fixed inset-0 z-50 overflow-y-auto"
          aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        
+
         {{-- Backdrop --}}
-        <div x-show="open" 
+        <div x-show="open"
              x-transition:enter="ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              x-transition:leave="ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
              @click="open = false"></div>
 
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
@@ -142,7 +142,7 @@
                     <div class="px-4 py-5 sm:p-6 space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase">Nama Properti</label>
-                            <input type="text" wire:model="name" placeholder="Contoh: Kost Melati Jawa" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
+                            <input type="text" wire:model="name" placeholder="Contoh: Kost Jawa" class="w-full py-3 px-4 rounded-xl border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all">
                             @error('name') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -197,17 +197,17 @@
          x-show="open"
          x-cloak
          @keydown.escape.window="open = false"
-         class="fixed inset-0 z-50 overflow-y-auto" 
+         class="fixed inset-0 z-50 overflow-y-auto"
          aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        
-        <div x-show="open" 
+
+        <div x-show="open"
              x-transition:enter="ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              x-transition:leave="ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
              @click="open = false"></div>
 
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">

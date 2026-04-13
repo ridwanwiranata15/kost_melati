@@ -40,17 +40,17 @@ class DetailUser extends Component
     {
         $user = User::findOrFail($id);
 
-        $this->userId      = $user->id;
-        $this->name        = $user->name;
-        $this->email       = $user->email;
-        $this->phone       = $user->phone;
-        $this->role        = $user->role;
-        $this->status      = $user->status;
-        $this->photo       = $user->photo;
+        $this->userId = $user->id;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->phone = $user->phone;
+        $this->role = $user->role;
+        $this->status = $user->status;
+        $this->photo = $user->photo;
 
         // New fields
-        $this->university   = $user->university;
-        $this->parentsName  = $user->parents_name;
+        $this->university = $user->university;
+        $this->parentsName = $user->parents_name;
         $this->parentsPhone = $user->parents_phone;
 
         // Build secure KTP URL (served via auth-protected route)
@@ -68,21 +68,29 @@ class DetailUser extends Component
 
     public function openEditModal($id)
     {
-        $transaction = \App\Models\Transaction::find($id); // Sesuaikan nama Model
+        $transaction = Transaction::findOrFail($id);
 
-        if ($transaction) {
-            $this->selectedTransactionId = $transaction->id;
-            $this->editAmount = $transaction->nominal;
-            $this->editStatus = $transaction->status; // Sesuaikan nama kolom harga di DB
-            $this->showEditModal = true;
-        }
+        $this->selectedTransactionId = $transaction->id;
+        $this->editAmount = $transaction->nominal;
+        $this->editStatus = $transaction->status;
+
+        $this->resetValidation();
+        $this->showEditModal = true;
     }
 
     // Function Tutup Modal
     public function closeEditModal()
     {
         $this->showEditModal = false;
-        $this->reset(['selectedTransactionId', 'editAmount', 'editProof']);
+
+        $this->reset([
+            'selectedTransactionId',
+            'editAmount',
+            'editProof',
+            'editStatus'
+        ]);
+
+        $this->resetValidation();
     }
 
     // Function Simpan Data
@@ -90,35 +98,35 @@ class DetailUser extends Component
     {
         $this->validate([
             'editAmount' => 'required|numeric',
-            'editProof' => 'nullable|image|max:2048', // Validasi gambar (opsional)
+            'editStatus' => 'required|in:pending,confirmed,rejected',
+            'editProof' => 'nullable|image|max:2048',
         ]);
 
-        $transaction = \App\Models\Transaction::find($this->selectedTransactionId);
+        $transaction = Transaction::findOrFail($this->selectedTransactionId);
 
-        if ($transaction) {
-            // Update Harga
-            $transaction->nominal = $this->editAmount;
-            $transaction->status = $this->editStatus;
+        $transaction->update([
+            'nominal' => $this->editAmount,
+            'status' => $this->editStatus,
+        ]);
 
-            // Update Gambar (Jika ada upload baru)
-            if ($this->editProof) {
-                // Hapus gambar lama jika perlu (opsional)
-                // Storage::delete('public/' . $transaction->payment_receipt);
+        if ($this->editProof) {
+            $path = $this->editProof->store('payment_receipts', 'public');
 
-                // Simpan gambar baru
-                $path = $this->editProof->store('payment_receipts', 'public');
-                $transaction->payment_receipt = $path;
-            }
-
-
-            $transaction->save();
-
-            // Beri notifikasi sukses (opsional)
-            session()->flash('message', 'Data transaksi berhasil diperbarui.');
+            $transaction->update([
+                'payment_receipt' => $path
+            ]);
         }
+
+        // penting: refresh data biar UI update
+        $this->transactions = $this->booking
+            ? $this->booking->transactions()->latest()->get()
+            : collect();
+
+        session()->flash('message', 'Data transaksi berhasil diperbarui.');
 
         $this->closeEditModal();
     }
+
     public function updateStatus()
     {
         User::find($this->userId)->update([
@@ -126,25 +134,6 @@ class DetailUser extends Component
         ]);
 
         session()->flash('message', 'Status berhasil diperbarui!');
-    }
-    // app/Livewire/DetailUser.php
-
-    public function updateStatusTransaction($id, $status)
-    {
-        // 1. Cari transaksi
-        $transaction = \App\Models\Transaction::findOrFail($id);
-
-        // 2. Update dengan status yang dikirim dari view
-        $transaction->update([
-            'status' => $status
-        ]);
-
-        // 3. (Opsional) Refresh data transaksi agar tampilan tabel terupdate otomatis
-        // Karena kita pakai eager loading di mount(), kita perlu refresh manual collectionnya
-        // Atau simpelnya: Livewire akan me-render ulang, tapi datanya harus sinkron.
-        // Jika tidak refresh otomatis, tambahkan logic refresh di sini atau biarkan render ulang.
-
-        session()->flash('message', 'Status transaksi berhasil diperbarui!');
     }
 
     public function render()

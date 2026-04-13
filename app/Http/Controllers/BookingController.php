@@ -34,11 +34,15 @@ class BookingController extends Controller
 
     public function booking(Request $request)
     {
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             "room_id" => ["required", "exists:rooms,id"],
             "duration" => ["required", "integer", "in:3,6,12"],
-            "date_in" => ["required", "date", "after_or_equal:today"],
+            "date_in" => ["required", "date", "after:today"],
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('home')->with('error', 'Tanggal mulai ngekos tidak valid (Minimal harus besok hari). Silakan ulangi pemesanan.');
+        }
 
         try {
             $room = Room::findOrFail($request->room_id);
@@ -51,7 +55,7 @@ class BookingController extends Controller
             $totalAmount = $room->price * $duration;
 
             if ($room->status !== 'available') {
-                return back()->with('error', 'Kamar sudah tidak tersedia.');
+                return redirect()->route('home')->with('error', 'Kamar sudah tidak tersedia.');
             }
             $roomId = $request->room_id;
 
@@ -91,7 +95,7 @@ class BookingController extends Controller
                 ->with('admin_phone', $admin?->phone);
 
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->route('home')->with('error', $e->getMessage());
         }
     }
 }

@@ -4,9 +4,24 @@
 
             {{-- LOGIKA UTAMA: CEK APAKAH ADA BOOKING --}}
             @if ($booking)
+                @php
+                    // 1. KALKULASI CERDAS TOTAL TAGIHAN (Mencegah Rp 0)
+                    $hargaKamar = $booking->price ?? ($booking->room->price ?? 500000); // Default ke 500rb jika kosong
+                    $totalTagihan =
+                        $booking->total_amount > 0 ? $booking->total_amount : $hargaKamar * $booking->duration;
+
+                    // 2. KALKULASI PEMBAYARAN
+                    $sudahBayar = $transactions->where('status', 'confirmed')->sum('nominal') ?? 0;
+                    // Pastikan sisa bayar tidak minus
+                    $sisaBayar = max(0, $totalTagihan - $sudahBayar);
+                    $persenBayar = $totalTagihan > 0 ? ($sudahBayar / $totalTagihan) * 100 : 0;
+
+                    // 3. CEK STATUS PENDING
+                    $isPendingAdmin = strtolower($booking->status) === 'pending';
+                @endphp
 
                 {{-- ================================================= --}}
-                {{-- KONTEN JIKA SUDAH ADA BOOKING (Kode Lama Anda) --}}
+                {{-- KONTEN JIKA SUDAH ADA BOOKING                     --}}
                 {{-- ================================================= --}}
 
                 {{-- HEADER SECTION --}}
@@ -23,11 +38,19 @@
                     </div>
 
                     <div class="flex items-center gap-3">
-                        <span
-                            class="bg-emerald-100 text-emerald-800 text-xs font-bold px-4 py-1.5 rounded-full border border-emerald-200 shadow-sm flex items-center gap-2">
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                            Active Tenant
-                        </span>
+                        @if ($isPendingAdmin)
+                            <span
+                                class="bg-yellow-100 text-yellow-800 text-xs font-bold px-4 py-1.5 rounded-full border border-yellow-200 shadow-sm flex items-center gap-2">
+                                <i class="fa-solid fa-clock animate-spin-slow"></i>
+                                Menunggu Persetujuan Admin
+                            </span>
+                        @else
+                            <span
+                                class="bg-emerald-100 text-emerald-800 text-xs font-bold px-4 py-1.5 rounded-full border border-emerald-200 shadow-sm flex items-center gap-2">
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                                Active Tenant
+                            </span>
+                        @endif
                     </div>
                 </div>
 
@@ -42,12 +65,13 @@
                         {{-- Image --}}
                         <div class="w-full md:w-1/3 shrink-0">
                             <div class="relative h-56 md:h-64 w-full overflow-hidden rounded-2xl shadow-md">
-                                <img src="{{ $booking->room->image ? url('storage/' . $booking->room->image) : 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80' }}" alt="Foto Kamar"
+                                <img src="{{ $booking->room->image ? url('storage/' . $booking->room->image) : 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80' }}" loading="lazy"
+                                    alt="Foto Kamar"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-4 left-4 text-white">
                                     <p class="text-xs font-light uppercase tracking-wider mb-1">Tipe Kamar</p>
-                                    <p class="font-bold text-lg">{{ $booking->room->name }}</p>
+                                    <p class="font-bold text-lg">{{ $booking->room->name ?? 'Standard Room' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -80,8 +104,9 @@
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-semibold">Total Harga</p>
+                                        {{-- Menggunakan $totalTagihan hasil kalkulasi cerdas di atas --}}
                                         <p class="text-emerald-600 font-bold">Rp
-                                            {{ number_format($booking->total_amount, 0, ',', '.') }}</p>
+                                            {{ number_format($totalTagihan, 0, ',', '.') }}</p>
                                     </div>
                                 </div>
 
@@ -93,7 +118,7 @@
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-semibold">Nomor Kamar</p>
-                                        <p class="text-gray-900 font-bold">{{ $booking->room->room_number }}</p>
+                                        <p class="text-gray-900 font-bold">{{ $booking->room->room_number ?? '-' }}</p>
                                     </div>
                                 </div>
 
@@ -115,13 +140,6 @@
                 </section>
 
                 {{-- SUMMARY CARDS SECTION --}}
-                @php
-                    $totalTagihan = $booking->total_amount;
-                    $sudahBayar = $transactions->where('status', 'confirmed')->sum('nominal');
-                    $sisaBayar = $totalTagihan - $sudahBayar;
-                    $persenBayar = $totalTagihan > 0 ? ($sudahBayar / $totalTagihan) * 100 : 0;
-                @endphp
-
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     {{-- CARD 1: TOTAL TAGIHAN --}}
                     <div
@@ -139,7 +157,8 @@
                                 <div>
                                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Tagihan
                                     </p>
-                                    <p class="text-xs text-blue-500 font-medium">Keseluruhan Sewa</p>
+                                    <p class="text-[10px] text-blue-500 font-medium">
+                                        {{ $isPendingAdmin ? 'Estimasi Keseluruhan' : 'Keseluruhan Sewa' }}</p>
                                 </div>
                             </div>
                             <div>
@@ -166,7 +185,7 @@
                                 <div>
                                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Sudah Dibayar
                                     </p>
-                                    <p class="text-xs text-emerald-500 font-medium">Terverifikasi</p>
+                                    <p class="text-[10px] text-emerald-500 font-medium">Terverifikasi</p>
                                 </div>
                             </div>
                             <div>
@@ -184,9 +203,8 @@
                                     <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 mt-1">
                                         <div class="flex items-start gap-2">
                                             <i class="fa-solid fa-circle-info text-gray-400 mt-0.5 text-xs"></i>
-                                            <p class="text-xs text-gray-500 leading-snug">
-                                                Belum melakukan pembayaran apapun.
-                                            </p>
+                                            <p class="text-xs text-gray-500 leading-snug">Belum melakukan pembayaran
+                                                apapun.</p>
                                         </div>
                                     </div>
                                 @endif
@@ -210,14 +228,23 @@
                                 <div>
                                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Sisa Kewajiban
                                     </p>
-                                    <p class="text-xs text-rose-500 font-medium">Perlu Dibayar</p>
+                                    <p class="text-[10px] text-rose-500 font-medium">Perlu Dibayar</p>
                                 </div>
                             </div>
                             <div>
                                 <h3 class="text-2xl font-black text-rose-600">
                                     Rp {{ number_format($sisaBayar, 0, ',', '.') }}
                                 </h3>
-                                @if ($sisaBayar > 0)
+
+                                {{-- Logika Badge Cerdas --}}
+                                @if ($isPendingAdmin && $sudahBayar == 0)
+                                    <div
+                                        class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-yellow-50 border border-yellow-100">
+                                        <i class="fa-solid fa-clock text-[10px] text-yellow-500"></i>
+                                        <span class="text-[10px] font-bold text-yellow-600">Menunggu Tagihan
+                                            Rilis</span>
+                                    </div>
+                                @elseif ($sisaBayar > 0)
                                     <div
                                         class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-50 border border-rose-100">
                                         <i class="fa-solid fa-triangle-exclamation text-[10px] text-rose-500"></i>
@@ -242,13 +269,14 @@
                         class="px-6 py-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50/50 gap-4">
                         <div>
                             <h3 class="font-bold text-gray-900 text-lg">Tagihan & Riwayat Pembayaran</h3>
-                            <p class="text-xs text-gray-500 mt-1">Pantau jatuh tempo dan status pembayaran bulanan Anda.
+                            <p class="text-xs text-gray-500 mt-1">Pantau jatuh tempo dan status pembayaran bulanan
+                                Anda.
                             </p>
                         </div>
                         <div
                             class="flex items-center gap-2 text-xs font-medium bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm">
                             <i class="fa-solid fa-calendar text-gray-400"></i>
-                            Tahun 2025
+                            Tahun {{ \Carbon\Carbon::parse($booking->date_in)->format('Y') }}
                         </div>
                     </div>
 
@@ -300,10 +328,20 @@
                                         {{-- 3. Status --}}
                                         <td class="px-6 py-4 text-center">
                                             @if ($trx && $trx->status == 'pending')
-                                                <span
-                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
-                                                    <i class="fa-solid fa-clock mr-1.5"></i> Menunggu
-                                                </span>
+                                                @if ($trx->payment_receipt)
+                                                    {{-- Jika status pending TAPI sudah ada file bukti bayar --}}
+                                                    <span
+                                                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                                                        <i class="fa-solid fa-spinner animate-spin mr-1.5"></i>
+                                                        Diproses Admin
+                                                    </span>
+                                                @else
+                                                    {{-- Jika status pending dan BELUM upload sama sekali --}}
+                                                    <span
+                                                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                                                        <i class="fa-solid fa-clock mr-1.5"></i> Belum Bayar
+                                                    </span>
+                                                @endif
                                             @elseif($trx && $trx->status == 'confirmed')
                                                 <span
                                                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
@@ -311,20 +349,19 @@
                                                 </span>
                                             @elseif($trx && $trx->status == 'rejected')
                                                 <span
-                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
                                                     <i class="fa-solid fa-circle-xmark mr-1.5"></i> Ditolak
                                                 </span>
                                             @else
-                                                {{-- Jika belum ada record transaksi --}}
                                                 <span
                                                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
-                                                    Belum Bayar
+                                                    Tagihan Baru
                                                 </span>
                                             @endif
                                         </td>
 
                                         {{-- 4. Tgl Bayar --}}
-                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                        <td class="px-6 py-4 text-sm text-gray-500 text-center">
                                             {{ $trx && $trx->date_pay ? \Carbon\Carbon::parse($trx->date_pay)->translatedFormat('d M Y') : '-' }}
                                         </td>
 
@@ -336,19 +373,40 @@
                                         {{-- 6. Aksi / Invoice --}}
                                         <td class="px-6 py-4 text-center">
                                             @if ($trx)
-                                                {{-- JIKA ADA DATA TRANSAKSI DI DATABASE --}}
-                                                @if ($trx->status == 'pending' || $trx->status == 'rejected')
+                                                @if ($trx->status == 'pending')
+                                                    @if ($trx->payment_receipt)
+                                                        {{-- JIKA SUDAH UPLOAD: Disable tombol agar user tidak bingung --}}
+                                                        <button disabled
+                                                            class="bg-gray-100 text-gray-400 border border-gray-200 px-4 py-2 rounded-xl text-xs font-bold cursor-not-allowed flex items-center gap-2 mx-auto transition-all">
+                                                            <i class="fa-solid fa-hourglass-half"></i> Menunggu
+                                                        </button>
+                                                    @else
+                                                        {{-- JIKA BELUM UPLOAD: Tombol bayar aktif --}}
+                                                        <a href="{{ route('booking.upload', $trx->id) }}"
+                                                            class="inline-block">
+                                                            <button
+                                                                class="group bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 mx-auto">
+                                                                <span>Bayar</span>
+                                                                <i
+                                                                    class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                                                            </button>
+                                                        </a>
+                                                    @endif
+                                                @elseif($trx->status == 'rejected')
+                                                    {{-- JIKA DITOLAK: Tombol ganti warna merah untuk re-upload --}}
                                                     <a href="{{ route('booking.upload', $trx->id) }}"
                                                         class="inline-block">
                                                         <button
-                                                            class="group bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
-                                                            <span>Bayar</span>
+                                                            class="group bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 mx-auto">
+                                                            <span>Upload Ulang</span>
                                                             <i
-                                                                class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                                                                class="fa-solid fa-rotate-right transform group-hover:rotate-180 transition-transform"></i>
                                                         </button>
                                                     </a>
                                                 @elseif($trx->status == 'confirmed')
-                                                    <a href="{{ route('invoice.show', $trx->id) }}">
+                                                    {{-- JIKA LUNAS: Tombol Invoice --}}
+                                                    <a href="{{ route('invoice.show', $trx->id) }}"
+                                                        class="inline-block">
                                                         <button
                                                             class="text-emerald-600 hover:text-emerald-800 border border-emerald-200 hover:border-emerald-300 bg-emerald-50 hover:bg-emerald-100 px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 mx-auto">
                                                             <i class="fa-solid fa-file-invoice"></i> Invoice
@@ -356,18 +414,34 @@
                                                     </a>
                                                 @endif
                                             @else
-                                                {{-- JIKA BELUM ADA DATA TRANSAKSI (Hanya Jadwal) --}}
-                                                <span class="text-xs text-gray-400 italic">Tagihan belum dibuat</span>
-                                                {{-- Atau Anda bisa membuat tombol 'Generate' jika admin belum membuatkan tagihan --}}
+                                                <span class="text-xs text-gray-400 italic">Belum tersedia</span>
                                             @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-12">
+                                        <td colspan="6" class="text-center py-16">
                                             <div class="flex flex-col items-center justify-center text-gray-400">
-                                                <i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-300"></i>
-                                                <p class="font-medium text-gray-500">Belum ada jadwal tagihan.</p>
+                                                @if ($isPendingAdmin)
+                                                    <div
+                                                        class="w-16 h-16 bg-yellow-50 border border-yellow-100 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                                                        <i
+                                                            class="fa-solid fa-hourglass-half text-2xl text-yellow-500 animate-pulse"></i>
+                                                    </div>
+                                                    <h4 class="font-bold text-gray-800 text-lg">Menunggu Verifikasi
+                                                        Admin</h4>
+                                                    <p class="text-sm text-gray-500 mt-2 max-w-md leading-relaxed">
+                                                        Sewa kamar Anda sedang ditinjau. Jadwal tagihan dan tombol
+                                                        pembayaran akan muncul otomatis setelah Admin menyetujui pesanan
+                                                        Anda.
+                                                    </p>
+                                                @else
+                                                    <div
+                                                        class="w-16 h-16 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                                                        <i class="fa-solid fa-folder-open text-2xl text-gray-300"></i>
+                                                    </div>
+                                                    <p class="font-bold text-gray-600">Belum ada jadwal tagihan.</p>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

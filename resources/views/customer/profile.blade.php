@@ -1,20 +1,53 @@
 @php
     // --- 1. LOGIKA PHP (DURASI SEWA) ---
+    // --- 1. LOGIKA PHP (DURASI SEWA & STATUS) ---
     $durasiTeks = '-';
     $booking = $booking ?? null;
+    $statusWarna = 'text-yellow-600'; // Default kuning
+    $bgWarna = 'bg-yellow-50 border-yellow-100'; // Default latar kuning
+    $iconWarna = 'text-yellow-600';
+    $iconStatus = 'fa-info-circle';
 
-    if ($booking && strtolower($booking->status) == 'confirmed') {
-        $tglMasuk = \Carbon\Carbon::parse($booking->date_in)->startOfDay();
-        $sekarang = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay();
+    if ($booking) {
+        $statusBook = strtolower($booking->status);
 
-        if ($tglMasuk->gt($sekarang)) {
-            $durasiTeks = 'Menunggu Check-in';
-        } else {
-            $totalHari = $tglMasuk->diffInDays($sekarang);
-            $durasiTeks = $totalHari == 0 ? 'Baru hari ini' : 'Sudah ' . $totalHari . ' hari';
+        // Jika statusnya Confirmed ATAU Checkin (Indikator Hijau/Aktif)
+        if (in_array($statusBook, ['confirmed', 'checkin'])) {
+            $statusWarna = 'text-primary-600';
+            $bgWarna = 'bg-primary-50 border-primary-100';
+            $iconWarna = 'text-primary-600';
+            $iconStatus = 'fa-hourglass-half';
+
+            $tglMasuk = \Carbon\Carbon::parse($booking->date_in)->startOfDay();
+            $sekarang = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay();
+
+            if ($tglMasuk->gt($sekarang)) {
+                $durasiTeks = 'Menunggu Check-in';
+            } else {
+                $totalHari = $tglMasuk->diffInDays($sekarang);
+                $durasiTeks = $totalHari == 0 ? 'Baru hari ini' : 'Sudah ' . $totalHari . ' hari';
+            }
         }
-    } else {
-        $durasiTeks = 'Menunggu Konfirmasi';
+        // Jika Pending
+        elseif ($statusBook === 'pending') {
+            $durasiTeks = 'Menunggu Konfirmasi';
+        }
+        // Jika Checkout
+        elseif ($statusBook === 'checkout') {
+            $durasiTeks = 'Selesai Masa Sewa';
+            $statusWarna = 'text-gray-600';
+            $bgWarna = 'bg-gray-50 border-gray-200';
+            $iconWarna = 'text-gray-500';
+            $iconStatus = 'fa-check-double';
+        }
+        // Jika Cancelled
+        else {
+            $durasiTeks = 'Dibatalkan';
+            $statusWarna = 'text-red-600';
+            $bgWarna = 'bg-red-50 border-red-200';
+            $iconWarna = 'text-red-600';
+            $iconStatus = 'fa-times-circle';
+        }
     }
 
     // KTP photo URL (served via protected route)
@@ -55,8 +88,8 @@
                 <div class="mb-8">
                     <h1 class="flex items-center gap-2 text-2xl md:text-3xl font-bold text-gray-900">
                         <span>Halo, {{ auth()->user()->name }}!</span>
-                        <img src="https://raw.githubusercontent.com/Ridhsuki/Ridhsuki/refs/heads/main/img/Hi.gif" loading="lazy"
-                            class="w-8 h-8">
+                        <img src="https://raw.githubusercontent.com/Ridhsuki/Ridhsuki/refs/heads/main/img/Hi.gif"
+                            loading="lazy" class="w-8 h-8">
                     </h1>
                     <p class="text-gray-500 mt-1">Kelola informasi profil dan keamanan akun Anda di sini.</p>
                 </div>
@@ -80,7 +113,7 @@
                                     @else
                                         <img id="profile-preview"
                                             src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=10b981&color=fff"
-                                            class="w-full h-full rounded-full object-cover border-4 border-white shadow-md bg-white">
+                                            class="w-full h-full rounded-full object-cover border-4 border-white shadow-md bg-white" loading="lazy">
                                     @endif
                                     <div class="absolute bottom-2 right-2 bg-gray-900 text-white p-2 rounded-full shadow-lg border-2 border-white cursor-pointer hover:bg-primary-500 transition-colors"
                                         onclick="document.getElementById('file-upload').click()">
@@ -175,17 +208,14 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div
-                                        class="flex items-center p-3 rounded-xl border {{ strtolower($booking->status) == 'confirmed' ? 'bg-primary-50 border-primary-100' : 'bg-yellow-50 border-yellow-100' }}">
+                                    <div class="flex items-center p-3 rounded-xl border {{ $bgWarna }}">
                                         <div
-                                            class="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm mr-4 {{ strtolower($booking->status) == 'confirmed' ? 'text-primary-600' : 'text-yellow-600' }}">
-                                            <i
-                                                class="fa-solid {{ strtolower($booking->status) == 'confirmed' ? 'fa-hourglass-half' : 'fa-info-circle' }}"></i>
+                                            class="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm mr-4 {{ $iconWarna }}">
+                                            <i class="fa-solid {{ $iconStatus }}"></i>
                                         </div>
                                         <div>
-                                            <p
-                                                class="text-xs font-semibold {{ strtolower($booking->status) == 'confirmed' ? 'text-primary-600' : 'text-yellow-600' }}">
-                                                {{ strtolower($booking->status) == 'confirmed' ? 'Durasi Huni' : 'Status Booking' }}
+                                            <p class="text-xs font-semibold {{ $statusWarna }}">
+                                                {{ in_array(strtolower($booking->status), ['confirmed', 'checkin']) ? 'Durasi Huni' : 'Status Booking' }}
                                             </p>
                                             <p class="font-bold text-gray-900">{{ $durasiTeks }}</p>
                                         </div>

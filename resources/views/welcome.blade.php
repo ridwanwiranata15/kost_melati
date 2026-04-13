@@ -1168,6 +1168,51 @@
             background: transparent;
         }
 
+        /* --- ALERT BOX UNTUK BOOKING AKTIF --- */
+        .kc-alert {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            /* 12px */
+            font-weight: 700;
+            text-align: center;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kc-alert i {
+            font-size: 1.125rem;
+            /* 18px */
+        }
+
+        /* Warna Biru (Info) */
+        .kc-alert-info {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border-color: #dbeafe;
+        }
+
+        .kc-alert-info a {
+            color: #2563eb;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        .kc-alert-info a:hover {
+            color: #1e40af;
+        }
+
+        /* Warna Kuning (Warning) */
+        .kc-alert-warning {
+            background-color: #fefce8;
+            color: #a16207;
+            border-color: #fef9c3;
+        }
+
         .kc-tab.active {
             background: white;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
@@ -1539,13 +1584,69 @@
                                 </div>
                             @else
                                 @php
-                                    $alreadyBooked = Auth::user()
-                                        ->bookings()
-                                        ->where('room_id', $item->id)
-                                        ->whereNotIn('status', ['cancelled'])
-                                        ->exists();
+                                    // 1. CEK ROLE USER
+                                    $userRole = Auth::user()->role ?? 'member';
+                                    $isStaff = in_array($userRole, ['admin', 'caretaker']);
+
+                                    $hasActiveBooking = false;
+
+                                    // 2. CEK BOOKING AKTIF (Hanya dijalankan jika dia BUKAN staff)
+                                    if (!$isStaff) {
+                                        $cekBookings = Auth::user()
+                                            ->bookings()
+                                            ->whereNotIn('status', ['cancelled', 'canceled', 'checkout', 'rejected'])
+                                            ->get();
+
+                                        foreach ($cekBookings as $b) {
+                                            $statusBook = strtolower($b->status);
+
+                                            // Cek Pending (Expire 24 Jam)
+                                            if ($statusBook === 'pending') {
+                                                $tglBooking = \Carbon\Carbon::parse($b->created_at);
+                                                if (\Carbon\Carbon::now()->diffInHours($tglBooking) < 24) {
+                                                    $hasActiveBooking = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            // Cek Confirmed/Checkin (Batas Waktu Sewa)
+                                            if (in_array($statusBook, ['confirmed', 'checkin'])) {
+                                                $tglMasuk = \Carbon\Carbon::parse($b->date_in)->startOfDay();
+                                                $tglKeluar = $tglMasuk->copy()->addMonths($b->duration)->startOfDay();
+                                                $hariIni = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay();
+
+                                                if ($hariIni->lte($tglKeluar)) {
+                                                    $hasActiveBooking = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
                                 @endphp
-                                @if (!$alreadyBooked && Auth::user()->status != 'pending')
+
+                                {{-- LOGIKA TAMPILAN BERDASARKAN HASIL CEK DI ATAS --}}
+                                @if ($isStaff)
+                                    {{-- Jika user adalah Admin atau Penjaga Kos --}}
+                                    <div class="kc-alert"
+                                        style="background-color: #f3f4f6; color: #4b5563; border-color: #e5e7eb;">
+                                        <i class="fa-solid fa-user-shield"></i>
+                                        <span>Akun Staff tidak dapat memesan kamar.</span>
+                                    </div>
+                                @elseif($hasActiveBooking)
+                                    {{-- Jika member punya kamar aktif --}}
+                                    <div class="kc-alert kc-alert-info">
+                                        <i class="fa-solid fa-bed"></i>
+                                        <span>Anda sudah memiliki sewa aktif.</span>
+                                        <a href="{{ route('customer.order') }}">Lihat Detail Sewa</a>
+                                    </div>
+                                @elseif(Auth::user()->status == 'pending')
+                                    {{-- Jika akun member masih diverifikasi --}}
+                                    <div class="kc-alert kc-alert-warning">
+                                        <i class="fa-solid fa-user-clock"></i>
+                                        <span>Akun sedang diverifikasi Admin.</span>
+                                    </div>
+                                @else
+                                    {{-- Jika member lolos semua syarat, tampilkan Form Harga --}}
                                     <form id="form-room-{{ $item->id }}" action="{{ route('checkout') }}"
                                         method="post">
                                         @csrf

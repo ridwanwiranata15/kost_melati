@@ -24,27 +24,28 @@ class Booking extends Component
     public function updateStatus($id, $status)
     {
         // 1. Cari data booking
-        $booking = BookingModel::find($id);
+        $booking = BookingModel::with('room')->find($id);
 
         if ($booking) {
             // 2. Update status booking
             $booking->status = $status;
             $booking->save();
 
-            // 3. REVISI: Cek jika status 'confirmed' atau 'checkin'
+            // Siapkan kerangka pesan notifikasi
+            $message = "Status booking #{$booking->booking_code} berhasil diubah menjadi " . strtoupper($status) . ".";
+
+            // 3. LOGIKA BERDASARKAN STATUS
+
+            // A. Jika status disetujui atau sudah masuk (Confirmed / Checkin)
             if (in_array($status, ['confirmed', 'checkin'])) {
 
-                // Cek dulu biar tidak duplikat (misal admin klik confirmed 2x)
-                // Jika belum ada transaksi untuk booking ini, baru buat
+                // Cek apakah transaksi sudah pernah dibuat
                 $cekTransaksi = \App\Models\Transaction::where('booking_id', $booking->id)->exists();
 
                 if (!$cekTransaksi) {
-                    // Ambil durasi (asumsi integer, misal: 3 ,bulan)
                     $duration = (int) $booking->duration;
 
-                    // Loop sebanyak durasi
                     for ($i = 0; $i < $duration; $i++) {
-
                         \App\Models\Transaction::create([
                             'booking_id' => $booking->id,
                             'user_id' => $booking->user_id,
@@ -57,11 +58,38 @@ class Booking extends Component
                             'status' => 'pending',
                         ]);
                     }
+                    $message .= " Tagihan untuk {$duration} bulan berhasil di-generate.";
+                }
+
+                // Pastikan kamar tetap 'unavailable' (terisi)
+                if ($booking->room) {
+                    $booking->room->update(['status' => 'unavailable']);
                 }
             }
 
-            // 4. Kirim pesan sukses
-            session()->flash('message', "Status booking #{$booking->booking_code} berhasil diubah menjadi {$status} dan tagihan telah dibuat.");
+            // B. Jika Booking Dibatalkan (Cancelled) atau Selesai (Checkout)
+            elseif (in_array($status, ['cancelled', 'checkout'])) {
+
+                // 1. Kembalikan status kamar menjadi tersedia
+                if ($booking->room) {
+                    $booking->room->update(['status' => 'available']);
+                    $message .= " Kamar sekarang kembali Tersedia.";
+                }
+
+                // 2. KHUSUS CANCELLED: Hapus tagihan yang masih 'pending' agar tidak menumpuk
+                if ($status === 'cancelled') {
+                    $deletedBills = \App\Models\Transaction::where('booking_id', $booking->id)
+                        ->where('status', 'pending')
+                        ->delete();
+
+                    if ($deletedBills > 0) {
+                        $message .= " Dan {$deletedBills} tagihan yang belum dibayar telah dihapus otomatis.";
+                    }
+                }
+            }
+
+            // 4. Kirim pesan sukses yang sudah disesuaikan
+            session()->flash('message', $message);
         }
     }
 

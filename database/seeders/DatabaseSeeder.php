@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'admin',
+                'name' => 'Ishlah Haramain',
                 'email' => 'admin@gmail.com',
                 'password' =>Hash::make('password'),
                 'phone' =>  '628174833386',

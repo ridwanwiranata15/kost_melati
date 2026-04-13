@@ -86,7 +86,8 @@
                 <div class="flex flex-col gap-2">
                     <label for="date_in" class="font-semibold text-gray-700 ml-1">Tanggal Masuk</label>
                     <div class="relative">
-                        <input type="date" name="date_in" id="date_in" required
+                        <input type="date" name="date_in" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}"
+                            id="date_in" required
                             class="w-full rounded-full border border-gray-300 py-3.5 px-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer">
                     </div>
                 </div>
@@ -155,7 +156,7 @@
                     // Disable tombol
                     submitBtn.disabled = true;
                     submitBtn.classList.remove('bg-green-500', 'text-white', 'hover:bg-green-600',
-                    'cursor-pointer');
+                        'cursor-pointer');
                     submitBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
                     submitBtn.innerText = "Perbaiki Tanggal";
 

@@ -64,7 +64,7 @@
             </div>
             {{-- Card 2 --}}
             <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Penghuni</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">User</p>
                 <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ $totalResidents }}</p>
             </div>
             {{-- Card 3 --}}
@@ -140,11 +140,25 @@
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                         @forelse($recentTransactions as $trx)
                             <tr>
-                                <td class="px-6 py-3 font-medium dark:text-white">{{ $trx->user->name ?? '-' }}</td>
-                                <td class="px-6 py-3 text-green-600">Rp {{ $trx->nominal_formatted }}</td>
-                                <td class="px-6 py-3 text-red-500">Rp {{ $trx->amount_formatted }}
+                                <td class="px-6 py-3 font-medium dark:text-white">
+                                    {{ $trx->user->name ?? ($trx->booking->user->name ?? 'Tanpa Nama') }}
                                 </td>
-                                <td class="px-6 py-3">{{ ucfirst($trx->status) }}</td>
+
+                                <td class="px-6 py-3 text-green-600">Rp
+                                    {{ $trx->nominal_formatted ?? number_format($trx->nominal, 0, ',', '.') }}</td>
+                                <td class="px-6 py-3 text-red-500">Rp
+                                    {{ $trx->amount_formatted ?? number_format($trx->amount, 0, ',', '.') }}</td>
+                                <td class="px-6 py-3">
+                                    <span
+                                        class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
+                                        {{ $trx->status == 'confirmed'
+                                            ? 'bg-green-100 text-green-700'
+                                            : ($trx->status == 'pending'
+                                                ? 'bg-yellow-100 text-yellow-700'
+                                                : 'bg-red-100 text-red-700') }}">
+                                        {{ $trx->status }}
+                                    </span>
+                                </td>
                             </tr>
                         @empty
                             <tr>

@@ -2033,6 +2033,44 @@
         const map = L.map('map').setView([-3.4650, 102.5210], 15);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         L.marker([-3.4650, 102.5210]).addTo(map).bindPopup('Kosan El Sholeha<br>Jalan Hegel Blok A No.03, Curup');
+
+        // =============================================
+        // SCROLLSPY LOGIC (Otomatis Highlight Menu Navbar)
+        // =============================================
+        window.addEventListener('scroll', () => {
+            let current = '';
+            // Ambil semua tag section yang ada di halaman
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+            // Ambil tinggi header untuk offset agar highlight tidak terlambat
+            const headerHeight = document.querySelector('header').offsetHeight;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+
+                // Jika posisi scroll melewati bagian atas section (dikurangi tinggi header + sedikit buffer 50px)
+                if (pageYOffset >= (sectionTop - headerHeight - 50)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            // Loop semua menu di navbar, hapus class active, lalu tambahkan ke menu yang sesuai dengan ID section
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Opsional: Efek bayangan pada header saat di-scroll
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
     </script>
 </body>
 

@@ -27,16 +27,20 @@
     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
 
         {{-- Role badge --}}
-        @if($authUser->isCaretaker())
-        <div class="mb-4 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex items-center gap-2">
-            <i class="fas fa-user-shield text-blue-500 text-xs"></i>
-            <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Penjaga Kost</span>
-        </div>
+        @if ($authUser->isCaretaker())
+            <div
+                class="mb-4 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex items-center gap-2">
+                <i class="fas fa-user-shield text-blue-500 text-xs"></i>
+                <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Penjaga
+                    Kost</span>
+            </div>
         @else
-        <div class="mb-4 px-3 py-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 flex items-center gap-2">
-            <i class="fas fa-crown text-purple-500 text-xs"></i>
-            <span class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wide">Super Admin</span>
-        </div>
+            <div
+                class="mb-4 px-3 py-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 flex items-center gap-2">
+                <i class="fas fa-crown text-purple-500 text-xs"></i>
+                <span class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wide">Super
+                    Admin</span>
+            </div>
         @endif
 
         {{-- Menu Utama --}}
@@ -57,31 +61,32 @@
             <span class="font-medium">Booking & Check-in</span>
         </a>
 
-        @if($authUser->isAdmin())
-        {{-- Menu khusus Admin --}}
-        <div class="pt-3 pb-1 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Manajemen</div>
-        <a href="{{ route('admin.user') }}" wire:navigate
-            class="flex items-center px-4 py-2.5 {{ request()->routeIs('admin.user*') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
-            <i class="fas fa-users w-6"></i>
-            <span class="font-medium">Penghuni</span>
-        </a>
-        <a href="{{ route('admin.gallery') }}" wire:navigate
-            class="flex items-center px-4 py-2.5 {{ request()->routeIs('admin.gallery') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
-            <i class="fas fa-images w-6"></i>
-            <span class="font-medium">Galeri</span>
-        </a>
+        @if ($authUser->isAdmin())
+            {{-- Menu khusus Admin --}}
+            <div class="pt-3 pb-1 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Manajemen</div>
+            <a href="{{ route('admin.user') }}" wire:navigate
+                class="flex items-center px-4 py-2.5 {{ request()->routeIs('admin.user*') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
+                <i class="fas fa-users w-6"></i>
+                <span class="font-medium">Penghuni</span>
+            </a>
+            <a href="{{ route('admin.gallery') }}" wire:navigate
+                class="flex items-center px-4 py-2.5 {{ request()->routeIs('admin.gallery') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
+                <i class="fas fa-images w-6"></i>
+                <span class="font-medium">Galeri</span>
+            </a>
 
-        <div class="pt-3 pb-1 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Pengaturan Sistem</div>
-        <a href="{{ route('admin.properties') }}" wire:navigate
-            class="flex items-center px-4 py-2.5 {{ request()->routeIs('admin.properties') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
-            <i class="fas fa-building w-6"></i>
-            <span class="font-medium">Daftar Properti</span>
-        </a>
-        <a href="{{ route('admin.staff') }}" wire:navigate
-            class="flex items-center px-4 py-2.5 {{ request()->routeIs('admin.staff') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
-            <i class="fas fa-user-shield w-6"></i>
-            <span class="font-medium">Manajemen Staff</span>
-        </a>
+            <div class="pt-3 pb-1 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Pengaturan
+                Sistem</div>
+            <a href="{{ route('admin.properties') }}" wire:navigate
+                class="flex items-center px-4 py-2.5 {{ request()->routeIs('admin.properties') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
+                <i class="fas fa-building w-6"></i>
+                <span class="font-medium">Daftar Properti</span>
+            </a>
+            <a href="{{ route('admin.staff') }}" wire:navigate
+                class="flex items-center px-4 py-2.5 {{ request()->routeIs('admin.staff') ? $activeClass : $inactiveClass }} rounded-lg transition-colors">
+                <i class="fas fa-user-shield w-6"></i>
+                <span class="font-medium">Manajemen Staff</span>
+            </a>
         @endif
 
         {{-- Profil & Settings (semua role) --}}
@@ -102,7 +107,8 @@
     <div class="p-2 border-t border-gray-200 dark:border-gray-700">
         <form action="{{ route('logout') }}" method="post">
             @csrf
-            <button class="w-full flex items-center px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+            <button
+                class="w-full flex items-center px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
                 <i class="fas fa-sign-out-alt w-6"></i>
                 <span class="font-medium">Logout</span>
             </button>

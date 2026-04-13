@@ -495,29 +495,64 @@
         /* --- FACILITIES GRID --- */
         .fac-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
         }
 
         .fac-card {
             background: white;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--gray-light);
+            padding: 28px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(241, 245, 249, 0.8);
             text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .fac-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-light);
         }
 
         .fac-icon {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background: var(--primary-light);
             color: var(--primary);
-            border-radius: 50%;
+            border-radius: 16px;
+            /* Squircle look yang lebih modern */
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            margin: 0 auto 15px;
+            font-size: 1.5rem;
+            margin: 0 auto 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .fac-card:hover .fac-icon {
+            transform: scale(1.1) rotate(5deg);
+            /* Interaksi halus saat di-hover */
+        }
+
+        .fac-card h4 {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .fac-desc {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.6;
+            margin: 0;
+            flex-grow: 1;
+            /* Memastikan tinggi teks rapi */
         }
 
         /* --- GALLERY SECTION (RESPONSIVE) --- */
@@ -568,18 +603,45 @@
 
         /* Mobile: Selalu tampil overlay text sedikit agar user tau itu apa */
         @media (max-width: 768px) {
-            .gallery-overlay {
-                opacity: 1;
-                transform: translateY(0);
-                padding: 15px;
+            /* ... kode navbar mobile dll biarkan saja ... */
+
+            /* Grid Adjustments */
+            .hero-text h1 {
+                font-size: 2rem;
             }
 
-            .gallery-grid {
+            /* --- UPDATE BAGIAN INI --- */
+            .fac-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+                gap: 16px;
             }
 
-            /* 2 kolom di HP */
+            .fac-card {
+                padding: 20px 12px;
+                border-radius: 16px;
+            }
+
+            .fac-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.2rem;
+                margin-bottom: 16px;
+                border-radius: 12px;
+            }
+
+            .fac-card h4 {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+            }
+
+            .fac-desc {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+
+            /* --- AKHIR UPDATE --- */
+
+            /* ... kode footer dll biarkan saja ... */
         }
 
         /* --- TESTIMONIALS SECTION (RESPONSIVE) --- */
@@ -1248,7 +1310,21 @@
 </head>
 
 <body>
+    @php
+        // Ambil data admin (bisa pakai find(1) atau cari berdasarkan role)
+        $admin = \App\Models\User::where('role', 'admin')->first();
 
+        // Sesuaikan 'phone' dengan nama kolom nomor HP di tabel users Anda (misal: 'no_hp' atau 'phone')
+        $adminPhone = $admin->phone ?? '6281234567890';
+
+        // Bersihkan karakter selain angka (opsional tapi disarankan)
+        $adminPhone = preg_replace('/[^0-9]/', '', $adminPhone);
+
+        // Ubah awalan '0' menjadi '62' agar valid untuk link WhatsApp
+        if (str_starts_with($adminPhone, '0')) {
+            $adminPhone = '62' . substr($adminPhone, 1);
+        }
+    @endphp
     <header>
         <div class="navbar">
             <a href="#" class="logo">
@@ -1298,7 +1374,7 @@
             <p>Hanya 5 menit dari IAIN Curup. Fasilitas lengkap, WiFi kencang, dan keamanan 24 jam untuk mahasiswa.</p>
             <div style="display: flex; gap: 10px; justify-content: inherit;">
                 <a href="#kamar" class="btn btn-primary">Lihat Kamar</a>
-                <a href="https://wa.me/6281234567890" class="btn btn-outline"><i class="fab fa-whatsapp"></i> Chat
+                <a href="https://wa.me/{{ $adminPhone }}" class="btn btn-outline"><i class="fab fa-whatsapp"></i> Chat
                     Admin</a>
             </div>
             <div class="stats">
@@ -1332,10 +1408,12 @@
         <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 28px;">
 
             {{-- Filter Status --}}
+            {{-- Filter Status --}}
             <div class="filter-group">
-                <button class="filter-btn active" onclick="filterKamar('all', this)">Semua</button>
-                <button class="filter-btn" onclick="filterKamar('available', this)"><i class="fas fa-check-circle"
-                        style="color:#22c55e; font-size:0.75rem"></i> Tersedia</button>
+                {{-- Hapus class 'active' dari tombol Semua --}}
+                <button class="filter-btn" onclick="filterKamar('all', this)">Semua</button>
+                <button class="filter-btn active" onclick="filterKamar('available', this)"><i
+                        class="fas fa-check-circle" style="color:#22c55e; font-size:0.75rem"></i> Tersedia</button>
                 <button class="filter-btn" onclick="filterKamar('unavailable', this)"><i class="fas fa-lock"
                         style="color:#ef4444; font-size:0.75rem"></i> Penuh</button>
                 <button class="filter-btn" onclick="filterKamar('repair', this)"><i class="fas fa-tools"
@@ -1411,7 +1489,7 @@
                                 <p class="kc-room-number">No. {{ $item->room_number }}</p>
                             </div>
                             <div class="kc-price-tag">
-                                <span class="price-amount">1.5Jt</span>
+                                <span class="price-amount">500Rb</span>
                                 <span class="price-unit">/bulan</span>
                             </div>
                         </div>
@@ -1448,15 +1526,15 @@
                                 <div class="kc-price-tabs">
                                     <button type="button" class="kc-tab active" onclick="kcSelectTab(this)">
                                         <span class="t-dur">3 Bln</span>
-                                        <span class="t-val">4.5 Jt</span>
+                                        <span class="t-val">1.5 Jt</span>
                                     </button>
                                     <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
                                         <span class="t-dur">6 Bln</span>
-                                        <span class="t-val">9 Jt</span>
+                                        <span class="t-val">3 Jt</span>
                                     </button>
                                     <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
                                         <span class="t-dur">1 Thn</span>
-                                        <span class="t-val">18 Jt</span>
+                                        <span class="t-val">6 Jt</span>
                                     </button>
                                 </div>
                             @else
@@ -1476,17 +1554,17 @@
                                             <button type="button" class="kc-tab active"
                                                 onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 3)">
                                                 <span class="t-dur">3 Bln</span>
-                                                <span class="t-val">4.5 Jt</span>
+                                                <span class="t-val">1.5 Jt</span>
                                             </button>
                                             <button type="button" class="kc-tab"
                                                 onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 6)">
                                                 <span class="t-dur">6 Bln</span>
-                                                <span class="t-val">9 Jt</span>
+                                                <span class="t-val">3 Jt</span>
                                             </button>
                                             <button type="button" class="kc-tab"
                                                 onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 12)">
                                                 <span class="t-dur">1 Thn</span>
-                                                <span class="t-val">18 Jt</span>
+                                                <span class="t-val">6 Jt</span>
                                             </button>
                                         </div>
                                         <input type="hidden" name="choose_month" id="month-{{ $item->id }}"
@@ -1530,7 +1608,7 @@
                             @endguest
                         @endif
 
-                        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Kamar%20{{ $item->room_number }}"
+                        <a href="https://wa.me/{{ $adminPhone }}?text=Halo,%20saya%20tertarik%20dengan%20Kamar%20{{ $item->room_number }}"
                             target="_blank" class="kc-btn-wa">
                             <i class="fab fa-whatsapp"></i>
                         </a>
@@ -1779,9 +1857,13 @@
         // Room Cards v2 — JavaScript
         // =============================================
 
-        // State for dual filters
-        let activeStatus = 'all';
+        let activeStatus = 'available';
         let activeLocation = 'all';
+
+        // Tambahkan event listener ini agar filter langsung berjalan saat web pertama kali dibuka
+        document.addEventListener('DOMContentLoaded', () => {
+            applyFilters();
+        });
 
         function applyFilters() {
             const cards = document.querySelectorAll('.kamar-card-v2');

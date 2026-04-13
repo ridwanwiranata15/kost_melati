@@ -23,7 +23,7 @@ class AdminMiddleware
         $role = Auth::user()->role;
 
         if (!in_array($role, ['admin', 'caretaker'])) {
-            return redirect()->route('home');
+            return redirect()->route('customer.profile');
         }
 
         return $next($request);

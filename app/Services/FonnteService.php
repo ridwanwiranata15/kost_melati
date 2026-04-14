@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class FonnteService
 {
@@ -15,7 +16,7 @@ class FonnteService
         }
 
         $response = Http::asForm()
-            ->timeout(15)
+            ->timeout(20)
             ->withHeaders([
                 'Authorization' => config('services.fonnte.token'),
             ])
@@ -25,15 +26,24 @@ class FonnteService
                 'countryCode' => '0',
             ]);
 
+        $payload = $response->json() ?? [];
+
+        Log::info('Fonnte send', [
+            'targets' => $targets,
+            'message' => $message,
+            'status_code' => $response->status(),
+            'response' => $payload,
+        ]);
+
         if ($response->failed()) {
             return [
                 'status' => false,
                 'detail' => 'Gagal menghubungi Fonnte',
                 'http_status' => $response->status(),
-                'body' => $response->json(),
+                'body' => $payload,
             ];
         }
 
-        return $response->json();
+        return $payload;
     }
 }

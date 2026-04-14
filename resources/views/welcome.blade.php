@@ -1350,6 +1350,11 @@
             }
         }
 
+        ::selection {
+            background-color: rgb(245 158 11 / .35);
+            color: #1F2937
+        }
+
         /* ============================================= */
     </style>
 </head>
@@ -1391,14 +1396,12 @@
 
                 <div class="nav-btns">
                     @auth
-                        @if (auth()->user()->role === 'admin' || auth()->user()->role === 'caretaker')
-                            {{-- Staff: tombol ke Dashboard --}}
+                        @if (auth()->user()->isAdmin() || auth()->user()->isCaretaker())
                             <a href="{{ route('dashboard') }}" class="btn btn-primary">
                                 <i class="fas fa-layout"></i>
                                 Dashboard
                             </a>
                         @else
-                            {{-- Customer: tombol ke Profil --}}
                             <a href="{{ route('customer.profile') }}" class="btn btn-primary">
                                 <i class="fas fa-user"></i>
                                 Profil
@@ -1585,8 +1588,8 @@
                             @else
                                 @php
                                     // 1. CEK ROLE USER
-                                    $userRole = Auth::user()->role ?? 'member';
-                                    $isStaff = in_array($userRole, ['admin', 'caretaker']);
+                                    $userRole = Auth::user()?->role?->value ?? 'member';
+                                    $isStaff = in_array($userRole, ['admin', 'caretaker'], true);
 
                                     $hasActiveBooking = false;
 
@@ -1598,7 +1601,7 @@
                                             ->get();
 
                                         foreach ($cekBookings as $b) {
-                                            $statusBook = strtolower($b->status);
+                                            $statusBook = $b->status?->value;
 
                                             // Cek Pending (Expire 24 Jam)
                                             if ($statusBook === 'pending') {
@@ -1610,9 +1613,10 @@
                                             }
 
                                             // Cek Confirmed/Checkin (Batas Waktu Sewa)
-                                            if (in_array($statusBook, ['confirmed', 'checkin'])) {
+                                            if (in_array($statusBook, ['confirmed', 'checkin'], true)) {
                                                 $tglMasuk = \Carbon\Carbon::parse($b->date_in)->startOfDay();
-                                                $tglKeluar = $tglMasuk->copy()->addMonths($b->duration)->startOfDay();
+                                                $durasiBooking = (int) $b->duration;
+                                                $tglKeluar = $tglMasuk->copy()->addMonths($durasiBooking)->startOfDay();
                                                 $hariIni = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay();
 
                                                 if ($hariIni->lte($tglKeluar)) {
@@ -1639,7 +1643,7 @@
                                         <span>Anda sudah memiliki sewa aktif.</span>
                                         <a href="{{ route('customer.order') }}">Lihat Detail Sewa</a>
                                     </div>
-                                @elseif(Auth::user()->status == 'pending')
+                                @elseif(Auth::user()?->status?->value === 'pending')
                                     {{-- Jika akun member masih diverifikasi --}}
                                     <div class="kc-alert kc-alert-warning">
                                         <i class="fa-solid fa-user-clock"></i>
@@ -1692,7 +1696,7 @@
                                     <i class="fas fa-calendar-check"></i> Pesan Sekarang
                                 </a>
                             @else
-                                @if (Auth::user()->status == 'pending')
+                                @if (Auth::user()?->status?->value === 'pending')
                                     <div class="kc-alert pending" style="flex:1; margin:0; justify-content: center;">
                                         <i class="fas fa-clock"></i> Akun belum diverifikasi
                                     </div>
@@ -2033,6 +2037,44 @@
         const map = L.map('map').setView([-3.4650, 102.5210], 15);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         L.marker([-3.4650, 102.5210]).addTo(map).bindPopup('Kosan El Sholeha<br>Jalan Hegel Blok A No.03, Curup');
+
+        // =============================================
+        // SCROLLSPY LOGIC (Otomatis Highlight Menu Navbar)
+        // =============================================
+        window.addEventListener('scroll', () => {
+            let current = '';
+            // Ambil semua tag section yang ada di halaman
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+            // Ambil tinggi header untuk offset agar highlight tidak terlambat
+            const headerHeight = document.querySelector('header').offsetHeight;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+
+                // Jika posisi scroll melewati bagian atas section (dikurangi tinggi header + sedikit buffer 50px)
+                if (pageYOffset >= (sectionTop - headerHeight - 50)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            // Loop semua menu di navbar, hapus class active, lalu tambahkan ke menu yang sesuai dengan ID section
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Opsional: Efek bayangan pada header saat di-scroll
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
     </script>
 </body>
 

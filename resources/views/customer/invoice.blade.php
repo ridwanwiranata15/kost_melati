@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Kwitansi #{{ $transaksi->id }}</title>
@@ -12,11 +13,25 @@
         }
 
         /* Helper Classes */
-        .w-100 { width: 100%; }
-        .text-right { text-align: right; }
-        .text-bold { font-weight: bold; }
-        .text-center { text-align: center; }
-        .valign-top { vertical-align: top; }
+        .w-100 {
+            width: 100%;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-bold {
+            font-weight: bold;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .valign-top {
+            vertical-align: top;
+        }
 
         /* Header */
         .header-table {
@@ -25,6 +40,7 @@
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
+
         .hotel-name {
             font-size: 24px;
             color: blue;
@@ -57,23 +73,41 @@
             width: 100%;
             border-collapse: collapse;
         }
+
         .data-table td {
             padding: 4px 0;
             vertical-align: top;
         }
-        .label { width: 100px; color: #555; }
+
+        .label {
+            width: 100px;
+            color: #555;
+        }
 
         /* Tabel Keuangan */
         .money-table {
             width: 100%;
             border-collapse: collapse;
         }
+
         .money-table td {
             padding: 5px 0;
         }
-        .m-lbl { width: 50%; }
-        .m-sep { width: 5%; text-align: right; }
-        .m-val { width: 45%; text-align: right; font-weight: bold; }
+
+        .m-lbl {
+            width: 50%;
+        }
+
+        .m-sep {
+            width: 5%;
+            text-align: right;
+        }
+
+        .m-val {
+            width: 45%;
+            text-align: right;
+            font-weight: bold;
+        }
 
         /* Highlight Row */
         .highlight-row td {
@@ -93,8 +127,18 @@
             font-size: 11px;
             font-weight: bold;
         }
-        .badge-success { background: #d4edda; color: #155724; border-color: #c3e6cb; }
-        .badge-warning { background: #fff3cd; color: #856404; border-color: #ffeeba; }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-color: #ffeeba;
+        }
 
         .footer {
             margin-top: 50px;
@@ -102,6 +146,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <table class="header-table">
@@ -126,7 +171,8 @@
         <tbody>
             <tr>
                 <td class="col-left valign-top">
-                    <div class="text-bold" style="margin-bottom: 5px; text-decoration: underline;">Data Tamu & Kamar</div>
+                    <div class="text-bold" style="margin-bottom: 5px; text-decoration: underline;">Data Tamu & Kamar
+                    </div>
 
                     <table class="data-table">
                         <tbody>
@@ -142,10 +188,13 @@
                                 <td class="label">No. HP</td>
                                 <td>: {{ $booking->user->phone ?? '-' }}</td>
                             </tr>
-                            <tr><td colspan="2" style="height: 10px;"></td></tr>
+                            <tr>
+                                <td colspan="2" style="height: 10px;"></td>
+                            </tr>
                             <tr>
                                 <td class="label">Nomor Kamar</td>
-                                <td>: <span style="font-size: 14px; font-weight:bold;">{{ $kamar->room_number }}</span></td>
+                                <td>: <span style="font-size: 14px; font-weight:bold;">{{ $kamar->room_number }}</span>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="label">Tanggal Bayar</td>
@@ -156,7 +205,8 @@
                 </td>
 
                 <td class="col-right valign-top">
-                    <div class="text-bold" style="margin-bottom: 5px; text-decoration: underline;">Rincian Pembayaran</div>
+                    <div class="text-bold" style="margin-bottom: 5px; text-decoration: underline;">Rincian Pembayaran
+                    </div>
 
                     <table class="money-table">
                         <tbody>
@@ -189,12 +239,16 @@
                                 <td class="m-lbl">Status</td>
                                 <td class="m-sep">: </td>
                                 <td class="m-val">
-                                    @if($transaksi->status == 'confirmed')
-                                        <span class="badge badge-success">Sudah bayar</span>
-                                    @elseif($transaksi->status == 'pending')
-                                        <span class="badge badge-warning">PENDING</span>
+                                    @php $trxStatus = $transaksi->status?->value; @endphp
+
+                                    @if ($trxStatus === 'confirmed')
+                                        <span class="badge badge-success">{{ $transaksi->status->label() }}</span>
+                                    @elseif($trxStatus === 'pending')
+                                        <span class="badge badge-warning">{{ $transaksi->status->label() }}</span>
+                                    @elseif($trxStatus === 'rejected')
+                                        <span class="badge">{{ $transaksi->status->label() }}</span>
                                     @else
-                                        <span class="badge">{{ strtoupper($transaksi->status) }}</span>
+                                        <span class="badge">-</span>
                                     @endif
                                 </td>
                             </tr>
@@ -222,4 +276,5 @@
     </div>
 
 </body>
+
 </html>

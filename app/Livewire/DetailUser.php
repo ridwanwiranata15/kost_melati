@@ -2,8 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Enums\TransactionStatus;
+use App\Enums\UserStatus;
 use App\Models\Booking;
 use App\Models\Transaction;
+use Illuminate\Validation\Rules\Enum;
 use Livewire\Component;
 use App\Models\User;
 use Livewire\WithFileUploads;
@@ -44,8 +47,8 @@ class DetailUser extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->phone = $user->phone;
-        $this->role = $user->role;
-        $this->status = $user->status;
+        $this->role = $user->role?->value;
+        $this->status = $user->status?->value;
         $this->photo = $user->photo;
 
         // New fields
@@ -72,7 +75,7 @@ class DetailUser extends Component
 
         $this->selectedTransactionId = $transaction->id;
         $this->editAmount = $transaction->nominal;
-        $this->editStatus = $transaction->status;
+        $this->editStatus = $transaction->status?->value;
 
         $this->resetValidation();
         $this->showEditModal = true;
@@ -97,15 +100,15 @@ class DetailUser extends Component
     public function saveTransaction()
     {
         $this->validate([
-            'editAmount' => 'required|numeric',
-            'editStatus' => 'required|in:pending,confirmed,rejected',
+            'editAmount' => 'required|numeric|min:0',
+            'editStatus' => ['required', new Enum(TransactionStatus::class)],
             'editProof' => 'nullable|image|max:2048',
         ]);
 
         $transaction = Transaction::findOrFail($this->selectedTransactionId);
 
         $transaction->update([
-            'nominal' => $this->editAmount,
+            'nominal' => (int) $this->editAmount,
             'status' => $this->editStatus,
         ]);
 
@@ -129,8 +132,12 @@ class DetailUser extends Component
 
     public function updateStatus()
     {
-        User::find($this->userId)->update([
-            'status' => $this->status
+        $this->validate([
+            'status' => ['required', new Enum(UserStatus::class)],
+        ]);
+
+        User::findOrFail($this->userId)->update([
+            'status' => $this->status,
         ]);
 
         session()->flash('message', 'Status berhasil diperbarui!');
@@ -138,7 +145,6 @@ class DetailUser extends Component
 
     public function render()
     {
-        // Data $booking dan $transactions otomatis terkirim karena sudah jadi public property
         return view('livewire.detail-user');
     }
 }

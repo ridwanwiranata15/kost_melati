@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,17 +16,19 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('phone');
+
+            $table->string('phone', 20)->nullable();
+            $table->enum('role', ['admin', 'caretaker', 'customer'])->default('customer')->index();
+            $table->enum('status', ['pending', 'active', 'rejected'])->default('pending')->index();
+
             $table->string('photo')->nullable();
-            $table->string('ktp_photo')->nullable();       // Stored privately
-            $table->string('university')->nullable();       // Universitas / Prodi
-            $table->string('parents_name')->nullable();    // Nama Orang Tua
-            $table->string('parents_phone')->nullable();   // No. HP Orang Tua
-            $table->string('role')->default('customer');
-            $table->string('status')->default('pending');
+            $table->string('ktp_photo')->nullable();
+            $table->string('university')->nullable();
+            $table->string('parents_name')->nullable();
+            $table->string('parents_phone', 20)->nullable();
+
             $table->rememberToken();
             $table->timestamps();
-
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

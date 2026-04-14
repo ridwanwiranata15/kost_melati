@@ -12,14 +12,21 @@ return new class extends Migration {
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->string('booking_code');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('room_id')->constrained('rooms')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->integer('duration');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('room_id')->constrained()->cascadeOnDelete();
+
+            $table->string('booking_code')->unique();
             $table->date('date_in');
-            $table->date('date_out');
-            $table->decimal('total_amount', 12, 2);
-            $table->enum('status', ['pending', 'confirmed', 'checkin', 'checkout', 'cancelled']);
+            $table->date('date_out')->nullable();
+            $table->unsignedInteger('duration')->default(1);
+
+            $table->unsignedBigInteger('price')->default(0);
+            $table->unsignedBigInteger('total_amount')->default(0);
+
+            $table->enum('status', ['pending', 'confirmed', 'checkin', 'checkout', 'cancelled'])
+                ->default('pending')
+                ->index();
+
             $table->timestamps();
             $table->softDeletes();
         });

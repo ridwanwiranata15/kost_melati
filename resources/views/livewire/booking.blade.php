@@ -129,6 +129,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700 text-sm">
                     @forelse ($bookings as $booking)
+                        @php $bookingStatus = $booking->status?->value; @endphp
                         <tr wire:key="booking-{{ $booking->id }}"
                             class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
 
@@ -191,7 +192,7 @@
                                 <div class="text-sm font-semibold text-gray-900 dark:text-white">
                                     Rp {{ number_format($kalkulasiTotal, 0, ',', '.') }}
                                 </div>
-                                @if ($booking->total_amount == 0 && $booking->status == 'pending')
+                                @if ($booking->total_amount == 0 && $bookingStatus === 'pending')
                                     <div class="text-[10px] text-gray-400 mt-0.5">(Estimasi)</div>
                                 @endif
                             </td>
@@ -202,28 +203,26 @@
                                     <select x-on:change="$wire.updateStatus({{ $booking->id }}, $el.value)"
                                         wire:key="status-select-{{ $booking->id }}"
                                         class="block w-full rounded-lg border-0 py-1.5 pl-3 pr-8 text-xs font-medium cursor-pointer shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:leading-6 transition-colors
-                                            {{ $booking->status == 'confirmed'
-                                                ? 'bg-green-50 text-green-700 ring-green-200'
-                                                : ($booking->status == 'cancelled'
-                                                    ? 'bg-red-50 text-red-700 ring-red-200'
-                                                    : ($booking->status == 'checkin'
-                                                        ? 'bg-blue-50 text-blue-700 ring-blue-200'
-                                                        : ($booking->status == 'checkout'
-                                                            ? 'bg-gray-100 text-gray-600 ring-gray-200'
-                                                            : 'bg-yellow-50 text-yellow-700 ring-yellow-200'))) }}">
+        {{ $bookingStatus === 'confirmed'
+            ? 'bg-green-50 text-green-700 ring-green-200'
+            : ($bookingStatus === 'cancelled'
+                ? 'bg-red-50 text-red-700 ring-red-200'
+                : ($bookingStatus === 'checkin'
+                    ? 'bg-blue-50 text-blue-700 ring-blue-200'
+                    : ($bookingStatus === 'checkout'
+                        ? 'bg-gray-100 text-gray-600 ring-gray-200'
+                        : 'bg-yellow-50 text-yellow-700 ring-yellow-200'))) }}">
 
-                                        <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>⏳
+                                        <option value="pending" {{ $bookingStatus === 'pending' ? 'selected' : '' }}>⏳
                                             Pending</option>
                                         <option value="confirmed"
-                                            {{ $booking->status == 'confirmed' ? 'selected' : '' }}>✅ Confirmed
-                                        </option>
-                                        <option value="checkin" {{ $booking->status == 'checkin' ? 'selected' : '' }}>
-                                            🏨 Checkin</option>
-                                        <option value="checkout"
-                                            {{ $booking->status == 'checkout' ? 'selected' : '' }}>👋 Checkout</option>
+                                            {{ $bookingStatus === 'confirmed' ? 'selected' : '' }}>✅ Confirmed</option>
+                                        <option value="checkin" {{ $bookingStatus === 'checkin' ? 'selected' : '' }}>🏨
+                                            Checkin</option>
+                                        <option value="checkout" {{ $bookingStatus === 'checkout' ? 'selected' : '' }}>
+                                            👋 Checkout</option>
                                         <option value="cancelled"
-                                            {{ $booking->status == 'cancelled' ? 'selected' : '' }}>🚫 Canceled
-                                        </option>
+                                            {{ $bookingStatus === 'cancelled' ? 'selected' : '' }}>🚫 Canceled</option>
                                     </select>
 
                                     {{-- Loading Indicator --}}

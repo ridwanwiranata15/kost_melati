@@ -9,20 +9,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        $role = Auth::user()->role;
+        $user = Auth::user();
 
-        if (!in_array($role, ['admin', 'caretaker'])) {
+        if (!($user->isAdmin() || $user->isCaretaker())) {
             return redirect()->route('customer.profile');
         }
 

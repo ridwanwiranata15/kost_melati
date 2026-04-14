@@ -8,6 +8,7 @@ use App\Models\Booking as BookingModel;
 use App\Models\Transaction;
 use App\Services\FonnteService;
 use App\Support\PhoneNormalizer;
+use App\Support\WhatsAppMessageBuilder;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -112,7 +113,7 @@ class Booking extends Component
                 return [
                     'message' => $message,
                     'phone' => PhoneNormalizer::normalize($booking->user?->phone),
-                    'wa_text' => "Status booking {$booking->booking_code} sekarang {$newStatus->label()}.",
+                    'wa_text' => WhatsAppMessageBuilder::bookingStatus($booking, $newStatus),
                 ];
             });
 

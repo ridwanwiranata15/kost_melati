@@ -6,6 +6,9 @@ use App\Enums\TransactionStatus;
 use App\Enums\UserStatus;
 use App\Models\Booking;
 use App\Models\Transaction;
+use App\Services\FonnteService;
+use App\Support\PhoneNormalizer;
+use App\Support\WhatsAppMessageBuilder;
 use Illuminate\Validation\Rules\Enum;
 use Livewire\Component;
 use App\Models\User;
@@ -97,7 +100,7 @@ class DetailUser extends Component
     }
 
     // Function Simpan Data
-    public function saveTransaction()
+    public function saveTransaction(FonnteService $wa)
     {
         $this->validate([
             'editAmount' => 'required|numeric|min:0',
@@ -105,7 +108,7 @@ class DetailUser extends Component
             'editProof' => 'nullable|image|max:2048',
         ]);
 
-        $transaction = Transaction::findOrFail($this->selectedTransactionId);
+        $transaction = Transaction::with(['user', 'booking.room'])->findOrFail($this->selectedTransactionId);
 
         $transaction->update([
             'nominal' => (int) $this->editAmount,
@@ -116,11 +119,18 @@ class DetailUser extends Component
             $path = $this->editProof->store('payment_receipts', 'public');
 
             $transaction->update([
-                'payment_receipt' => $path
+                'payment_receipt' => $path,
             ]);
         }
 
-        // penting: refresh data biar UI update
+        $phone = PhoneNormalizer::normalize($transaction->user?->phone);
+        $statusEnum = TransactionStatus::from($this->editStatus);
+
+        if ($phone && in_array($statusEnum, [TransactionStatus::CONFIRMED, TransactionStatus::REJECTED], true)) {
+            $message = WhatsAppMessageBuilder::paymentStatus($transaction, $statusEnum);
+            $wa->send($phone, $message);
+        }
+
         $this->transactions = $this->booking
             ? $this->booking->transactions()->latest()->get()
             : collect();
@@ -130,15 +140,24 @@ class DetailUser extends Component
         $this->closeEditModal();
     }
 
-    public function updateStatus()
+    public function updateStatus(FonnteService $wa)
     {
         $this->validate([
             'status' => ['required', new Enum(UserStatus::class)],
         ]);
 
-        User::findOrFail($this->userId)->update([
+        $user = User::findOrFail($this->userId);
+
+        $user->update([
             'status' => $this->status,
         ]);
+        $phone = PhoneNormalizer::normalize($user->phone);
+
+        if ($phone) {
+            $statusEnum = UserStatus::from($this->status);
+            $message = WhatsAppMessageBuilder::userStatus($user, $statusEnum);
+            $wa->send($phone, $message);
+        }
 
         session()->flash('message', 'Status berhasil diperbarui!');
     }

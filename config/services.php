@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+        'admin_targets' => array_filter(array_map('trim', explode(',', env('FONNTE_ADMIN_TARGETS', '')))),
+    ],
 ];

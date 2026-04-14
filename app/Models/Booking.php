@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BookingStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,21 +11,33 @@ class Booking extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-
-        "booking_code",
-        "user_id",
-        "room_id",
-        "duration",
-        "date_in",
-        "date_out",
-        "total_amount",
-        "status"
+        'user_id',
+        'room_id',
+        'booking_code',
+        'date_in',
+        'date_out',
+        'duration',
+        'price',
+        'total_amount',
+        'status',
     ];
 
-    public function user(){
+    protected function casts(): array
+    {
+        return [
+            'date_in' => 'date',
+            'date_out' => 'date',
+            'duration' => 'integer',
+            'price' => 'integer',
+            'total_amount' => 'integer',
+            'status' => BookingStatus::class,
+        ];
+    }
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-public function transactions()
+    public function transactions()
     {
         return $this->hasMany(Transaction::class, 'booking_id');
     }

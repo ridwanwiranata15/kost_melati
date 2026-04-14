@@ -38,16 +38,16 @@
                         {{-- Status Badge Absolut --}}
                         <div class="absolute bottom-0 right-0">
                             <span
-                                class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white dark:border-gray-800 {{ $status == 'active' ? 'bg-green-500' : ($status == 'pending' ? 'bg-yellow-500' : 'bg-red-500') }}">
+                                class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white dark:border-gray-800 {{ $status === 'active' ? 'bg-green-500' : ($status === 'pending' ? 'bg-yellow-500' : 'bg-red-500') }}">
                                 <i
-                                    class="fa-solid {{ $status == 'active' ? 'fa-check' : ($status == 'pending' ? 'fa-hourglass' : 'fa-times') }} text-white text-[10px]"></i>
+                                    class="fa-solid {{ $status === 'active' ? 'fa-check' : ($status === 'pending' ? 'fa-hourglass' : 'fa-times') }} text-white text-[10px]"></i>
                             </span>
                         </div>
                     </div>
 
                     <span
-                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide {{ $status == 'active' ? 'bg-green-50 text-green-700 border border-green-200' : ($status == 'pending' ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : 'bg-red-50 text-red-700 border border-red-200') }}">
-                        {{ ucfirst($status) }}
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide {{ $status === 'active' ? 'bg-green-50 text-green-700 border border-green-200' : ($status === 'pending' ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : 'bg-red-50 text-red-700 border border-red-200') }}">
+                        {{ \App\Enums\UserStatus::from($status)->label() }}
                     </span>
                 </div>
 
@@ -267,7 +267,8 @@
                         @php
                             $tanggalMulai = \Carbon\Carbon::parse($booking->start_date ?? $booking->created_at);
                             $bulanTagihan = $tanggalMulai->copy()->addMonths($loop->index);
-                            $isLunas = $item->status == 'confirmed';
+                            $itemStatus = $item->status?->value;
+                            $isLunas = $itemStatus === 'confirmed';
                         @endphp
 
                         <tr
@@ -295,7 +296,7 @@
 
                             {{-- Status Badge --}}
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($item->status == 'pending')
+                                @if ($itemStatus === 'pending')
                                     @if ($item->payment_receipt)
                                         <span
                                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
@@ -307,12 +308,12 @@
                                             <i class="fa-regular fa-clock mr-1.5"></i> Menunggu Bayar
                                         </span>
                                     @endif
-                                @elseif($item->status == 'confirmed')
+                                @elseif($itemStatus === 'confirmed')
                                     <span
                                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
                                         <i class="fa-solid fa-check-circle mr-1.5 text-emerald-600"></i> Lunas
                                     </span>
-                                @elseif($item->status == 'rejected')
+                                @elseif($itemStatus === 'rejected')
                                     <span
                                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
                                         <i class="fa-solid fa-times-circle mr-1.5 text-red-600"></i> Ditolak
@@ -479,5 +480,4 @@
             </div>
         </div>
     @endif
-</div>
 </div>

@@ -2,24 +2,36 @@
 
 namespace App\Models;
 
+use App\Enums\TransactionStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
     protected $fillable = [
-        "booking_id",
-        "payment_method",
-        "amount",
-        "payment_receipt",
-        "status",
-        "date_pay",
-        "nominal",
+        'booking_id',
+        'user_id',
+        'room_id',
+        'payment_method',
+        'payment_receipt',
+        'amount',
+        'nominal',
+        'due_date',
+        'date_pay',
+        'status',
+        'h7_reminded_at',
     ];
 
-    protected $casts = [
-        'nominal' => 'integer',
-        'amount' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'integer',
+            'nominal' => 'integer',
+            'due_date' => 'date',
+            'date_pay' => 'date',
+            'h7_reminded_at' => 'datetime',
+            'status' => TransactionStatus::class,
+        ];
+    }
 
     public function booking()
     {

@@ -149,14 +149,18 @@
                                 <td class="px-6 py-3 text-red-500">Rp
                                     {{ $trx->amount_formatted ?? number_format($trx->amount, 0, ',', '.') }}</td>
                                 <td class="px-6 py-3">
+                                    @php $trxStatus = $trx->status?->value; @endphp
+
                                     <span
                                         class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
-                                        {{ $trx->status == 'confirmed'
-                                            ? 'bg-green-100 text-green-700'
-                                            : ($trx->status == 'pending'
-                                                ? 'bg-yellow-100 text-yellow-700'
-                                                : 'bg-red-100 text-red-700') }}">
-                                        {{ $trx->status }}
+        {{ $trxStatus === 'confirmed'
+            ? 'bg-green-100 text-green-700'
+            : ($trxStatus === 'pending'
+                ? 'bg-yellow-100 text-yellow-700'
+                : ($trxStatus === 'rejected'
+                    ? 'bg-red-100 text-red-700'
+                    : 'bg-gray-100 text-gray-700')) }}">
+                                        {{ $trx->status?->label() ?? '-' }}
                                     </span>
                                 </td>
                             </tr>

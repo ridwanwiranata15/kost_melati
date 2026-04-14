@@ -1350,6 +1350,11 @@
             }
         }
 
+        ::selection {
+            background-color: rgb(245 158 11 / .35);
+            color: #1F2937
+        }
+
         /* ============================================= */
     </style>
 </head>
@@ -1391,14 +1396,12 @@
 
                 <div class="nav-btns">
                     @auth
-                        @if (auth()->user()->role === 'admin' || auth()->user()->role === 'caretaker')
-                            {{-- Staff: tombol ke Dashboard --}}
+                        @if (auth()->user()->isAdmin() || auth()->user()->isCaretaker())
                             <a href="{{ route('dashboard') }}" class="btn btn-primary">
                                 <i class="fas fa-layout"></i>
                                 Dashboard
                             </a>
                         @else
-                            {{-- Customer: tombol ke Profil --}}
                             <a href="{{ route('customer.profile') }}" class="btn btn-primary">
                                 <i class="fas fa-user"></i>
                                 Profil
@@ -1585,8 +1588,8 @@
                             @else
                                 @php
                                     // 1. CEK ROLE USER
-                                    $userRole = Auth::user()->role ?? 'member';
-                                    $isStaff = in_array($userRole, ['admin', 'caretaker']);
+                                    $userRole = Auth::user()?->role?->value ?? 'member';
+                                    $isStaff = in_array($userRole, ['admin', 'caretaker'], true);
 
                                     $hasActiveBooking = false;
 
@@ -1598,7 +1601,7 @@
                                             ->get();
 
                                         foreach ($cekBookings as $b) {
-                                            $statusBook = strtolower($b->status);
+                                            $statusBook = $b->status?->value;
 
                                             // Cek Pending (Expire 24 Jam)
                                             if ($statusBook === 'pending') {
@@ -1610,9 +1613,10 @@
                                             }
 
                                             // Cek Confirmed/Checkin (Batas Waktu Sewa)
-                                            if (in_array($statusBook, ['confirmed', 'checkin'])) {
+                                            if (in_array($statusBook, ['confirmed', 'checkin'], true)) {
                                                 $tglMasuk = \Carbon\Carbon::parse($b->date_in)->startOfDay();
-                                                $tglKeluar = $tglMasuk->copy()->addMonths($b->duration)->startOfDay();
+                                                $durasiBooking = (int) $b->duration;
+                                                $tglKeluar = $tglMasuk->copy()->addMonths($durasiBooking)->startOfDay();
                                                 $hariIni = \Carbon\Carbon::now('Asia/Jakarta')->startOfDay();
 
                                                 if ($hariIni->lte($tglKeluar)) {
@@ -1639,7 +1643,7 @@
                                         <span>Anda sudah memiliki sewa aktif.</span>
                                         <a href="{{ route('customer.order') }}">Lihat Detail Sewa</a>
                                     </div>
-                                @elseif(Auth::user()->status == 'pending')
+                                @elseif(Auth::user()?->status?->value === 'pending')
                                     {{-- Jika akun member masih diverifikasi --}}
                                     <div class="kc-alert kc-alert-warning">
                                         <i class="fa-solid fa-user-clock"></i>
@@ -1692,7 +1696,7 @@
                                     <i class="fas fa-calendar-check"></i> Pesan Sekarang
                                 </a>
                             @else
-                                @if (Auth::user()->status == 'pending')
+                                @if (Auth::user()?->status?->value === 'pending')
                                     <div class="kc-alert pending" style="flex:1; margin:0; justify-content: center;">
                                         <i class="fas fa-clock"></i> Akun belum diverifikasi
                                     </div>

@@ -11,13 +11,15 @@
                         $booking->total_amount > 0 ? $booking->total_amount : $hargaKamar * $booking->duration;
 
                     // 2. KALKULASI PEMBAYARAN
-                    $sudahBayar = $transactions->where('status', 'confirmed')->sum('nominal') ?? 0;
+                    $bookingStatus = $booking->status?->value;
+                    $sudahBayar =
+                        $transactions->filter(fn($trx) => $trx->status?->value === 'confirmed')->sum('nominal') ?? 0;
                     // Pastikan sisa bayar tidak minus
                     $sisaBayar = max(0, $totalTagihan - $sudahBayar);
                     $persenBayar = $totalTagihan > 0 ? ($sudahBayar / $totalTagihan) * 100 : 0;
 
                     // 3. CEK STATUS PENDING
-                    $isPendingAdmin = strtolower($booking->status) === 'pending';
+                    $isPendingAdmin = $bookingStatus === 'pending';
                 @endphp
 
                 {{-- ================================================= --}}
@@ -65,8 +67,8 @@
                         {{-- Image --}}
                         <div class="w-full md:w-1/3 shrink-0">
                             <div class="relative h-56 md:h-64 w-full overflow-hidden rounded-2xl shadow-md">
-                                <img src="{{ $booking->room->image ? url('storage/' . $booking->room->image) : 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80' }}" loading="lazy"
-                                    alt="Foto Kamar"
+                                <img src="{{ $booking->room->image ? url('storage/' . $booking->room->image) : 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80' }}"
+                                    loading="lazy" alt="Foto Kamar"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-4 left-4 text-white">
@@ -297,8 +299,9 @@
                                 {{-- Loop menggunakan tagihanList yang dibuat di Controller --}}
                                 @forelse($tagihanList as $item)
                                     @php
-                                        $trx = $item['transaction']; // Ambil object transaksi asli
-                                        $isLunas = $trx && $trx->status == 'confirmed';
+                                        $trx = $item['transaction'];
+                                        $trxStatus = $trx?->status?->value;
+                                        $isLunas = $trxStatus === 'confirmed';
                                     @endphp
 
                                     <tr
@@ -327,27 +330,25 @@
 
                                         {{-- 3. Status --}}
                                         <td class="px-6 py-4 text-center">
-                                            @if ($trx && $trx->status == 'pending')
+                                            @if ($trxStatus === 'pending')
                                                 @if ($trx->payment_receipt)
-                                                    {{-- Jika status pending TAPI sudah ada file bukti bayar --}}
                                                     <span
                                                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
                                                         <i class="fa-solid fa-spinner animate-spin mr-1.5"></i>
                                                         Diproses Admin
                                                     </span>
                                                 @else
-                                                    {{-- Jika status pending dan BELUM upload sama sekali --}}
                                                     <span
                                                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
                                                         <i class="fa-solid fa-clock mr-1.5"></i> Belum Bayar
                                                     </span>
                                                 @endif
-                                            @elseif($trx && $trx->status == 'confirmed')
+                                            @elseif($trxStatus === 'confirmed')
                                                 <span
                                                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
                                                     <i class="fa-solid fa-check-circle mr-1.5"></i> Lunas
                                                 </span>
-                                            @elseif($trx && $trx->status == 'rejected')
+                                            @elseif($trxStatus === 'rejected')
                                                 <span
                                                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
                                                     <i class="fa-solid fa-circle-xmark mr-1.5"></i> Ditolak
@@ -373,15 +374,13 @@
                                         {{-- 6. Aksi / Invoice --}}
                                         <td class="px-6 py-4 text-center">
                                             @if ($trx)
-                                                @if ($trx->status == 'pending')
+                                                @if ($trxStatus === 'pending')
                                                     @if ($trx->payment_receipt)
-                                                        {{-- JIKA SUDAH UPLOAD: Disable tombol agar user tidak bingung --}}
                                                         <button disabled
                                                             class="bg-gray-100 text-gray-400 border border-gray-200 px-4 py-2 rounded-xl text-xs font-bold cursor-not-allowed flex items-center gap-2 mx-auto transition-all">
                                                             <i class="fa-solid fa-hourglass-half"></i> Menunggu
                                                         </button>
                                                     @else
-                                                        {{-- JIKA BELUM UPLOAD: Tombol bayar aktif --}}
                                                         <a href="{{ route('booking.upload', $trx->id) }}"
                                                             class="inline-block">
                                                             <button
@@ -392,8 +391,7 @@
                                                             </button>
                                                         </a>
                                                     @endif
-                                                @elseif($trx->status == 'rejected')
-                                                    {{-- JIKA DITOLAK: Tombol ganti warna merah untuk re-upload --}}
+                                                @elseif($trxStatus === 'rejected')
                                                     <a href="{{ route('booking.upload', $trx->id) }}"
                                                         class="inline-block">
                                                         <button
@@ -403,8 +401,7 @@
                                                                 class="fa-solid fa-rotate-right transform group-hover:rotate-180 transition-transform"></i>
                                                         </button>
                                                     </a>
-                                                @elseif($trx->status == 'confirmed')
-                                                    {{-- JIKA LUNAS: Tombol Invoice --}}
+                                                @elseif($trxStatus === 'confirmed')
                                                     <a href="{{ route('invoice.show', $trx->id) }}"
                                                         class="inline-block">
                                                         <button

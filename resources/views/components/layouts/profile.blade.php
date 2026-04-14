@@ -76,7 +76,7 @@
                 </a>
 
                 {{-- Menu Tagihan & Booking hanya untuk Customer --}}
-                @if (auth()->check() && auth()->user()->role === 'customer')
+                @if (auth()->check() && auth()->user()->isCustomer())
                     <a href="{{ route('customer.order') }}"
                         class="{{ request()->routeIs('customer.order') || request()->routeIs('booking.upload*') || request()->routeIs('booking.pay*') ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }} flex items-center px-4 py-3 rounded-xl transition-all group">
                         <i class="fa-solid fa-receipt w-6 text-lg group-hover:scale-110 transition-transform"></i>
@@ -84,7 +84,7 @@
                     </a>
                 @endif
 
-                @if ((auth()->check() && auth()->user()->role === 'admin') || (auth()->check() && auth()->user()->role === 'staff'))
+                @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isCaretaker()))
                     <a href="{{ route('dashboard') }}"
                         class="{{ request()->routeIs('dashboard') ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }} flex items-center px-4 py-3 rounded-xl transition-all group">
                         <i class="fa-solid fa-home w-6 text-lg group-hover:scale-110 transition-transform"></i>

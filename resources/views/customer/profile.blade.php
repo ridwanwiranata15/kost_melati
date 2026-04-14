@@ -1,18 +1,16 @@
 @php
-    // --- 1. LOGIKA PHP (DURASI SEWA) ---
-    // --- 1. LOGIKA PHP (DURASI SEWA & STATUS) ---
     $durasiTeks = '-';
     $booking = $booking ?? null;
-    $statusWarna = 'text-yellow-600'; // Default kuning
-    $bgWarna = 'bg-yellow-50 border-yellow-100'; // Default latar kuning
+    $statusWarna = 'text-yellow-600';
+    $bgWarna = 'bg-yellow-50 border-yellow-100';
     $iconWarna = 'text-yellow-600';
     $iconStatus = 'fa-info-circle';
+    $userStatus = auth()->user()->status?->value;
 
     if ($booking) {
-        $statusBook = strtolower($booking->status);
+        $statusBook = $booking->status?->value;
 
-        // Jika statusnya Confirmed ATAU Checkin (Indikator Hijau/Aktif)
-        if (in_array($statusBook, ['confirmed', 'checkin'])) {
+        if (in_array($statusBook, ['confirmed', 'checkin'], true)) {
             $statusWarna = 'text-primary-600';
             $bgWarna = 'bg-primary-50 border-primary-100';
             $iconWarna = 'text-primary-600';
@@ -27,21 +25,15 @@
                 $totalHari = $tglMasuk->diffInDays($sekarang);
                 $durasiTeks = $totalHari == 0 ? 'Baru hari ini' : 'Sudah ' . $totalHari . ' hari';
             }
-        }
-        // Jika Pending
-        elseif ($statusBook === 'pending') {
+        } elseif ($statusBook === 'pending') {
             $durasiTeks = 'Menunggu Konfirmasi';
-        }
-        // Jika Checkout
-        elseif ($statusBook === 'checkout') {
+        } elseif ($statusBook === 'checkout') {
             $durasiTeks = 'Selesai Masa Sewa';
             $statusWarna = 'text-gray-600';
             $bgWarna = 'bg-gray-50 border-gray-200';
             $iconWarna = 'text-gray-500';
             $iconStatus = 'fa-check-double';
-        }
-        // Jika Cancelled
-        else {
+        } else {
             $durasiTeks = 'Dibatalkan';
             $statusWarna = 'text-red-600';
             $bgWarna = 'bg-red-50 border-red-200';
@@ -50,7 +42,6 @@
         }
     }
 
-    // KTP photo URL (served via protected route)
     $ktpUrl = null;
     if (auth()->user()->ktp_photo) {
         $filename = basename(auth()->user()->ktp_photo);
@@ -113,7 +104,8 @@
                                     @else
                                         <img id="profile-preview"
                                             src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=10b981&color=fff"
-                                            class="w-full h-full rounded-full object-cover border-4 border-white shadow-md bg-white" loading="lazy">
+                                            class="w-full h-full rounded-full object-cover border-4 border-white shadow-md bg-white"
+                                            loading="lazy">
                                     @endif
                                     <div class="absolute bottom-2 right-2 bg-gray-900 text-white p-2 rounded-full shadow-lg border-2 border-white cursor-pointer hover:bg-primary-500 transition-colors"
                                         onclick="document.getElementById('file-upload').click()">
@@ -124,10 +116,10 @@
                                 <p class="text-sm text-gray-500">{{ auth()->user()->email }}</p>
                                 <div class="mt-4">
                                     <span
-                                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ auth()->user()->status == 'active' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
+                                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $userStatus === 'active' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
                                         <span
-                                            class="w-1.5 h-1.5 rounded-full {{ auth()->user()->status == 'active' ? 'bg-green-500' : 'bg-yellow-500' }} mr-2"></span>
-                                        {{ ucfirst(auth()->user()->status) }}
+                                            class="w-1.5 h-1.5 rounded-full {{ $userStatus === 'active' ? 'bg-green-500' : 'bg-yellow-500' }} mr-2"></span>
+                                        {{ auth()->user()->status?->label() }}
                                     </span>
                                 </div>
                             </div>
@@ -215,7 +207,7 @@
                                         </div>
                                         <div>
                                             <p class="text-xs font-semibold {{ $statusWarna }}">
-                                                {{ in_array(strtolower($booking->status), ['confirmed', 'checkin']) ? 'Durasi Huni' : 'Status Booking' }}
+                                                {{ in_array($statusBook, ['confirmed', 'checkin'], true) ? 'Durasi Huni' : 'Status Booking' }}
                                             </p>
                                             <p class="font-bold text-gray-900">{{ $durasiTeks }}</p>
                                         </div>

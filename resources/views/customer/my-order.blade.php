@@ -6,7 +6,7 @@
             @if ($booking)
                 @php
                     // 1. KALKULASI CERDAS TOTAL TAGIHAN (Mencegah Rp 0)
-                    $hargaKamar = $booking->price ?? ($booking->room->price ?? 500000); // Default ke 500rb jika kosong
+                    $hargaKamar = $booking->price ?? ($booking->room->price ?? \App\Support\BookingPrice::monthlyPrice());
                     $totalTagihan =
                         $booking->total_amount > 0 ? $booking->total_amount : $hargaKamar * $booking->duration;
 

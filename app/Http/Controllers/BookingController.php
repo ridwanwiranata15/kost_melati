@@ -5,20 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Room;
 use App\Models\User;
+use App\Support\BookingPrice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class BookingController extends Controller
 {
-    private const MONTHLY_PRICE = 500000;
-
     public function checkout(Request $request)
     {
         $request->validate([
-            'room_id' => 'required|exists:rooms,id',
-            'choose_month' => 'required|in:3,6,12',
+            'room_id' => ['required', 'exists:rooms,id'],
+            'choose_month' => ['required', 'integer', Rule::in(BookingPrice::allowedDurations())],
         ]);
 
         $room = Room::findOrFail($request->room_id);
@@ -28,15 +28,24 @@ class BookingController extends Controller
         }
 
         $duration = (int) $request->choose_month;
+        $monthlyPrice = BookingPrice::monthlyPrice();
+        $totalAmount = BookingPrice::totalAmountForDuration($duration);
+        $packageLabel = BookingPrice::packageLabel($duration);
 
-        return view('customer.booking', compact('room', 'duration'));
+        return view('customer.booking', compact(
+            'room',
+            'duration',
+            'monthlyPrice',
+            'totalAmount',
+            'packageLabel'
+        ));
     }
 
     public function booking(Request $request)
     {
         $validated = $request->validate([
             'room_id' => ['required', 'exists:rooms,id'],
-            'duration' => ['required', 'integer', 'in:3,6,12'],
+            'duration' => ['required', 'integer', Rule::in(BookingPrice::allowedDurations())],
             'date_in' => ['required', 'date_format:Y-m-d'],
             'date_out' => ['required', 'date_format:Y-m-d', 'after:date_in'],
         ], [
@@ -58,8 +67,8 @@ class BookingController extends Controller
             $dateIn = Carbon::createFromFormat('Y-m-d', $validated['date_in'])->startOfDay();
             $dateOut = Carbon::createFromFormat('Y-m-d', $validated['date_out'])->startOfDay();
 
-            $monthlyPrice = self::MONTHLY_PRICE;
-            $totalAmount = $monthlyPrice * $duration;
+            $monthlyPrice = BookingPrice::monthlyPrice();
+            $totalAmount = BookingPrice::totalAmountForDuration($duration);
 
             DB::transaction(function () use ($roomId, $duration, $dateIn, $dateOut, $monthlyPrice, $totalAmount) {
                 $room = Room::where('id', $roomId)->lockForUpdate()->firstOrFail();
@@ -102,7 +111,7 @@ class BookingController extends Controller
 
             return redirect()
                 ->route('home')
-                ->with('error', $e->getMessage());
+                ->with('error', 'Terjadi kesalahan saat membuat booking. Silakan coba lagi.');
         }
     }
 }

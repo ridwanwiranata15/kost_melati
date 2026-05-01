@@ -39,17 +39,46 @@
 
                 <div class="flex flex-col gap-2 px-2">
                     <h3 class="font-bold text-xl text-gray-900">{{ $room->name }}</h3>
-                    <div class="flex items-center gap-2 text-gray-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <p class="font-medium text-sm">Durasi Sewa: <span
-                                class="text-blue-600 font-bold text-base">{{ $duration }} Bulan</span></p>
+                    <div class="flex flex-col gap-2 text-gray-600">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p class="font-medium text-sm">
+                                Durasi Sewa:
+                                <span class="text-blue-600 font-bold text-base">
+                                    {{ $packageLabel ?? $duration . ' Bulan' }}
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl bg-blue-50 border border-blue-100 p-4 mt-2">
+                            <p class="text-xs text-gray-500">Harga per bulan</p>
+                            <p class="text-base font-bold text-gray-800">
+                                {{ \App\Support\BookingPrice::formatRupiah($monthlyPrice ?? \App\Support\BookingPrice::monthlyPrice()) }}
+                            </p>
+
+                            <div class="h-px bg-blue-100 my-3"></div>
+
+                            <p class="text-xs text-gray-500">Total paket sewa</p>
+                            <p class="text-2xl font-extrabold text-blue-700">
+                                {{ \App\Support\BookingPrice::formatRupiah($totalAmount ?? 0) }}
+                            </p>
+
+                            @if (\App\Support\BookingPrice::hasSaving($duration ?? 0))
+                                <p
+                                    class="mt-2 inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                                    Hemat {{ \App\Support\BookingPrice::formatRupiah(\App\Support\BookingPrice::savingForDuration(12)) }} untuk paket 1 tahun
+                                </p>
+                            @endif
+                        </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2">Pastikan tanggal yang Anda pilih sesuai dengan durasi paket
-                        sewa.</p>
+                    <p class="text-xs text-gray-400 mt-2">
+                        Durasi sewa digunakan untuk menghitung paket pembayaran. Tanggal masuk dan keluar dapat
+                        disesuaikan dengan data sewa Anda.
+                    </p>
                 </div>
             </div>
         </div>

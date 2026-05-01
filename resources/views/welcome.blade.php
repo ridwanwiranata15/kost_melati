@@ -256,7 +256,7 @@
                                     </button>
                                     <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
                                         <span class="t-dur">1 Thn</span>
-                                        <span class="t-val">6 Jt</span>
+                                        <span class="t-val">{{ \App\Support\BookingPrice::formatCompactRupiah(\App\Support\BookingPrice::totalAmountForDuration(12)) }}</span>
                                     </button>
                                 </div>
                             @else
@@ -343,7 +343,7 @@
                                             <button type="button" class="kc-tab"
                                                 onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 12)">
                                                 <span class="t-dur">1 Thn</span>
-                                                <span class="t-val">6 Jt</span>
+                                                <span class="t-val">{{ \App\Support\BookingPrice::formatCompactRupiah(\App\Support\BookingPrice::totalAmountForDuration(12)) }}</span>
                                             </button>
                                         </div>
                                         <input type="hidden" name="choose_month" id="month-{{ $item->id }}"

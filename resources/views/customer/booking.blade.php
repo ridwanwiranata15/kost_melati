@@ -140,7 +140,7 @@
                             class="w-full rounded-full border border-gray-300 py-3.5 px-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer">
                     </div>
                     <p class="text-xs text-gray-400 ml-2 italic">
-                        *Tanggal keluar dapat dipilih bebas, tetapi harus setelah tanggal masuk.
+                        *Tanggal keluar otomatis disarankan sesuai durasi paket, tetapi tetap dapat Anda ubah sesuai data sewa.
                     </p>
                 </div>
 
@@ -155,13 +155,60 @@
         document.addEventListener('DOMContentLoaded', function() {
             const dateInInput = document.getElementById('date_in');
             const dateOutInput = document.getElementById('date_out');
+            const durationInput = document.getElementById('duration-data');
             const submitBtn = document.getElementById('submit-btn');
             const errorMessageDiv = document.getElementById('error-message');
             const errorText = document.getElementById('error-text');
 
+            const duration = parseInt(durationInput.value, 10);
+            let dateOutTouchedByUser = false;
+
             function parseLocalDate(value) {
                 const [year, month, day] = value.split('-').map(Number);
                 return new Date(year, month - 1, day);
+            }
+
+            function formatLocalDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+
+                return `${year}-${month}-${day}`;
+            }
+
+            function todayLocalDate() {
+                const now = new Date();
+                return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            }
+
+            function addMonthsNoOverflow(date, months) {
+                const target = new Date(date.getFullYear(), date.getMonth() + months, 1);
+                const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+
+                target.setDate(Math.min(date.getDate(), lastDay));
+
+                return target;
+            }
+
+            function setRecommendedCheckoutDate() {
+                if (!dateInInput.value || !duration) {
+                    return;
+                }
+
+                const checkinDate = parseLocalDate(dateInInput.value);
+                const recommendedCheckoutDate = addMonthsNoOverflow(checkinDate, duration);
+
+                dateOutInput.value = formatLocalDate(recommendedCheckoutDate);
+            }
+
+            function setInitialDates() {
+                if (!dateInInput.value) {
+                    dateInInput.value = formatLocalDate(todayLocalDate());
+                }
+
+                if (!dateOutInput.value) {
+                    setRecommendedCheckoutDate();
+                }
             }
 
             function setButtonState(isEnabled, text = 'Booking Sekarang') {
@@ -212,11 +259,33 @@
                 setButtonState(true);
             }
 
-            dateInInput.addEventListener('change', validateDates);
-            dateOutInput.addEventListener('change', validateDates);
-            dateInInput.addEventListener('input', validateDates);
-            dateOutInput.addEventListener('input', validateDates);
+            dateInInput.addEventListener('change', function() {
+                if (!dateOutTouchedByUser) {
+                    setRecommendedCheckoutDate();
+                }
 
+                validateDates();
+            });
+
+            dateInInput.addEventListener('input', function() {
+                if (!dateOutTouchedByUser) {
+                    setRecommendedCheckoutDate();
+                }
+
+                validateDates();
+            });
+
+            dateOutInput.addEventListener('change', function() {
+                dateOutTouchedByUser = true;
+                validateDates();
+            });
+
+            dateOutInput.addEventListener('input', function() {
+                dateOutTouchedByUser = true;
+                validateDates();
+            });
+
+            setInitialDates();
             validateDates();
         });
     </script>

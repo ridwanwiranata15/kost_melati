@@ -8,7 +8,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class BookingController extends Controller
@@ -35,23 +34,30 @@ class BookingController extends Controller
 
     public function booking(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'room_id' => ['required', 'exists:rooms,id'],
             'duration' => ['required', 'integer', 'in:3,6,12'],
-            'date_in' => ['required', 'date', 'after:today'],
+            'date_in' => ['required', 'date_format:Y-m-d'],
+            'date_out' => ['required', 'date_format:Y-m-d', 'after:date_in'],
+        ], [
+            'room_id.required' => 'Kamar wajib dipilih.',
+            'room_id.exists' => 'Kamar tidak ditemukan.',
+            'duration.required' => 'Durasi sewa wajib dipilih.',
+            'duration.in' => 'Durasi sewa tidak valid.',
+            'date_in.required' => 'Tanggal masuk wajib diisi.',
+            'date_in.date_format' => 'Format tanggal masuk tidak valid.',
+            'date_out.required' => 'Tanggal keluar wajib diisi.',
+            'date_out.date_format' => 'Format tanggal keluar tidak valid.',
+            'date_out.after' => 'Tanggal keluar harus setelah tanggal masuk.',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()
-                ->route('home')
-                ->with('error', 'Tanggal mulai ngekos tidak valid. Minimal mulai besok hari.');
-        }
-
         try {
-            $roomId = (int) $request->room_id;
-            $duration = (int) $request->duration;
-            $dateIn = Carbon::parse($request->date_in)->startOfDay();
-            $dateOut = $dateIn->copy()->addMonths($duration)->startOfDay();
+            $roomId = (int) $validated['room_id'];
+            $duration = (int) $validated['duration'];
+
+            $dateIn = Carbon::createFromFormat('Y-m-d', $validated['date_in'])->startOfDay();
+            $dateOut = Carbon::createFromFormat('Y-m-d', $validated['date_out'])->startOfDay();
+
             $monthlyPrice = self::MONTHLY_PRICE;
             $totalAmount = $monthlyPrice * $duration;
 
@@ -91,8 +97,12 @@ class BookingController extends Controller
                     'redirect' => '/profile',
                 ])
                 ->with('admin_phone', $admin?->phone);
-        } catch (\Exception $e) {
-            return redirect()->route('home')->with('error', $e->getMessage());
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('home')
+                ->with('error', $e->getMessage());
         }
     }
 }

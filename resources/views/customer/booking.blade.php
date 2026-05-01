@@ -65,7 +65,9 @@
 
                 <div class="flex flex-col gap-1">
                     <h2 class="text-2xl font-bold text-gray-800">Atur Tanggal</h2>
-                    <p class="text-gray-500 text-sm">Tentukan kapan Anda mulai ngekos.</p>
+                    <p class="text-gray-500 text-sm">
+                        Tentukan tanggal masuk dan tanggal keluar sesuai data sewa kos Anda.
+                    </p>
                 </div>
 
                 <div id="error-message" class="hidden bg-red-50 border-l-4 border-red-500 p-4 rounded-r shadow-sm">
@@ -83,11 +85,21 @@
                     </div>
                 </div>
 
+                @if ($errors->any())
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r shadow-sm">
+                        <p class="text-sm text-red-700 font-semibold mb-2">Data belum valid:</p>
+                        <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="flex flex-col gap-2">
                     <label for="date_in" class="font-semibold text-gray-700 ml-1">Tanggal Masuk</label>
                     <div class="relative">
-                        <input type="date" name="date_in" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}"
-                            id="date_in" required
+                        <input type="date" name="date_in" id="date_in" required value="{{ old('date_in') }}"
                             class="w-full rounded-full border border-gray-300 py-3.5 px-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer">
                     </div>
                 </div>
@@ -95,11 +107,12 @@
                 <div class="flex flex-col gap-2">
                     <label for="date_out" class="font-semibold text-gray-700 ml-1">Tanggal Keluar</label>
                     <div class="relative">
-                        <input type="date" name="date_out" id="date_out" required
+                        <input type="date" name="date_out" id="date_out" required value="{{ old('date_out') }}"
                             class="w-full rounded-full border border-gray-300 py-3.5 px-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer">
                     </div>
-                    <p class="text-xs text-gray-400 ml-2 italic">*Tanggal keluar harus tepat {{ $duration }} bulan
-                        dari tanggal masuk.</p>
+                    <p class="text-xs text-gray-400 ml-2 italic">
+                        *Tanggal keluar dapat dipilih bebas, tetapi harus setelah tanggal masuk.
+                    </p>
                 </div>
 
                 <button type="submit" id="submit-btn" disabled
@@ -109,87 +122,73 @@
             </form>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const dateInInput = document.getElementById('date_in');
             const dateOutInput = document.getElementById('date_out');
-            const duration = parseInt(document.getElementById('duration-data').value);
             const submitBtn = document.getElementById('submit-btn');
             const errorMessageDiv = document.getElementById('error-message');
             const errorText = document.getElementById('error-text');
 
-            function validateDates() {
-                const dateInVal = dateInInput.value;
-                const dateOutVal = dateOutInput.value;
-
-                if (!dateInVal || !dateOutVal) return;
-
-                const startDate = new Date(dateInVal);
-                const endDate = new Date(dateOutVal);
-
-                // Hitung selisih bulan
-                let monthsDiff = (endDate.getFullYear() - startDate.getFullYear()) * 12;
-                monthsDiff -= startDate.getMonth();
-                monthsDiff += endDate.getMonth();
-
-                if (endDate.getDate() < startDate.getDate()) {
-                    monthsDiff--;
-                }
-
-                // Cek Validasi
-                if (monthsDiff !== duration) {
-                    // GAGAL
-                    errorMessageDiv.classList.remove('hidden');
-                    let message = "";
-                    if (monthsDiff < duration) {
-                        message =
-                            `Durasi hanya <strong>${monthsDiff < 0 ? 0 : monthsDiff} Bulan</strong>. Harus <strong>${duration} Bulan</strong>.`;
-                    } else {
-                        message =
-                            `Durasi kelebihan menjadi <strong>${monthsDiff} Bulan</strong>. Harus <strong>${duration} Bulan</strong>.`;
-                    }
-                    errorText.innerHTML = message;
-
-                    // Disable tombol
-                    submitBtn.disabled = true;
-                    submitBtn.classList.remove('bg-green-500', 'text-white', 'hover:bg-green-600',
-                        'cursor-pointer');
-                    submitBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
-                    submitBtn.innerText = "Perbaiki Tanggal";
-
-                    // SAYA SUDAH MENGHAPUS BARIS 'addEventListener' YANG ERROR DI SINI
-
-                } else {
-                    // SUKSES (Valid)
-                    errorMessageDiv.classList.add('hidden');
-
-                    // Enable tombol
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
-                    submitBtn.classList.add('bg-green-500', 'text-white', 'hover:bg-green-600', 'cursor-pointer');
-                    submitBtn.innerText = "Booking Sekarang";
-                }
+            function parseLocalDate(value) {
+                const [year, month, day] = value.split('-').map(Number);
+                return new Date(year, month - 1, day);
             }
 
-            // Auto-suggest Tanggal Keluar
-            dateInInput.addEventListener('change', function() {
-                if (this.value) {
-                    const d = new Date(this.value);
-                    d.setMonth(d.getMonth() + duration);
+            function setButtonState(isEnabled, text = 'Booking Sekarang') {
+                submitBtn.disabled = !isEnabled;
 
-                    const yyyy = d.getFullYear();
-                    const mm = String(d.getMonth() + 1).padStart(2, '0');
-                    const dd = String(d.getDate()).padStart(2, '0');
-
-                    dateOutInput.value = `${yyyy}-${mm}-${dd}`;
-                    validateDates();
+                if (isEnabled) {
+                    submitBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    submitBtn.classList.add('bg-green-500', 'text-white', 'hover:bg-green-600', 'cursor-pointer');
+                    submitBtn.innerText = text;
+                    return;
                 }
-            });
 
+                submitBtn.classList.remove('bg-green-500', 'text-white', 'hover:bg-green-600', 'cursor-pointer');
+                submitBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                submitBtn.innerText = text;
+            }
+
+            function showError(message) {
+                errorMessageDiv.classList.remove('hidden');
+                errorText.innerHTML = message;
+                setButtonState(false, 'Perbaiki Tanggal');
+            }
+
+            function hideError() {
+                errorMessageDiv.classList.add('hidden');
+                errorText.innerHTML = '';
+            }
+
+            function validateDates() {
+                const dateInValue = dateInInput.value;
+                const dateOutValue = dateOutInput.value;
+
+                if (!dateInValue || !dateOutValue) {
+                    hideError();
+                    setButtonState(false, 'Pilih Tanggal Dulu');
+                    return;
+                }
+
+                const dateIn = parseLocalDate(dateInValue);
+                const dateOut = parseLocalDate(dateOutValue);
+
+                if (dateOut <= dateIn) {
+                    showError('Tanggal keluar harus setelah tanggal masuk.');
+                    return;
+                }
+
+                hideError();
+                setButtonState(true);
+            }
+
+            dateInInput.addEventListener('change', validateDates);
             dateOutInput.addEventListener('change', validateDates);
+            dateInInput.addEventListener('input', validateDates);
+            dateOutInput.addEventListener('input', validateDates);
+
+            validateDates();
         });
     </script>
 </body>

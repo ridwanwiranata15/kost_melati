@@ -183,7 +183,7 @@
                             <td class="px-6 py-4 text-right font-bold text-gray-800 dark:text-white">
                                 @php
                                     // Kalkulasi cerdas: Jika total_amount 0, hitung manual dari harga kamar x durasi
-                                    $hargaKamar = $booking->price ?? ($booking->room->price ?? 500000);
+                                    $hargaKamar = $booking->price ?? ($booking->room->price ?? \App\Support\BookingPrice::monthlyPrice());
                                     $kalkulasiTotal =
                                         $booking->total_amount > 0
                                             ? $booking->total_amount

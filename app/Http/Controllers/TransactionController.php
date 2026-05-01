@@ -32,11 +32,11 @@ class TransactionController extends Controller
         $kamar = $booking->room;
 
         // --- LOGIKA SIMPEL ---
-        $hargaKamar = $transaksi->amount; // Kolom 'nominal' di DB kamu (misal 500.000)
-        $tagihanBulanIni = $transaksi->nominal;  // Uang yang dibayarkan (misal 500.000 atau 1.500.000)
+        $hargaKamar = $transaksi->amount; // Nilai tagihan kamar dari transaksi.
+        $tagihanBulanIni = $transaksi->nominal;  // Nominal pembayaran pada transaksi.
 
         // Hitung lama inap berdasarkan uang yang dibayar dibagi harga kamar
-        // Contoh: Bayar 1.5jt / Harga 500rb = 3 Bulan. Jika 0, default 1.
+        // Lama inap mengikuti durasi booking yang dipilih customer.
         $lamaInap = $booking->duration;
 
         $providerName = "Haramain Kost Residence";

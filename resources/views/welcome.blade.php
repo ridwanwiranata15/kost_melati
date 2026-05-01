@@ -2,29 +2,17 @@
 <html lang="id">
 
 <head>
+    @include('partials.seo', [
+        'seoTitle' => 'Kos Terdekat IAIN Curup | Kos El Sholeha Indah Curup',
+        'seoDescription' =>
+            'Kos terdekat IAIN Curup hanya sekitar 5 menit dari kampus. Fasilitas lengkap, WiFi, CCTV 24 jam, harga mulai Rp 500.000 per bulan, dan paket 1 tahun Rp 5.000.000.',
+        'canonicalUrl' => request()->is('kos-terdekat-iain-curup')
+            ? \App\Support\SeoMeta::canonicalUrl('/kos-terdekat-iain-curup')
+            : \App\Support\SeoMeta::canonicalUrl('/'),
+    ])
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Primary Meta Tags -->
-    <meta name="title" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP">
-    <meta name="description" content="Kost yang terdekat dari IAIN Curup">
-    <meta name="keywords" content="kost dekat IAIN curup, kost IAIN curup">
-    <meta name="author" content="all web development">
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP">
-    <meta property="og:description" content="kost dekat IAIN curup, kost IAIN curup.">
-    <meta property="og:image" content="{{ url('storage/default.jpg') }}">
-    <meta property="og:site_name" content="Kost dekat IAIN Curup">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Kost dekat IAIN Curup - Wisata Edukasi Kalimantan">
-    <meta name="twitter:description" content="Kost El Sholeha - Kost terdekat dari IAIN CURUP.">
-    <meta name="twitter:image" content="{{ url('storage/default.jpg') }}">
-    <link rel="canonical" href="{{ url()->current() }}">
-    <title>Kost El Sholeha - Kost terdekat dari IAIN CURUP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -51,10 +39,10 @@
     @endphp
     <header>
         <div class="navbar">
-            <a href="#" class="logo">
+            <a href="#" class="logo" style="text-decoration: none; color: inherit;">
                 <i class="fas fa-home"></i>
                 <div>
-                    <h1>Kos El Sholeha</h1>
+                    <strong class="logo-title">Kos El Sholeha</strong>
                     <span>Indah & Nyaman</span>
                 </div>
             </a>
@@ -92,7 +80,7 @@
 
     <section class="hero" id="home">
         <div class="hero-text">
-            <h1>Hunian Nyaman, <br><span>Kuliah Tenang.</span></h1>
+            <h1>Kos Terdekat IAIN Curup, <br><span>Kuliah Tenang.</span></h1>
             <p>Hanya 5 menit dari IAIN Curup. Fasilitas lengkap, WiFi kencang, dan keamanan 24 jam untuk mahasiswa.</p>
             <div style="display: flex; gap: 10px; justify-content: inherit;">
                 <a href="#kamar" class="btn btn-primary">Lihat Kamar</a>
@@ -148,8 +136,8 @@
             @endphp
             @if ($uniqueLocations->count() > 1)
                 <div class="filter-group" id="locationFilters">
-                    <button class="filter-btn active" onclick="filterLocation('all', this)"><i
-                            class="fas fa-globe-asia" style="font-size:0.75rem"></i> Semua Lokasi</button>
+                    <button class="filter-btn active" onclick="filterLocation('all', this)"><i class="fas fa-globe-asia"
+                            style="font-size:0.75rem"></i> Semua Lokasi</button>
                     @foreach ($uniqueLocations as $loc)
                         <button class="filter-btn" onclick="filterLocation('{{ $loc->slug }}', this)">
                             <i class="fas fa-map-marker-alt" style="font-size:0.75rem"></i> {{ $loc->name }}
@@ -256,7 +244,8 @@
                                     </button>
                                     <button type="button" class="kc-tab" onclick="kcSelectTab(this)">
                                         <span class="t-dur">1 Thn</span>
-                                        <span class="t-val">{{ \App\Support\BookingPrice::formatCompactRupiah(\App\Support\BookingPrice::totalAmountForDuration(12)) }}</span>
+                                        <span
+                                            class="t-val">{{ \App\Support\BookingPrice::formatCompactRupiah(\App\Support\BookingPrice::totalAmountForDuration(12)) }}</span>
                                     </button>
                                 </div>
                             @else
@@ -343,7 +332,8 @@
                                             <button type="button" class="kc-tab"
                                                 onclick="kcSelectTab(this, 'form-room-{{ $item->id }}', 12)">
                                                 <span class="t-dur">1 Thn</span>
-                                                <span class="t-val">{{ \App\Support\BookingPrice::formatCompactRupiah(\App\Support\BookingPrice::totalAmountForDuration(12)) }}</span>
+                                                <span
+                                                    class="t-val">{{ \App\Support\BookingPrice::formatCompactRupiah(\App\Support\BookingPrice::totalAmountForDuration(12)) }}</span>
                                             </button>
                                         </div>
                                         <input type="hidden" name="choose_month" id="month-{{ $item->id }}"
@@ -495,6 +485,55 @@
         </div>
     </section>
 
+
+    <section class="section faq-section" id="faq-kos-iain-curup">
+        <div class="sec-header">
+            <span class="section-eyebrow">FAQ Kos Dekat Kampus</span>
+            <h2>Kos Terdekat IAIN Curup untuk Mahasiswa</h2>
+            <p>
+                Kos El Sholeha Indah menjadi pilihan hunian strategis bagi mahasiswa yang mencari kos dekat IAIN Curup,
+                kos nyaman di Curup Utara, dan tempat tinggal dengan fasilitas lengkap untuk menunjang aktivitas kuliah.
+            </p>
+        </div>
+
+        <div class="faq-grid">
+            <article class="faq-card">
+                <div class="faq-icon">
+                    <i class="fas fa-location-dot"></i>
+                </div>
+                <h3>Apakah kos ini dekat dengan IAIN Curup?</h3>
+                <p>
+                    Ya. Kos El Sholeha berada di area strategis Curup dan dekat dengan IAIN Curup,
+                    sehingga cocok untuk mahasiswa yang ingin menghemat waktu perjalanan ke kampus.
+                </p>
+            </article>
+
+            <article class="faq-card">
+                <div class="faq-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h3>Berapa harga kos per bulan?</h3>
+                <p>
+                    Harga kos mulai dari
+                    {{ \App\Support\BookingPrice::formatRupiah(\App\Support\BookingPrice::monthlyPrice()) }}
+                    per bulan. Tersedia juga paket sewa tahunan
+                    {{ \App\Support\BookingPrice::formatRupiah(\App\Support\BookingPrice::totalAmountForDuration(12)) }}.
+                </p>
+            </article>
+
+            <article class="faq-card">
+                <div class="faq-icon">
+                    <i class="fas fa-house-chimney"></i>
+                </div>
+                <h3>Fasilitas apa saja yang tersedia?</h3>
+                <p>
+                    Fasilitas meliputi WiFi, CCTV 24 jam, kamar mandi pribadi, dapur pribadi per kamar,
+                    area parkir, dan lingkungan yang mendukung kenyamanan mahasiswa.
+                </p>
+            </article>
+        </div>
+    </section>
+
     <section class="section" id="lokasi">
         <div class="sec-header">
             <h2>Lokasi</h2>
@@ -522,13 +561,16 @@
                         <h4>Alamat</h4>
                         <p>Jalan Hegel Blok A No.03, Dusun Curup, Kec. Curup Utara, Kabupaten Rejang Lebong, Bengkulu
                             39119, Indonesia</p>
+                        <a class="maps-link" href="https://maps.app.goo.gl/PK14jifsM6aMJ4Mc7" target="_blank"
+                            rel="noopener">
+                            <i class="fas fa-map-location-dot"></i> Buka di Google Maps
+                        </a>
                     </div>
                 </div>
             </div>
             <div id="map"></div>
         </div>
     </section>
-
     <footer>
         <div class="footer-grid">
             <div class="foot-col">
@@ -541,6 +583,7 @@
                 <a href="#home">Beranda</a>
                 <a href="#kamar">Kamar</a>
                 <a href="#lokasi">Lokasi</a>
+                <a href="{{ route('seo.kos-terdekat-iain-curup') }}">Kos Terdekat IAIN Curup</a>
             </div>
             <div class="foot-col">
                 <h4>Kontak</h4>

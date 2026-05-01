@@ -1,3 +1,13 @@
 User-agent: *
 Allow: /
-Sitemap:https://all-kos.allcode.my.id/sitemap.xml
+
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /profile
+Disallow: /my-order
+Disallow: /booking
+Disallow: /invoice
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://kos-elsholeha.allwebdevelopment.com/sitemap.xml

@@ -24,8 +24,8 @@ Route::get('/', function () {
 // 2. BUAT Route BARU khusus untuk Sitemap (Taruh di bawahnya)
 Route::get('/sitemap.xml', function () {
     // Jika sitemap Anda butuh data (misal list kamar), ambil lagi di sini
-    // $rooms = Room::all(); 
-    
+    // $rooms = Room::all();
+
     return response()
         ->view('sitemap') // Pastikan file view-nya bernama sitemap.blade.php
         ->header('Content-Type', 'text/xml');
@@ -69,7 +69,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Volt::route('user/{id}', 'detail-user')->name('admin.user.detail');
     Volt::route('booking', 'booking')->name('admin.booking');
     Volt::route('gallery', 'gallery')->name('admin.gallery');
-    
+
     // Manajemen Properti & Staff (Super Admin Only)
     Route::middleware(['superadmin'])->group(function () {
         Route::get('properties', \App\Livewire\Property::class)->name('admin.properties');
@@ -102,9 +102,12 @@ Route::put('/profile/update', [ProfileController::class, 'update'])->name('profi
 });
 
 
-Route::get('/kost-dekat-iain-curup', function () {
+Route::redirect('/kost-dekat-iain-curup', '/kos-terdekat-iain-curup', 301);
+
+Route::get('/kos-terdekat-iain-curup', function () {
     $rooms = Room::with('property')->get();
     $galleries = Gallery::all();
     $testimonials = Testimonial::all();
+
     return view('welcome', compact('rooms', 'galleries', 'testimonials'));
-});
+})->name('seo.kos-terdekat-iain-curup');
